@@ -1,4 +1,4 @@
-package SOM_GeometryProj_PKG.sphere_UI;
+package SOM_GeometryProj_PKG.geom_UI;
 
 import base_UI_Objects.my_procApplet;
 import base_UI_Objects.windowUI.BaseBarMenu;

@@ -1,11 +1,11 @@
-package SOM_GeometryProj_PKG.sphere_SOM_Mapping;
+package SOM_GeometryProj_PKG.geom_SOM_Mapping;
 
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.sphere_SOM_Examples.Sphere_SOMMapNode;
-import SOM_GeometryProj_PKG.sphere_SOM_Mapping.exampleManagers.Sphere_SOMExampleManager;
-import SOM_GeometryProj_PKG.sphere_Utils.Sphere_SOMMseOvrDisp;
-import SOM_GeometryProj_PKG.sphere_Utils.Sphere_SOMProjConfig;
+import SOM_GeometryProj_PKG.geom_SOM_Examples.Sphere_SOMMapNode;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Sphere_SOMExampleManager;
+import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
+import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMProjConfig;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_examples.SOM_MapNode;
@@ -42,11 +42,11 @@ public class Sphere_SOMMapManager extends SOM_MapManager {
 	 * build instance-specific project file configuration 
 	 */
 	@Override
-	protected SOM_ProjConfigData buildProjConfigData(TreeMap<String, Object> _argsMap) {				return new Sphere_SOMProjConfig(this,_argsMap);	}	
+	protected SOM_ProjConfigData buildProjConfigData(TreeMap<String, Object> _argsMap) {				return new Geom_SOMProjConfig(this,_argsMap);	}	
 
 	@Override
 	//build the example that represents the data where the mouse is
-	protected final SOM_MseOvrDisplay buildMseOverExample() {return new Sphere_SOMMseOvrDisp(this,0.0f);}
+	protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
 
 	/**
 	 * build an interface to manage communications between UI and SOM map dat

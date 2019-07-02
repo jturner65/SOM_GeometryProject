@@ -1,4 +1,4 @@
-package SOM_GeometryProj_PKG.geomObj.base;
+package SOM_GeometryProj_PKG.geom_Obj.base;
 
 import base_SOM_Objects.SOM_MapManager;
 

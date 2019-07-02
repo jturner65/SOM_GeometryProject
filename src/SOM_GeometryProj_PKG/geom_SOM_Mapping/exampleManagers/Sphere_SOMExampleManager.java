@@ -1,4 +1,4 @@
-package SOM_GeometryProj_PKG.sphere_SOM_Mapping.exampleManagers;
+package SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers;
 
 import java.util.ArrayList;
 

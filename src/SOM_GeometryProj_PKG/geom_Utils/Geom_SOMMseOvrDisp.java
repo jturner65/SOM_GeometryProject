@@ -1,4 +1,4 @@
-package SOM_GeometryProj_PKG.sphere_Utils;
+package SOM_GeometryProj_PKG.geom_Utils;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -8,9 +8,9 @@ import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_MapNode;
 import base_SOM_Objects.som_ui.SOM_MseOvrDisplay;
 
-public class Sphere_SOMMseOvrDisp extends SOM_MseOvrDisplay {
+public class Geom_SOMMseOvrDisp extends SOM_MseOvrDisplay {
 
-	public Sphere_SOMMseOvrDisp(SOM_MapManager _mapMgr, float _dispThesh) {
+	public Geom_SOMMseOvrDisp(SOM_MapManager _mapMgr, float _dispThesh) {
 		super(_mapMgr, _dispThesh);
 	}
 

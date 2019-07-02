@@ -1,9 +1,11 @@
 package SOM_GeometryProj_PKG;
 
 import processing.core.*;
-import SOM_GeometryProj_PKG.sphere_UI.mySOMMapUIWin;
-import SOM_GeometryProj_PKG.sphere_UI.mySideBarMenu;
-import SOM_GeometryProj_PKG.sphere_UI.mySphereSOMAnimResWin;
+import SOM_GeometryProj_PKG.geom_UI.Geom_SOMMapUIWin;
+import SOM_GeometryProj_PKG.geom_UI.mySideBarMenu;
+import SOM_GeometryProj_PKG.geom_UI.mySphereSOMAnimResWin;
+import base_SOM_Objects.SOM_MapManager;
+import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.*;
 import base_UI_Objects.windowUI.myDispWindow;
 /**
@@ -38,7 +40,7 @@ public class SOM_GeometryMain extends my_procApplet {
 	/**
 	 * fraction of height popup som win should use
 	 */
-	public final float PopUpWinOpenFraction = .40f;
+	public final float PopUpWinOpenFraction = .20f;
 	
 ///////////////
 //CODE STARTS
@@ -124,7 +126,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		
 		wIdx = dispSOMMapIDX; fIdx=showSOMMapUI;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,false,false}, new int[]{50,40,20,255}, new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255});
-		dispWinFrames[wIdx] = new mySOMMapUIWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		dispWinFrames[wIdx] = new Geom_SOMMapUIWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
 		
 		//specify windows that cannot be shown simultaneously here
 		initXORWins(new int[]{showSpereAnimRes,showLineAnimRes,showPlaneAnimRes},new int[]{dispSphereAnimResIDX,dispLineAnimResIDX, dispPlaneAnimResIDX});
@@ -191,8 +193,8 @@ public class SOM_GeometryMain extends my_procApplet {
 		//val is btn state before transition 
 			//val is btn state before transition 
 			boolean bVal = (val == 1?  false : true);
-			//each entry in this array should correspond to a clickable window
-			setVisFlag(btn+1, bVal);
+			//each entry in this array should correspond to a clickable window, not counting menu
+			setVisFlag(btn+showSpereAnimRes, bVal);
 		}
 	}//handleShowWin
 	
@@ -226,14 +228,34 @@ public class SOM_GeometryMain extends my_procApplet {
 		visFlags[flIDX] = (val ?  visFlags[flIDX] | mask : visFlags[flIDX] & ~mask);
 		switch (idx){
 			case showUIMenu 	    : { dispWinFrames[dispMenuIDX].setFlags(myDispWindow.showIDX,val);    break;}											//whether or not to show the main ui window (sidebar)			
-			case showSpereAnimRes	: {setWinFlagsXOR(dispSphereAnimResIDX, val); break;}
-			case showLineAnimRes	: {setWinFlagsXOR(dispLineAnimResIDX, val); break;}
-			case showPlaneAnimRes	: {setWinFlagsXOR(dispPlaneAnimResIDX, val); break;}
+			case showSpereAnimRes	: {setDispAndModMapMgr(showSpereAnimRes, dispSphereAnimResIDX, val);break;}//{setWinFlagsXOR(dispSphereAnimResIDX, val); break;}
+			case showLineAnimRes	: {setDispAndModMapMgr(showLineAnimRes, dispLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
+			case showPlaneAnimRes	: {setDispAndModMapMgr(showPlaneAnimRes, dispPlaneAnimResIDX, val);break;}//{setWinFlagsXOR(dispPlaneAnimResIDX, val); break;}
 			//case showSOMMapUI		: {setWinFlagsXOR(dispSOMMapIDX, val); break;}
-			case showSOMMapUI 		: {dispWinFrames[dispSOMMapIDX].setFlags(myDispWindow.showIDX,val);handleShowWin(dispSOMMapIDX-1 ,(val ? 1 : 0),false); setWinsHeight(dispSOMMapIDX); break;}	//show InstEdit window
+			//case showSOMMapUI 		: {dispWinFrames[dispSOMMapIDX].setFlags(myDispWindow.showIDX,val);handleShowWin(curFocusWin,(val ? 1 : 0),false); setWinsHeight(dispSOMMapIDX); break;}	
+			case showSOMMapUI 		: {
+				dispWinFrames[dispSOMMapIDX].setFlags(myDispWindow.showIDX,val); 
+				SOM_MapManager mapMgr = ((mySphereSOMAnimResWin)dispWinFrames[curFocusWin]).getMapMgr();
+				if(null != mapMgr) {			((SOM_MapUIWin)dispWinFrames[dispSOMMapIDX]).setMapMgr(mapMgr);			}
+				setWinsHeight(dispSOMMapIDX); break;}
 			default : {break;}
 		}
 	}//setFlags  
+	/**
+	 * send appropriate map manager to map manager window
+	 * @param flagIDX
+	 * @param dispIDX
+	 * @param val
+	 */
+	private void setDispAndModMapMgr(int flagIDX, int dispIDX, boolean val) {
+		setWinFlagsXOR(dispIDX, val);
+		if((val) && (getVisFlag(showSOMMapUI))) {
+			SOM_MapManager mapMgr = ((mySphereSOMAnimResWin)dispWinFrames[dispIDX]).getMapMgr();
+			if(null != mapMgr) {			((SOM_MapUIWin)dispWinFrames[dispSOMMapIDX]).setMapMgr(mapMgr);			}		
+		}
+	}//setDispAndModMapMgr
+	
+	
 	@Override
 	//get vis flag
 	public boolean getVisFlag(int idx){int bitLoc = 1<<(idx%32);return (visFlags[idx/32] & bitLoc) == bitLoc;}	
@@ -243,12 +265,58 @@ public class SOM_GeometryMain extends my_procApplet {
 		visFlags[flIDX] = (val ?  visFlags[flIDX] | mask : visFlags[flIDX] & ~mask);
 		//doesn't perform any other ops - to prevent looping
 	}
+	@Override
+	/**
+	 * overridding main because handling 2d + 3d windows
+	 */
+	public void draw(){
+		if(!isFinalInitDone()) {initOnce(); return;}	
+		float modAmtMillis = getModAmtMillis();
+		//simulation section
+		if(isRunSim() ){
+			//run simulation
+			drawCount++;									//needed here to stop draw update so that pausing sim retains animation positions	
+			for(int i =1; i<numDispWins; ++i){if((isShowingWindow(i)) && (dispWinFrames[i].getFlags(myDispWindow.isRunnable))){dispWinFrames[i].simulate(modAmtMillis);}}
+			if(isSingleStep()){setSimIsRunning(false);}
+			simCycles++;
+		}		//play in current window
 
+		//drawing section
+		pushMatrix();pushStyle();
+		drawSetup();																//initialize camera, lights and scene orientation and set up eye movement		
+		if((curFocusWin == -1) || (curDispWinIs3D())){	//allow for single window to have focus, but display multiple windows	
+			//if refreshing screen, this clears screen, sets background		
+			setBkgrnd();				
+			draw3D_solve3D(modAmtMillis);
+			if(curDispWinCanShow3dbox()){drawBoxBnds();}		
+			
+		} //else {	//either/or 2d window
+		//2d windows paint window box so background is always cleared
+		c.buildCanvas();
+		c.drawMseEdge();
+		popStyle();popMatrix(); 
+		for(int i =1; i<numDispWins; ++i){if (isShowingWindow(i) && !(dispWinFrames[i].getFlags(myDispWindow.is3DWin))){dispWinFrames[i].draw2D(modAmtMillis);}}
+		//}
+		drawUI(modAmtMillis);																	//draw UI overlay on top of rendered results			
+		if (doSaveAnim()) {	savePic();}
+		updateConsoleStrs();
+		surface.setTitle(getPrjNmLong() + " : " + (int)(frameRate) + " fps|cyc curFocusWin : " + curFocusWin);
+	}//draw	
 
 	@Override
 	protected int[] getClr_Custom(int colorVal, int alpha) {	return new int[] {255,255,255,alpha};}
-	
-	
+	/**
+	 * display the SOM window's UI objects
+	 */
+	public void drawSOMUIObjs() {
+		if(getVisFlag(showSOMMapUI)){
+			pushMatrix();pushStyle();			
+			dispWinFrames[dispSOMMapIDX].drawGUIObjs();					//draw what user-modifiable fields are currently available
+			dispWinFrames[dispSOMMapIDX].drawClickableBooleans();					//draw what user-modifiable fields are currently available
+			//dispWinFrames[curFocusWin].drawCustMenuObjs();					//customizable menu objects for each window
+			popStyle();	popMatrix();						
+		}
+	}
 	
 //	
 //	//data in files created by somoclu separated by spaces

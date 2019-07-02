@@ -1,12 +1,15 @@
-package SOM_GeometryProj_PKG.sphere_UI;
+package SOM_GeometryProj_PKG.geom_UI;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import SOM_GeometryProj_PKG.geomObj.sphere.SOM_Sphere;
-import SOM_GeometryProj_PKG.sphere_SOM_Mapping.Sphere_SOMMapManager;
+import SOM_GeometryProj_PKG.SOM_GeometryMain;
+import SOM_GeometryProj_PKG.geom_Obj.sphere.SOM_Sphere;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.Sphere_SOMMapManager;
+import base_SOM_Objects.SOM_MapManager;
+import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.*;
 import base_UI_Objects.drawnObjs.myDrawnSmplTraj;
 import base_UI_Objects.windowUI.myDispWindow;
@@ -16,7 +19,7 @@ import base_Utils_Objects.vectorObjs.myVector;
 
 public class mySphereSOMAnimResWin extends myDispWindow {
 	
-	public Sphere_SOMMapManager mapMgr;						//map built from the ui obj's data
+	public SOM_MapManager mapMgr;						//map built from the ui obj's data
 	//ui vars
 	public final static int
 		gIDX_NumUIObjs 		= 0,
@@ -44,9 +47,10 @@ public class mySphereSOMAnimResWin extends myDispWindow {
 		useSmplsForTrainIDX = 8,				//use surface samples, or ui obj's characteristics (i.e. center), for training data
 		showMapBasedLocsIDX = 9,				//show map-derived locations of training data instead of actual locations (or along with?)
 		mapBuiltToCurUIObjsIDX = 10,			//the current ui obj configuration has an underlying map built to it
-		regenUIObjsIDX 	= 11;					//regenerate ui objs with current specs
+		regenUIObjsIDX 	= 11,					//regenerate ui objs with current specs
+		showSOMWinIDX = 12;						//show som window overlay
 
-	public static final int numPrivFlags = 12;
+	public static final int numPrivFlags = 13;
 	
 	//represented random uiObjs
 	public SOM_Sphere[] uiObjs;
@@ -64,16 +68,16 @@ public class mySphereSOMAnimResWin extends myDispWindow {
 	//initialize all private-flag based UI buttons here - called by base class
 	public void initAllPrivBtns(){
 		truePrivFlagNames = new String[]{								//needs to be in order of privModFlgIdxs
-				"Debugging Spheres", "Regen Spheres", "Show Spheres", "Hide Labels", "Location as Color",
+				"Hide SOM Window","Debugging Spheres", "Regen Spheres", "Show Spheres", "Hide Labels", "Location as Color",
 				//"Rnd Smpl Order", 
 				"HiLiting Sel Sphr","Smpls As Train", "Save Data", "Showing Maps Locs"
 		};
 		falsePrivFlagNames = new String[]{			//needs to be in order of flags
-				"Debug Spheres", "Regen Spheres","Show Sample Pts","Show Labels","Randomized Color",
+				"Show SOM Window", "Debug Spheres", "Regen Spheres","Show Sample Pts","Show Labels","Randomized Color",
 				//"Seq Smpl Order", 
 				"Turn HiLite On","Cntrs As Train","Save Data", "Showing Actual Locs"
 		};
-		privModFlgIdxs = new int[]{debugAnimIDX, regenUIObjsIDX, showSamplePntsIDX,showUIObjIdIDX, useUIObjLocAsClrIDX, //useSmplLocAsClrIDX, 
+		privModFlgIdxs = new int[]{showSOMWinIDX, debugAnimIDX, regenUIObjsIDX, showSamplePntsIDX,showUIObjIdIDX, useUIObjLocAsClrIDX, //useSmplLocAsClrIDX, 
 				//rndSphrDataIDX,  
 				showSelUIObjIDX, useSmplsForTrainIDX,saveUIObjDataIDX, showMapBasedLocsIDX};
 		numClickBools = privModFlgIdxs.length;	
@@ -87,9 +91,15 @@ public class mySphereSOMAnimResWin extends myDispWindow {
 		initAllSpheres();
 		//this window uses right side info window
 		setFlags(drawRightSideMenu, true);		//may need some re-scaling to keep things in the middle and visible
-
+		
 	}
-
+	
+	/**
+	 * return appropriate SOM Map Manager for this window
+	 * @return
+	 */
+	public SOM_MapManager getMapMgr() {return mapMgr;}
+	
 	/**
 	 * call to build or rebuilt spheres
 	 */
@@ -116,6 +126,12 @@ public class mySphereSOMAnimResWin extends myDispWindow {
 			case useSmplsForTrainIDX	: {break;}		//use surface samples for train and centers for test, or vice versa
 			case mapBuiltToCurUIObjsIDX  : {break;}     //whether map has been built and loaded for current config of spheres
 			case regenUIObjsIDX		: {  if(val){initAllSpheres();privFlags[flIDX] =  privFlags[flIDX] & ~mask;} break;}		//remake all spheres, turn of flag
+			case showSOMWinIDX		: {
+//				if(null!=somMapWin) {
+//					somMapWin.setFlags(myDispWindow.showIDX,val);
+//				}	
+				
+				break;}
 			//case rndSphrDataIDX			: { break;}		//whether or not to randomize training data before save
 		}		
 	}//setPrivFlags		
@@ -198,11 +214,7 @@ public class mySphereSOMAnimResWin extends myDispWindow {
 	/**
 	 * save data in appropriate formats for spheres and sphere sample points, to appropriately named files
 	 */
-	private void saveSphereInfo(){
-		
-		
-	}
-	
+	private void saveSphereInfo(){	}
 
 
 	@Override
@@ -248,10 +260,14 @@ public class mySphereSOMAnimResWin extends myDispWindow {
 		}
 		pa.popStyle();pa.popMatrix();
 		if(getPrivFlags(saveUIObjDataIDX)){saveSphereInfo();	setPrivFlags(saveUIObjDataIDX, false);	}
+
 	}//drawMe
 	
+	
 	@Override
-	public void drawCustMenuObjs(){}
+	public void drawCustMenuObjs(){
+		((SOM_GeometryMain) pa).drawSOMUIObjs();		
+	}
 	@Override
 	protected boolean simMe(float modAmtSec) { return true;	}
 

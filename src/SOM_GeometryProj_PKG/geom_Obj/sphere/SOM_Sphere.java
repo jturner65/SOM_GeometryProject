@@ -1,7 +1,7 @@
-package SOM_GeometryProj_PKG.geomObj.sphere;
+package SOM_GeometryProj_PKG.geom_Obj.sphere;
 
-import SOM_GeometryProj_PKG.sphere_SOM_Examples.Sphere_SOMExample;
-import SOM_GeometryProj_PKG.sphere_SOM_Examples.Sphere_SOMMapNode;
+import SOM_GeometryProj_PKG.geom_SOM_Examples.Sphere_SOMExample;
+import SOM_GeometryProj_PKG.geom_SOM_Examples.Sphere_SOMMapNode;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_UI_Objects.my_procApplet;

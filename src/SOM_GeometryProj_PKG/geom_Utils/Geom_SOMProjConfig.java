@@ -1,4 +1,4 @@
-package SOM_GeometryProj_PKG.sphere_Utils;
+package SOM_GeometryProj_PKG.geom_Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,11 +8,11 @@ import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_utils.SOM_ProjConfigData;
 import base_Utils_Objects.io.MsgCodes;
 
-public class Sphere_SOMProjConfig extends SOM_ProjConfigData {
+public class Geom_SOMProjConfig extends SOM_ProjConfigData {
 	//file name to use to save sphere-project-specific SOM config data
-	private final String custSphereSOMConfigDataFileName= "SphereProj_SOM_CustomMapTrainData.txt";
+	private final String custGeomSOMConfigDataFileName= "GeomProj_SOM_CustomMapTrainData.txt";
 
-	public Sphere_SOMProjConfig(SOM_MapManager _mapMgr, TreeMap<String, Object> _argsMap) {	super(_mapMgr, _argsMap);}
+	public Geom_SOMProjConfig(SOM_MapManager _mapMgr, TreeMap<String, Object> _argsMap) {	super(_mapMgr, _argsMap);}
 
 	@Override
 	protected void _loadIndivConfigVarsPriv(String varName, String val) {
@@ -81,7 +81,7 @@ public class Sphere_SOMProjConfig extends SOM_ProjConfigData {
 	 * @return file name of config file for custom config variables, under SOM Exec dir
 	 */
 	@Override
-	protected final String getSOMExpCustomConfigFileName_Indiv() {	return custSphereSOMConfigDataFileName;}
+	protected final String getSOMExpCustomConfigFileName_Indiv() {	return custGeomSOMConfigDataFileName;}
 
 
 	@Override

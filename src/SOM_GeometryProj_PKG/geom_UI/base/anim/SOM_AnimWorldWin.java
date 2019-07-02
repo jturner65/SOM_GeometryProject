@@ -1,8 +1,9 @@
-package SOM_GeometryProj_PKG.sphere_UI;
+package SOM_GeometryProj_PKG.geom_UI.base.anim;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.my_procApplet;
 import base_UI_Objects.drawnObjs.myDrawnSmplTraj;
@@ -18,9 +19,12 @@ import base_Utils_Objects.vectorObjs.myVector;
 
 public abstract class SOM_AnimWorldWin extends myDispWindow {
 	/**
-	 * This is the window to display SOM info for sim world contained in this window
+	 * map manager corresponding to this animation world
 	 */
-	protected SOM_MapUIWin somMapWin;
+	public SOM_MapManager mapMgr;	
+	
+	
+	
 		
 	
 	public SOM_AnimWorldWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
@@ -30,12 +34,6 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 
 	@Override
 	public void setPrivFlags(int idx, boolean val) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void drawCustMenuObjs() {
 		// TODO Auto-generated method stub
 
 	}

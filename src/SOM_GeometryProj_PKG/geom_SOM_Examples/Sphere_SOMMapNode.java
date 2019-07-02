@@ -1,4 +1,4 @@
-package SOM_GeometryProj_PKG.sphere_SOM_Examples;
+package SOM_GeometryProj_PKG.geom_SOM_Examples;
 
 import java.util.ArrayList;
 import java.util.TreeMap;

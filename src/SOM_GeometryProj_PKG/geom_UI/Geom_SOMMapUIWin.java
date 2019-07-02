@@ -1,10 +1,10 @@
-package SOM_GeometryProj_PKG.sphere_UI;
+package SOM_GeometryProj_PKG.geom_UI;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.sphere_SOM_Mapping.Sphere_SOMMapManager;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.Sphere_SOMMapManager;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.my_procApplet;
@@ -13,7 +13,7 @@ import base_Utils_Objects.vectorObjs.myPoint;
 import base_Utils_Objects.vectorObjs.myVector;
 
 //window that accepts trajectory editing
-public class mySOMMapUIWin extends SOM_MapUIWin {
+public class Geom_SOMMapUIWin extends SOM_MapUIWin {
 	
 	public static final int 
 		mapShowLocClrIDX 			= numSOMBasePrivFlags + 0;			//show img built of map with each pxl clr built from the 1st 3 features of the interpolated point at that pxl between the map nodes
@@ -28,7 +28,7 @@ public class mySOMMapUIWin extends SOM_MapUIWin {
 		{"---","---","---","---","---"}	
 	};
 	
-	public mySOMMapUIWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
+	public Geom_SOMMapUIWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
 		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj);
 		super.initThisWin(_canDrawTraj, true, false);
 	}

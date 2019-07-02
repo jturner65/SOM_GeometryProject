@@ -50,7 +50,7 @@ SOM_ExampleToBMUMappingsSubDir,"ExamplesToBMUMappings"
 SOMExeName_base,"trainSOM"
 #
 #	short name to be used in file names to specify this project - should only be a simple string!
-SOMProjName,"Spheres"
+SOMProjName,"Geom"
 #
 #	whether to use dense or sparse training and testing data  
 useSparseTrainingData,"false"
