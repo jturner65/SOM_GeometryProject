@@ -16,15 +16,17 @@ import base_Utils_Objects.vectorObjs.myVectorf;
  *
  */
 public class SOM_Sphere extends SOM_GeomObj{
-
-	public final myVectorf loc;
+	/**
+	 * center locations
+	 */
+	public final myVectorf ctrLoc;
 	
 	public final int sphrDet;
 	public final float rad;
 
 	public SOM_Sphere(my_procApplet _pa, SOM_MapManager _mapMgr, myVectorf _loc, float _rad, int _numSmplPts, int[] _rndClrAra) {
 		super(_pa, _mapMgr, _numSmplPts, _pa.getClrFromCubeLoc(_loc),_rndClrAra);
-		loc = _loc;
+		ctrLoc = _loc;
 		rad = _rad;	
 		sphrDet = (int)(Math.sqrt(rad) + 10);	
 	}//ctor
@@ -43,7 +45,7 @@ public class SOM_Sphere extends SOM_GeomObj{
 	 * build this object's "exemplar" example
 	 */
 	@Override
-	protected Geom_SOMExample buildObjExample() {return new Geom_SOMExample(mapMgr, loc, locClrAra, "Sphere "+ ID);}
+	protected Geom_SOMExample buildObjExample() {return new Geom_SOMExample(mapMgr, ctrLoc, locClrAra, "Sphere "+ ID);}
 
 	@Override
 	/**
@@ -51,7 +53,7 @@ public class SOM_Sphere extends SOM_GeomObj{
 	 * @return
 	 */
 	protected final Geom_SOMExample buildSample(int i) {
-		myVectorf _locVec = getRandPosOnSphere(rad,loc);
+		myVectorf _locVec = getRandPosOnSphere(rad,ctrLoc);
 		int[] _locClrs = pa.getClrFromCubeLoc(_locVec);
 		return new Geom_SOMExample(mapMgr,_locVec, _locClrs, "Sphr "+ ID + " Smpl "+i);
 	}
@@ -60,14 +62,14 @@ public class SOM_Sphere extends SOM_GeomObj{
 	@Override
 	public void drawMeClrRnd(my_procApplet pa){
 		pa.pushMatrix();pa.pushStyle();		
-			pa.show(loc, rad, sphrDet, rndClrAra, rndClrAra);		//show main sphere in random color
+			pa.show(ctrLoc, rad, sphrDet, rndClrAra, rndClrAra);		//show main sphere in random color
 		pa.popStyle();pa.popMatrix();
 	}//
 	
 	@Override
 	public void drawMeClrLoc(my_procApplet pa){
 		pa.pushMatrix();pa.pushStyle();		
-			pa.show(loc, rad, sphrDet, locClrAra, locClrAra);		//show main sphere in location color
+			pa.show(ctrLoc, rad, sphrDet, locClrAra, locClrAra);		//show main sphere in location color
 		pa.popStyle();pa.popMatrix();
 	}//
 	
@@ -79,7 +81,7 @@ public class SOM_Sphere extends SOM_GeomObj{
 		pa.pushMatrix();pa.pushStyle();		
 		pa.noFill();//fill(255*modCnt,255);
 		pa.stroke(255*modCnt, 255);		
-		pa.translate(loc); 
+		pa.translate(ctrLoc); 
 		pa.sphere(rad*(modCnt + 1.0f)); 
 		pa.popStyle();pa.popMatrix();
 	}
@@ -99,7 +101,7 @@ public class SOM_Sphere extends SOM_GeomObj{
 		pa.pushMatrix();pa.pushStyle();		
 		pa.setColorValFill(0,255); 
 		pa.setColorValStroke(0,255);		
-		pa.translate(loc); 
+		pa.translate(ctrLoc); 
 		pa.unSetCamOrient_Glbl();
 		pa.scale(.75f);
 		pa.text(""+ID, rad,-rad,0); 
