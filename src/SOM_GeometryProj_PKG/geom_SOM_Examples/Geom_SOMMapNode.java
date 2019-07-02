@@ -9,7 +9,7 @@ import base_SOM_Objects.som_examples.SOM_MapNode;
 import base_Utils_Objects.vectorObjs.Tuple;
 import base_Utils_Objects.vectorObjs.myVectorf;
 
-public class Sphere_SOMMapNode extends SOM_MapNode {
+public class Geom_SOMMapNode extends SOM_MapNode {
 	/**
 	 * location in the 3d world of the sample;  
 	 * this corresponds to the feature vector for this example, 
@@ -17,9 +17,9 @@ public class Sphere_SOMMapNode extends SOM_MapNode {
 	 */
 	public myVectorf worldLoc;	
 
-	public Sphere_SOMMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, float[] _ftrs) {super(_map, _mapNodeLoc, _ftrs);   worldLoc = new myVectorf(_ftrs[0],_ftrs[1],_ftrs[2]);}
+	public Geom_SOMMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, float[] _ftrs) {super(_map, _mapNodeLoc, _ftrs);   worldLoc = new myVectorf(_ftrs[0],_ftrs[1],_ftrs[2]);}
 
-	public Sphere_SOMMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, String[] _strftrs) {super(_map, _mapNodeLoc, _strftrs);float[] _ftrs = this.getFtrs();worldLoc = new myVectorf(_ftrs[0],_ftrs[1],_ftrs[2]);}
+	public Geom_SOMMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, String[] _strftrs) {super(_map, _mapNodeLoc, _strftrs);float[] _ftrs = this.getFtrs();worldLoc = new myVectorf(_ftrs[0],_ftrs[1],_ftrs[2]);}
 
 	@Override
 	protected void _initDataFtrMappings() {

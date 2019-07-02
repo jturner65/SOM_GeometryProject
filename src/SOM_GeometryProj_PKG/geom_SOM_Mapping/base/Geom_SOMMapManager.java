@@ -1,9 +1,9 @@
-package SOM_GeometryProj_PKG.geom_SOM_Mapping;
+package SOM_GeometryProj_PKG.geom_SOM_Mapping.base;
 
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_SOM_Examples.Sphere_SOMMapNode;
-import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Sphere_SOMExampleManager;
+import SOM_GeometryProj_PKG.geom_SOM_Examples.Geom_SOMMapNode;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_SOMExampleManager;
 import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
 import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMProjConfig;
 import base_SOM_Objects.SOM_MapManager;
@@ -17,25 +17,30 @@ import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.io.MsgCodes;
 import base_Utils_Objects.vectorObjs.Tuple;
 
-
-public class Sphere_SOMMapManager extends SOM_MapManager {
+/**
+ * extension of SOM_MapManager intended for geometric/graphical objects
+ * intended to eventually be abstract
+ * @author john
+ *
+ */
+public class Geom_SOMMapManager extends SOM_MapManager {
 	
-	private Sphere_SOMExampleManager exMapper;
+	private Geom_SOMExampleManager exMapper;
 
-	public Sphere_SOMMapManager(SOM_MapUIWin _win, float[] _dims, TreeMap<String, Object> _argsMap) {
+	public Geom_SOMMapManager(SOM_MapUIWin _win, float[] _dims, TreeMap<String, Object> _argsMap) {
 		super(_win, _dims, _argsMap);
 		//add data loader building here?
 	}
 	//ctor from non-UI stub main
-	public Sphere_SOMMapManager(float[] _dims, TreeMap<String, Object> _argsMap) {this(null,_dims, _argsMap);}		
+	public Geom_SOMMapManager(float[] _dims, TreeMap<String, Object> _argsMap) {this(null,_dims, _argsMap);}		
 	
 	/**
 	 * build the map of example mappers used to manage all the data the SOM will consume
 	 */  
 	@Override
 	protected void buildExampleDataMappers()  {
-		exampleDataMappers.put("sphereExamples", new Sphere_SOMExampleManager(this, "sphereData", "Sphere example data points", false));
-		exMapper = (Sphere_SOMExampleManager) exampleDataMappers.get("sphereExamples");
+		exampleDataMappers.put("sphereExamples", new Geom_SOMExampleManager(this, "sphereData", "Sphere example data points", false));
+		exMapper = (Geom_SOMExampleManager) exampleDataMappers.get("sphereExamples");
 	}
 
 	/**
@@ -56,18 +61,19 @@ public class Sphere_SOMMapManager extends SOM_MapManager {
 	protected SOM_UIToMapCom buildSOM_UI_Interface() {	return new SOM_UIToMapCom(this, win);}	
 	
 	/**
-	 * Load and process raw data, and save results as preprocessed csvs
+	 * Load and process raw data, and save results as preprocessed csvs - this is only necessary
+	 * when building a SOM from a pre-built dataset.  This project will use synthesized geometric objects
+	 * to build SOM data, and so this won't be used
 	 * @param fromCSVFiles : whether loading data from csv files or from SQL calls
 	 * 
 	 */
 	@Override
-	public void loadAndPreProcAllRawData(boolean fromCSVFiles) {
-		// TODO Auto-generated method stub
-
-	}
+	public void loadAndPreProcAllRawData(boolean fromCSVFiles) {}
 
 	@Override
-	//this function will build the input data used by the SOM - this will be partitioned by some amount into test and train data (usually will use 100% train data, but may wish to test label mapping)
+	/**
+	 * this function will build the input data used by the SOM - this will be partitioned by some amount into test and train data (usually will use 100% train data, but may wish to test label mapping)
+	 */
 	protected SOM_Example[] buildSOM_InputData() {
 //		SOM_Example[] res = custPrspctExMapper.buildExampleArray();	//cast to appropriate mapper when flag custOrdersAsTrainDataIDX is set
 //		String dispkStr = getFlag(custOrdersAsTrainDataIDX) ? 
@@ -77,7 +83,9 @@ public class Sphere_SOMMapManager extends SOM_MapManager {
 
 		return null;
 	}
-
+	/**
+	 * load some previously saved geometric object information
+	 */
 	@Override
 	protected void loadPreProcTrainData(String subDir, boolean forceLoad) {
 		// TODO Auto-generated method stub
@@ -97,7 +105,7 @@ public class Sphere_SOMMapManager extends SOM_MapManager {
 
 	/**
 	 * this is used to load preprocessed data, calculate features, load specified prebuilt map, map all examples and save results
-	 * This functionality doesn't need to be available for this applications
+	 * This functionality doesn't need to be available for this application
 	 */
 	@Override
 	public void loadAllDataAndBuildMappings() {}
@@ -112,22 +120,21 @@ public class Sphere_SOMMapManager extends SOM_MapManager {
 	 * we never ignore zero features
 	 */
 	@Override
-	public void setMapExclZeroFtrs(boolean val) {this.getMsgObj().dispInfoMessage("Sphere_SOMMapManager", "setMapExclZeroFtrs", "Setting ignored : we never ignore 0 features for sphere data, which is dense");}
+	public void setMapExclZeroFtrs(boolean val) {this.getMsgObj().dispInfoMessage("Sphere_SOMMapManager", "setMapExclZeroFtrs", "Setting ignored : we never ignore 0 features for geometric data, which is dense and low dimensional.");}
 
 	@Override
 	protected Integer[] getAllClassLabels() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Integer[0];
 	}
 
 	@Override
-	protected String getClassSegMappingDescrStr() {return "Sphere class membership_based cluster map";}
+	protected String getClassSegMappingDescrStr() {return "Geometric object class membership_based cluster map";}
 	
 	@Override
 	protected Integer[] getAllCategoryLabels() {	return new Integer[0];}	
 	
 	@Override
-	protected String getCategorySegMappingDescrStr() {		return "Sphere category membership_based cluster map";}
+	protected String getCategorySegMappingDescrStr() {		return "Geometric object category membership_based cluster map";}
 
 	@Override
 	protected void saveAllSegment_BMUReports_Indiv() {}
@@ -143,7 +150,7 @@ public class Sphere_SOMMapManager extends SOM_MapManager {
 
 	@Override
 	/**
-	 * products are zone/segment descriptors corresponding to certain feature configurations
+	 * products are zone/segment descriptors corresponding to certain feature or class configurations
 	 */
 	protected void setProductBMUs() {
 		// TODO Auto-generated method stub
@@ -151,19 +158,22 @@ public class Sphere_SOMMapManager extends SOM_MapManager {
 	}
 
 	@Override
-	//any instance-class specific code to execute when new map nodes are being loaded
+	/**
+	 * any instance-class specific code to execute when new map nodes are being loaded
+	 */
 	protected void initMapNodesPriv() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc, String[] tkns) {return new Sphere_SOMMapNode(this,mapLoc, tkns);}	
+	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc, String[] tkns) {return new Geom_SOMMapNode(this,mapLoc, tkns);}	
 
 	@Override
+	//return appropriately pathed file name for map image of specified ftr idx
 	public String getSOMLocClrImgForFtrFName(int ftrIDX) {
 		// TODO Auto-generated method stub
-		return null;
+		return "featureMap_IDX_"+String.format("%03d",ftrIDX);
 	}
 
 	@Override
@@ -193,9 +203,15 @@ public class Sphere_SOMMapManager extends SOM_MapManager {
 		return null;
 	}
 
-	@Override
+	/**
+	 * called from map as bmus after loaded and training data bmus are set from bmu file
+	 */
 	public void setAllBMUsFromMap() {
-		// TODO Auto-generated method stub
+		//make sure class and category segments are built 
+		//build class segments from mapped training examples
+		buildClassSegmentsOnMap();
+		//build category segments from mapped training examples
+		buildCategorySegmentsOnMap();
 
 	}
 

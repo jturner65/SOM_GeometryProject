@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_SOM_Mapping.Sphere_SOMMapManager;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.base.Geom_SOMMapManager;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.my_procApplet;
@@ -12,7 +12,11 @@ import base_Utils_Objects.io.MsgCodes;
 import base_Utils_Objects.vectorObjs.myPoint;
 import base_Utils_Objects.vectorObjs.myVector;
 
-//window that accepts trajectory editing
+/**
+ * window to manage mapMgr interaction - acts like a pop-up window, so is subordinate to a SOM_AnimWorldWin instance
+ * @author john
+ *
+ */
 public class Geom_SOMMapUIWin extends SOM_MapUIWin {
 	
 	public static final int 
@@ -44,7 +48,7 @@ public class Geom_SOMMapUIWin extends SOM_MapUIWin {
 	 * @return total number of privBtnFlags in instancing class (including those not displayed)
 	 */
 	protected final int initAllSOMPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
-		tmpBtnNamesArray.add(new Object[] {"Hide Non-Product Job Practices","Show Non-Product Job Practices", mapShowLocClrIDX});          
+		tmpBtnNamesArray.add(new Object[] {"Showing Feature[0:2] Clr","Not Showing Feature[0:2] Clr", mapShowLocClrIDX});          
 		return _numPrivFlags;
 	}
 	
@@ -61,7 +65,7 @@ public class Geom_SOMMapUIWin extends SOM_MapUIWin {
 		_argsMap.put("dataDir", "SphereProject" + File.separator);
 		_argsMap.put("logLevel",0);//0 is console alone,1 is log file alone, 2 is both
 		
-		return new Sphere_SOMMapManager(SOM_mapDims, _argsMap);
+		return new Geom_SOMMapManager(SOM_mapDims, _argsMap);
 	}
 	/**
 	 * instance-specific window initialization
@@ -69,7 +73,7 @@ public class Geom_SOMMapUIWin extends SOM_MapUIWin {
 	@Override
 	protected void initMeIndiv() {
 		//default to showing right side bar menu
-		setFlags(showRightSideMenu, true);	
+		//setFlags(showRightSideMenu, true);	
 		//moved from mapMgr ctor, to remove dependence on papplet in that object
 		pa.setAllMenuBtnNames(menuBtnNames);	
 		initMapAras(1, 1);
@@ -87,13 +91,13 @@ public class Geom_SOMMapUIWin extends SOM_MapUIWin {
 	 * @return array holding true(idx0) and false(idx1) labels for buttons to control display of class-based segment
 	 */
 	@Override
-	protected final String[] getClassBtnTFLabels() {	return new String[] {"Hide Sphere Classes ","Show Sphere Classes "};}
+	protected final String[] getClassBtnTFLabels() {	return new String[] {"Hide Classes ","Show Classes "};}
 	/**
 	 * Instance class determines the true and false labels the category buttons use - if empty then no categories used
 	 * @return array holding true(idx0) and false(idx1) labels for buttons to control display of category-based segment
 	 */
 	@Override
-	protected final String[] getCategoryBtnTFLabels() {	return new String[] {"Hide Sphere Categories", "Show Sphere Categories"};}	
+	protected final String[] getCategoryBtnTFLabels() {	return new String[] {"Hide Categories", "Show Categories"};}	
 	
 	/**
 	 * This will return instance class-based true and false labels for save segment data.  if empty then no segment saving possible
@@ -113,12 +117,10 @@ public class Geom_SOMMapUIWin extends SOM_MapUIWin {
 	 * @param tmpListObjVals treemap keyed by object IDX and value is list of strings of values for all UI list select objects
 	 */
 	@Override
-	protected final void setupGUIObjsArasIndiv(ArrayList<Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals) {		// TODO Auto-generated method stub
-		
+	protected final void setupGUIObjsArasIndiv(ArrayList<Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals) {		
 	}
 	@Override
 	protected void initMapArasIndiv(int w, int h, int format, int num2ndFtrVals) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override

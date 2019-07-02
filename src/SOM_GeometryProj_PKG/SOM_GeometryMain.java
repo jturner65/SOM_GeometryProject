@@ -3,7 +3,9 @@ package SOM_GeometryProj_PKG;
 import processing.core.*;
 import SOM_GeometryProj_PKG.geom_UI.Geom_SOMMapUIWin;
 import SOM_GeometryProj_PKG.geom_UI.mySideBarMenu;
-import SOM_GeometryProj_PKG.geom_UI.mySphereSOMAnimResWin;
+import SOM_GeometryProj_PKG.geom_UI.base.SOM_AnimWorldWin;
+import SOM_GeometryProj_PKG.geom_UI.plane.Geom_PlaneSOMAnimResWin;
+import SOM_GeometryProj_PKG.geom_UI.sphere.Geom_SphereSOMAnimResWin;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.*;
@@ -103,15 +105,15 @@ public class SOM_GeometryMain extends my_procApplet {
 
 		wIdx = dispSphereAnimResIDX; fIdx= showSpereAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,245,255,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new mySphereSOMAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		dispWinFrames[wIdx] = new Geom_SphereSOMAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
 		
 		wIdx = dispLineAnimResIDX; fIdx= showLineAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,true,false}, new int[]{90,90,95,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new mySphereSOMAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		dispWinFrames[wIdx] = new Geom_SphereSOMAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
 		
 		wIdx = dispPlaneAnimResIDX; fIdx= showPlaneAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new mySphereSOMAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		dispWinFrames[wIdx] = new Geom_PlaneSOMAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
 		
 //		wIdx = dispSOMMapIDX; fIdx=showSOMMapUI;
 //		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,false,false}, new int[]{50,40,20,255}, new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255});
@@ -235,7 +237,7 @@ public class SOM_GeometryMain extends my_procApplet {
 			//case showSOMMapUI 		: {dispWinFrames[dispSOMMapIDX].setFlags(myDispWindow.showIDX,val);handleShowWin(curFocusWin,(val ? 1 : 0),false); setWinsHeight(dispSOMMapIDX); break;}	
 			case showSOMMapUI 		: {
 				dispWinFrames[dispSOMMapIDX].setFlags(myDispWindow.showIDX,val); 
-				SOM_MapManager mapMgr = ((mySphereSOMAnimResWin)dispWinFrames[curFocusWin]).getMapMgr();
+				SOM_MapManager mapMgr = ((SOM_AnimWorldWin)dispWinFrames[curFocusWin]).getMapMgr();
 				if(null != mapMgr) {			((SOM_MapUIWin)dispWinFrames[dispSOMMapIDX]).setMapMgr(mapMgr);			}
 				setWinsHeight(dispSOMMapIDX); break;}
 			default : {break;}
@@ -250,7 +252,7 @@ public class SOM_GeometryMain extends my_procApplet {
 	private void setDispAndModMapMgr(int flagIDX, int dispIDX, boolean val) {
 		setWinFlagsXOR(dispIDX, val);
 		if((val) && (getVisFlag(showSOMMapUI))) {
-			SOM_MapManager mapMgr = ((mySphereSOMAnimResWin)dispWinFrames[dispIDX]).getMapMgr();
+			SOM_MapManager mapMgr = ((SOM_AnimWorldWin)dispWinFrames[dispIDX]).getMapMgr();
 			if(null != mapMgr) {			((SOM_MapUIWin)dispWinFrames[dispSOMMapIDX]).setMapMgr(mapMgr);			}		
 		}
 	}//setDispAndModMapMgr

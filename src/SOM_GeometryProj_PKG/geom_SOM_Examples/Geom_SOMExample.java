@@ -12,12 +12,11 @@ import base_Utils_Objects.io.MsgCodes;
 import base_Utils_Objects.vectorObjs.Tuple;
 import base_Utils_Objects.vectorObjs.myVectorf;
 /**
- * Training example corresponding to a point on the surface 
- * of a sphere, or to the center of the sphere
+ * Training example corresponding to a sample from a geometric/graphical object
  * @author john
  *
  */
-public class Sphere_SOMExample extends SOM_Example {
+public class Geom_SOMExample extends SOM_Example {
 	/**
 	 * location in the 3d world of the sample;  
 	 * this corresponds to the feature vector for this example, 
@@ -44,7 +43,7 @@ public class Sphere_SOMExample extends SOM_Example {
 	protected ConcurrentSkipListMap<Integer, ConcurrentSkipListMap<Tuple<Integer,Integer>,Float>> perCategoryMapNodeProbMap;
 
 
-	public Sphere_SOMExample(SOM_MapManager _map,myVectorf _worldLoc, int[] _locClrs, String _id) {
+	public Geom_SOMExample(SOM_MapManager _map,myVectorf _worldLoc, int[] _locClrs, String _id) {
 		super(_map, SOM_ExDataType.Training, _id);
 		locClrs = _locClrs;
 		worldLoc = _worldLoc;
@@ -52,7 +51,7 @@ public class Sphere_SOMExample extends SOM_Example {
 		perCategoryMapNodeProbMap = new ConcurrentSkipListMap<Integer, ConcurrentSkipListMap<Tuple<Integer,Integer>,Float>>();
 	}
 
-	public Sphere_SOMExample(Sphere_SOMExample _otr) {
+	public Geom_SOMExample(Geom_SOMExample _otr) {
 		super(_otr);
 		worldLoc = _otr.worldLoc;
 		locClrs = _otr.locClrs;

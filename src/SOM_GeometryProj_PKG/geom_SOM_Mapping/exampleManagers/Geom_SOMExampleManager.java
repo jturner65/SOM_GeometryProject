@@ -6,9 +6,9 @@ import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_examples.SOM_ExampleManager;
 
-public class Sphere_SOMExampleManager extends SOM_ExampleManager {
+public class Geom_SOMExampleManager extends SOM_ExampleManager {
 
-	public Sphere_SOMExampleManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName,boolean _shouldValidate) {
+	public Geom_SOMExampleManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName,boolean _shouldValidate) {
 		super(_mapMgr, _exName, _longExampleName, _shouldValidate);		
 	}
 
