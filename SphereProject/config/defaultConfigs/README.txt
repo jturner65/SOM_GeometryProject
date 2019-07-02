@@ -1,0 +1,1 @@
+The Default config files are here to preserve the format of the config file that the program is expecting.  This is in case, through use or accident, the configs being used become corrupted.  DO NOT MODIFY THESE FILES.

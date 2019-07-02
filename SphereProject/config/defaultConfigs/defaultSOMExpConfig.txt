@@ -1,0 +1,26 @@
+### This file holds description of SOM map experiment execution settings
+### It should be used to build a SOM_MapDat object which then is consumed to control the execution of the SOM.
+### Base Vars
+execDir,D:\Eclipse Workspace\eclipse workspace\SOM_StraffordExp\StraffordProject\SOM\
+execSOMStr,straff_SOM.exe
+isSparse,true
+trainDataDenseFN,D:\Eclipse Workspace\eclipse workspace\SOM_StraffordExp\StraffordProject\SOM\StraffSOM_2019_01_03_13_02\Train_straff_Smp_413199_of_459110_typ_stdFtrs_Dt_01_03_13_02.lrn
+trainDataSparseFN,D:\Eclipse Workspace\eclipse workspace\SOM_StraffordExp\StraffordProject\SOM\StraffSOM_2019_01_03_13_02\Train_straff_Smp_413199_of_459110_typ_stdFtrs_Dt_01_03_13_02.svm
+outFilesPrefix,D:\Eclipse Workspace\eclipse workspace\SOM_StraffordExp\StraffordProject\SOM\StraffSOM_2019_01_03_13_02\Out_straff_Smp_459110_x40_y40_k2
+### mapInts descriptors
+mapCols,40
+mapStRad,20
+mapRows,40
+mapEndRad,1
+mapEpochs,40
+mapKType,2
+### mapFloats descriptors
+mapStLrnRate,0.100000
+mapEndLrnRate,0.010000
+### mapStrings descriptors
+mapBounds,toroid
+mapNHood,gaussian
+mapLearnCool,linear
+mapGridShape,rectangular
+mapRadCool,linear
+### End Descriptor Data
