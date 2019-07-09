@@ -251,6 +251,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	protected final void initMe() {
 		//build map manager
 		mapMgr = buildMapManager();
+		
 		//capable of using right side menu
 		setFlags(drawRightSideMenu, true);	
 		//init specific sim flags

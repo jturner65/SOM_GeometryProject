@@ -18,6 +18,8 @@ import base_Utils_Objects.vectorObjs.myVectorf;
  *
  */
 public class SOM_Sphere extends SOM_GeomObj{
+	public final int ID;
+	private static int IDGen = 0;
 	/**
 	 * center location
 	 */
@@ -28,6 +30,7 @@ public class SOM_Sphere extends SOM_GeomObj{
 
 	public SOM_Sphere(my_procApplet _pa, SOM_MapManager _mapMgr, myPointf _loc, float _rad, int _numSmplPts) {
 		super(_pa, _mapMgr, _pa.getClrFromCubeLoc(_loc));
+		ID = IDGen++;
 		ctrLoc = _loc;
 		rad = _rad;	
 		sphrDet = (int)(Math.sqrt(rad) + 10);	

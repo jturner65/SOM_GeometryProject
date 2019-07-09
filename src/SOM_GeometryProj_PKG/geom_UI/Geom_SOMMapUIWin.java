@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_SOM_Mapping.base.Geom_SOMMapManager;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.base.Geom_SOMMapManager;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.my_procApplet;
@@ -61,12 +61,14 @@ public class Geom_SOMMapUIWin extends SOM_MapUIWin {
 		//including strings for default directories specific to current project setup and Strafford
 		TreeMap<String, Object> _argsMap = new TreeMap<String,Object>();
 		//provide default values used by program
-		_argsMap.put("configDir", "SphereProject" + File.separator+"config" + File.separator);
-		_argsMap.put("dataDir", "SphereProject" + File.separator);
+		_argsMap.put("configDir", "GeometryProject" + File.separator+"config" + File.separator);
+		_argsMap.put("dataDir", "GeometryProject" + File.separator);
 		_argsMap.put("logLevel",0);//0 is console alone,1 is log file alone, 2 is both
-		
+		//no need to set win here - this is set in SOM Win UI Base class
 		return new Geom_SOMMapManager(SOM_mapDims, _argsMap);
 	}
+	
+
 	/**
 	 * instance-specific window initialization
 	 */

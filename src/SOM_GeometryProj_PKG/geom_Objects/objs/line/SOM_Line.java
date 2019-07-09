@@ -12,6 +12,9 @@ import base_Utils_Objects.vectorObjs.myPointf;
 import base_Utils_Objects.vectorObjs.myVectorf;
 
 public class SOM_Line extends SOM_GeomObj {
+	public final int ID;
+	private static int IDGen = 0;
+
 	/**
 	 * given points that make up this line
 	 */
@@ -39,6 +42,7 @@ public class SOM_Line extends SOM_GeomObj {
 	 */
 	public SOM_Line(my_procApplet _pa, SOM_MapManager _mapMgr, myPointf _a, myPointf _b, int _numSmplPts, int[] _locClrAra, myPointf[] _worldBnds) {
 		super(_pa, _mapMgr, _locClrAra);
+		ID = IDGen++;
 		pts = new myPointf[] {new myPointf(_a),new myPointf(_b)};
 		pts[0].z = 0.0f;
 		pts[1].z = 0.0f;
@@ -56,7 +60,13 @@ public class SOM_Line extends SOM_GeomObj {
 		
 		super.buildObjExamples(_numSmplPts);
 	}//ctor	
-	
+	/**
+	 * increment this object type's ID
+	 */
+	protected final void incrID() {
+		
+	}
+
 	public myPointf findClosestPointOnLine(myPointf p) {
 		//find projection t of vector ap (from a to p) on dir, then find a + t * dir
 		myVectorf proj = new myVectorf(pts[0],p);

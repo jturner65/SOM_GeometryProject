@@ -16,8 +16,6 @@ import base_Utils_Objects.vectorObjs.myPointf;
  * @author john
  */
 public abstract class SOM_GeomObj {
-	public final int ID;
-	private static int IDGen = 0;
 	
 	protected static my_procApplet pa;
 	/**
@@ -62,7 +60,7 @@ public abstract class SOM_GeomObj {
 	protected myPointf baseObjBMUWorldLoc;				//location of center of sphere for bmu
 	
 	public SOM_GeomObj(my_procApplet _pa, SOM_MapManager _mapMgr, int[] _locClrAra) {
-		pa =_pa;ID = IDGen++;mapMgr = _mapMgr;msgObj = mapMgr.buildMsgObj();
+		pa =_pa;mapMgr = _mapMgr;msgObj = mapMgr.buildMsgObj();
 		initFlags();
 		locClrAra = _locClrAra;
 		rndClrAra = getRandClr();	

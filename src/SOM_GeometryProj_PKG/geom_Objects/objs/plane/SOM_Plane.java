@@ -10,6 +10,8 @@ import base_Utils_Objects.vectorObjs.myPointf;
 import base_Utils_Objects.vectorObjs.myVectorf;
 
 public class SOM_Plane extends SOM_GeomObj{ 
+	public final int ID;
+	private static int IDGen = 0;
 	
 	/**
 	 * plane normal for this planar object - should be normalized!
@@ -46,6 +48,7 @@ public class SOM_Plane extends SOM_GeomObj{
 	
 	public SOM_Plane(my_procApplet _pa, SOM_MapManager _mapMgr, int _numSmplPts, myVectorf _norm, myPointf _ctr, int[] _locClrAra, myPointf[] _worldBnds) {
 		super(_pa, _mapMgr, _locClrAra);	
+		ID = IDGen++;
 		planeNorm = _norm;
 		planeNorm._normalize();
 		planeOrigin = _ctr;		
