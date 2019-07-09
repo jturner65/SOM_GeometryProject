@@ -1,8 +1,8 @@
-package SOM_GeometryProj_PKG.geom_Objects.line;
+package SOM_GeometryProj_PKG.geom_Objects.objs.line;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import SOM_GeometryProj_PKG.geom_Objects.base.SOM_GeomObj;
+import SOM_GeometryProj_PKG.geom_Objects.objs.base.SOM_GeomObj;
 import SOM_GeometryProj_PKG.geom_SOM_Examples.Geom_LineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Examples.base.Geom_SOMExample;
 import base_SOM_Objects.SOM_MapManager;

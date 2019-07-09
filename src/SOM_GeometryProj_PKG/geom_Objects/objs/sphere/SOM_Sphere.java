@@ -1,8 +1,8 @@
-package SOM_GeometryProj_PKG.geom_Objects.sphere;
+package SOM_GeometryProj_PKG.geom_Objects.objs.sphere;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import SOM_GeometryProj_PKG.geom_Objects.base.SOM_GeomObj;
+import SOM_GeometryProj_PKG.geom_Objects.objs.base.SOM_GeomObj;
 import SOM_GeometryProj_PKG.geom_SOM_Examples.Geom_SOMMapNode;
 import SOM_GeometryProj_PKG.geom_SOM_Examples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Examples.base.Geom_SOMExample;

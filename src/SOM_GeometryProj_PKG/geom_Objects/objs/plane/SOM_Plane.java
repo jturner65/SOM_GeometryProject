@@ -1,8 +1,8 @@
-package SOM_GeometryProj_PKG.geom_Objects.plane;
+package SOM_GeometryProj_PKG.geom_Objects.objs.plane;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import SOM_GeometryProj_PKG.geom_Objects.base.SOM_GeomObj;
+import SOM_GeometryProj_PKG.geom_Objects.objs.base.SOM_GeomObj;
 import SOM_GeometryProj_PKG.geom_SOM_Examples.base.Geom_SOMExample;
 import base_SOM_Objects.SOM_MapManager;
 import base_UI_Objects.my_procApplet;

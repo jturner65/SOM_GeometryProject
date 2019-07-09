@@ -1,4 +1,4 @@
-package SOM_GeometryProj_PKG.geom_Objects.base;
+package SOM_GeometryProj_PKG.geom_Objects.objs.base;
 
 import java.util.concurrent.ThreadLocalRandom;
 

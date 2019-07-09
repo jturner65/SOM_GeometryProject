@@ -1,6 +1,6 @@
-package SOM_GeometryProj_PKG.geom_Objects;
+package SOM_GeometryProj_PKG.geom_Objects.objs;
 
-import SOM_GeometryProj_PKG.geom_Objects.base.SOM_GeomObj;
+import SOM_GeometryProj_PKG.geom_Objects.objs.base.SOM_GeomObj;
 import base_Utils_Objects.vectorObjs.myPointf;
 
 /**
