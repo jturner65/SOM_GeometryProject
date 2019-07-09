@@ -23,6 +23,19 @@ public class Geom_SOMExampleManager extends SOM_ExampleManager {
 		// TODO Auto-generated method stub
 
 	}
+	
+
+	@Override
+	protected void buildMTLoader(String[] loadSrcFNamePrefixAra, int numPartitions) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void buildSTLoader(String[] loadSrcFNamePrefixAra, int numPartitions) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	protected void buildAfterAllFtrVecsBuiltStructs_Priv() {
@@ -30,17 +43,6 @@ public class Geom_SOMExampleManager extends SOM_ExampleManager {
 
 	}
 
-	@Override
-	public void loadAllPreProccedMapData(String subDir) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean saveAllPreProccedMapData() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	protected void validateAndAddExToArray(ArrayList<SOM_Example> tmpList, SOM_Example ex) {
@@ -72,5 +74,6 @@ public class Geom_SOMExampleManager extends SOM_ExampleManager {
 		msgObj.dispInfoMessage("Sphere_SOMExampleManager","getExToSave","Size of exToSaveBMUs : " + SOMexampleArray.length);
 		return SOMexampleArray;
 	}
+
 
 }

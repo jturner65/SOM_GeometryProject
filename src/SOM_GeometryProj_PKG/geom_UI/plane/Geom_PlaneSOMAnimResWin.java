@@ -23,10 +23,13 @@ public class Geom_PlaneSOMAnimResWin extends SOM_AnimWorldWin {
 //	//private child-class flags - start at numBaseAnimWinPrivFlags
 //	public static final int 
 //		XXXXAnimIDX = 0;						//debug
+	/**
+	 * # of private boolean flags for this window - expands upon those determined in SOM_AnimWorldWin
+	 */
 	private final int numPrivFlags = numBaseAnimWinPrivFlags;	
 
 	public Geom_PlaneSOMAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
-		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj);
+		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, "Planes");
 		super.initThisWin(_canDrawTraj, true, false);
 	}
 
@@ -62,12 +65,6 @@ public class Geom_PlaneSOMAnimResWin extends SOM_AnimWorldWin {
 	protected void saveGeomObjInfo() {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public String getObjectType() {
-		// TODO Auto-generated method stub
-		return "Planes";
 	}
 
 	/**

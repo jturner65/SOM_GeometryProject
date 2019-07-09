@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_Obj.base.SOM_GeomObj;
+import SOM_GeometryProj_PKG.geom_Objects.base.SOM_GeomObj;
 import base_SOM_Objects.SOM_MapManager;
 import base_UI_Objects.my_procApplet;
 import base_UI_Objects.drawnObjs.myDrawnSmplTraj;
@@ -43,17 +43,16 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		uiObjDataLoadedIDX 		= 1,				//all SOM ui objs have been loaded
 		showSamplePntsIDX 		= 2,				//show ui objs by polys or by sampled points
 		saveUIObjDataIDX 		= 3,				//save ui obj locations as training data on next draw cycle
-		currUIObjDatSavedIDX 	= 4,				//current ui obj data has been saved
-		useUIObjLocAsClrIDX		= 5,				//should use ui obj's location as both its and its samples' color
-		showUIObjIdIDX			= 6,				//display the ui obj's ID as a text tag
-		showSelUIObjIDX			= 7,				//highlight the ui obj with the selected idx
-		useSmplsForTrainIDX 	= 8,				//use surface samples, or ui obj centers, for training data
-		showMapBasedLocsIDX 	= 9,				//show map-derived locations of training data instead of actual locations (or along with?)
-		uiObjBMUsSetIDX			= 10,				//ui object's bmus have been set
-		mapBuiltToCurUIObjsIDX 	= 11,				//the current ui obj configuration has an underlying map built to it
-		regenUIObjsIDX 			= 12;				//regenerate ui objs with current specs
+		useUIObjLocAsClrIDX		= 4,				//should use ui obj's location as both its and its samples' color
+		showUIObjIdIDX			= 5,				//display the ui obj's ID as a text tag
+		showSelUIObjIDX			= 6,				//highlight the ui obj with the selected idx
+		useSmplsForTrainIDX 	= 7,				//use surface samples, or ui obj centers, for training data
+		showMapBasedLocsIDX 	= 8,				//show map-derived locations of training data instead of actual locations (or along with?)
+		uiObjBMUsSetIDX			= 9,				//ui object's bmus have been set
+		mapBuiltToCurUIObjsIDX 	= 10,				//the current ui obj configuration has an underlying map built to it
+		regenUIObjsIDX 			= 11;				//regenerate ui objs with current specs
 	
-	protected static final int numBaseAnimWinPrivFlags = 13;
+	protected static final int numBaseAnimWinPrivFlags = 12;
 		
 	//initial values
 	public int numGeomObjs = 200, numSmplPoints = 200, curSelGeomObjIDX = 0;
@@ -65,10 +64,10 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	public final String geomObjType;
 
 
-	public SOM_AnimWorldWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
+	public SOM_AnimWorldWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed, String _winTxt, boolean _canDrawTraj, String _type) {
 		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj);
 		initAndSetAnimWorldVals();
-		geomObjType = getObjectType();
+		geomObjType = _type;
 	}
 	
 	/**
@@ -141,26 +140,20 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		privFlags[flIDX] = (val ?  privFlags[flIDX] | mask : privFlags[flIDX] & ~mask);
 		switch (idx) {//special actions for each flag
 			case debugAnimIDX 			: {	break;}				
-			case uiObjDataLoadedIDX 	: {	break;}		//sphere data has been loaded				
-			case showSamplePntsIDX 		: {	break;}		//show sphere as sample points or as sphere
-			case saveUIObjDataIDX 		: { break;}		//save all sphere centers, colors and IDs as training data/classes, and sample point locs, IDs and clrs as validation data
-			case currUIObjDatSavedIDX 	: {if(val){pa.outStr2Scr("Current " +geomObjType + " data saved"); } break;}
-			case showUIObjIdIDX  		: { break;}//show labels for spheres
-			case useUIObjLocAsClrIDX 	: { break;}		//color of spheres is location or is random
-			//case useSmplLocAsClrIDX 	: { break;}		//color of samples is location or current sphere's color (either its location or random color)
+			case uiObjDataLoadedIDX 	: {	break;}		//object data has been loaded				
+			case showSamplePntsIDX 		: {	break;}		//show object as sample points or as sphere
+			case saveUIObjDataIDX 		: { break;}		//save all object data
+			case showUIObjIdIDX  		: { break;}		//show labels for objects
+			case useUIObjLocAsClrIDX 	: { break;}		//color of objects is location or is random
 			case showSelUIObjIDX 		: { break;}
-			case useSmplsForTrainIDX	: {break;}		//use surface samples for train and centers for test, or vice versa
-			case mapBuiltToCurUIObjsIDX  : {break;}     //whether map has been built and loaded for current config of spheres
-			case regenUIObjsIDX			: {if(val){initAllGeomObjs();privFlags[flIDX] =  privFlags[flIDX] & ~mask;} break;}		//remake all spheres, turn of flag
-			default						: {setPrivFlags_Indiv(idx,val);}
+			case useSmplsForTrainIDX	: { break;}		//use surface samples for train and centers for test, or vice versa
+			case showMapBasedLocsIDX	: { break;}
+			case uiObjBMUsSetIDX		: { break;}
+			case mapBuiltToCurUIObjsIDX : { break;}     //whether map has been built and loaded for current config of spheres
+			case regenUIObjsIDX			: { if(val){initAllGeomObjs();privFlags[flIDX] =  privFlags[flIDX] & ~mask;} break;}		//remake all objects, turn off flag
+			default						: { setPrivFlags_Indiv(idx,val);}
 		}
 	}//setPrivFlags
-	
-	/**
-	 * this will return a string representing the object type that this anim world manages
-	 * @return
-	 */
-	public abstract String getObjectType();
 	
 	/**
 	 * set values for instancing class-specific boolean flags
@@ -258,10 +251,11 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	protected final void initMe() {
 		//build map manager
 		mapMgr = buildMapManager();
+		//capable of using right side menu
 		setFlags(drawRightSideMenu, true);	
 		//init specific sim flags
 		initPrivFlags(numPrivFlags);
-		//build objects
+		//build objects - instance class
 		initAllGeomObjs();
 		//instance-specific init
 		initMe_Indiv();

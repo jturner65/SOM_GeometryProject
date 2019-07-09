@@ -26,6 +26,11 @@ import base_Utils_Objects.vectorObjs.Tuple;
 public class Geom_SOMMapManager extends SOM_MapManager {
 	
 	private Geom_SOMExampleManager exMapper;
+	
+	/**
+	 * # of preprocessed examples to save to a single file
+	 */
+	private final int preProcDataPartSz = 50000;
 
 	public Geom_SOMMapManager(SOM_MapUIWin _win, float[] _dims, TreeMap<String, Object> _argsMap) {
 		super(_win, _dims, _argsMap);
@@ -214,6 +219,10 @@ public class Geom_SOMMapManager extends SOM_MapManager {
 		buildCategorySegmentsOnMap();
 
 	}
+	
+	@Override
+	public int getPreProcDatPartSz() {return preProcDataPartSz;}
+
 
 	@Override
 	public Float[] getTrainFtrMins() {

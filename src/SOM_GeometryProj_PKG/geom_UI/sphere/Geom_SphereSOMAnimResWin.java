@@ -23,6 +23,9 @@ public class Geom_SphereSOMAnimResWin extends SOM_AnimWorldWin {
 //	//private child-class flags - start at numBaseAnimWinPrivFlags
 //	public static final int 
 //		XXXXAnimIDX = 0;						//debug
+	/**
+	 * # of private boolean flags for this window - expands upon those determined in SOM_AnimWorldWin
+	 */
 	private final int numPrivFlags = numBaseAnimWinPrivFlags;
 	
 
@@ -30,7 +33,7 @@ public class Geom_SphereSOMAnimResWin extends SOM_AnimWorldWin {
 	
 
 	public Geom_SphereSOMAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed,String _winTxt, boolean _canDrawTraj) {
-		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj);
+		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, "Spheres");
 		super.initThisWin(_canDrawTraj, true, false);
 	}
 
@@ -74,9 +77,6 @@ public class Geom_SphereSOMAnimResWin extends SOM_AnimWorldWin {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public String getObjectType() {		return "Spheres";}
 	
 	/**
 	 * set values for instancing class-specific boolean flags
