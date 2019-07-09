@@ -1,8 +1,8 @@
 # This file holds description of SOM map experiment execution settings
 # It should be used to build a SOM_MapDat object which then is consumed to control the execution of the SOM.
 # Base Vars
-isSparse,true
-SOM_instanceDirName,StraffSOM_2019_05_08_12_00
+isSparse,false
+SOM_instanceDirName,NULLSOM_2019_05_08_12_00
 trainDataDenseFN,Train_NULL_Smp_112405_of_112405_typ_stdFtrs_Dt_05_08_12_00.lrn
 trainDataSparseFN,Train_NULL_Smp_112405_of_112405_typ_stdFtrs_Dt_05_08_12_00.svm
 outFilesPrefix,Out_NULL_Smp_112405_x50_y50_k2

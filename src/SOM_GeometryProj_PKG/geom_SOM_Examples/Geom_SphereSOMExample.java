@@ -2,7 +2,7 @@ package SOM_GeometryProj_PKG.geom_SOM_Examples;
 
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_SOM_Examples.base.Geom_SOMExample;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExample;
 import base_SOM_Objects.SOM_MapManager;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.myPointf;
@@ -13,7 +13,7 @@ import base_Utils_Objects.vectorObjs.myVectorf;
  * @author john
  *
  */
-public class Geom_SphereSOMExample extends Geom_SOMExample {
+public class Geom_SphereSOMExample extends SOM_GeomExample {
 	/**
 	 * owning sphere's 3d center location
 	 */
