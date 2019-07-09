@@ -2,9 +2,11 @@ package SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers;
 
 import java.util.TreeMap;
 
+import SOM_GeometryProj_PKG.geom_Objects.builders.runners.Geom_PlaneObjBldrRunner;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_PlaneExManager;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.my_procApplet;
 
@@ -16,6 +18,13 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 
 	public Geom_PlaneMapMgr(float[] _dims, TreeMap<String, Object> _argsMap) {
 		this(null, _dims, _argsMap);
+	}
+	/**
+	 * build the thread runner for this map manager that will manage the various tasks related to the geometric objects
+	 * @return
+	 */
+	protected final SOM_GeomObjBldrRunner buildObjRunner() {
+		return new Geom_PlaneObjBldrRunner(this, th_exec, false, numObjsToBuild, 0);		
 	}
 
 	/**

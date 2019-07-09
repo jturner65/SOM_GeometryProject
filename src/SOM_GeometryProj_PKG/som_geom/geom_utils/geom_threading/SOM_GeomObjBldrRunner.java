@@ -1,4 +1,4 @@
-package SOM_GeometryProj_PKG.som_geom.geom_utils.geom_runners;
+package SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading;
 
 
 import java.util.concurrent.ExecutorService;
@@ -25,6 +25,12 @@ public abstract class SOM_GeomObjBldrRunner extends myThreadRunner {
 	 * # of examples to manage per threading partition, approximately
 	 */
 	protected static final int numPerPartiton = 50000;
+	
+	/**
+	 * data name being processed
+	 */
+	protected final String dataTypeName;
+	
 	/**
 	 * 
 	 * @param _mapMgr
@@ -39,6 +45,7 @@ public abstract class SOM_GeomObjBldrRunner extends myThreadRunner {
 		super(_mapMgr.getMsgObj(), _th_exec, _mapMgr.isMTCapable() && !_forceST, _mapMgr.getNumUsableThreads()-1, _numObjs);		
 		numObjs = _numObjs;
 		taskType = _taskType;
+		dataTypeName = _dataTypName;
 	}
 	
 	@Override
@@ -46,6 +53,7 @@ public abstract class SOM_GeomObjBldrRunner extends myThreadRunner {
 
 
 	public void setNumObjs(int _num) {	numObjs = _num;}
+	public void setTaskType(int _task) {taskType = _task;}
 
 
 

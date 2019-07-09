@@ -6,6 +6,7 @@ import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
 import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMProjConfig;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_examples.SOM_ExampleManager;
@@ -45,14 +46,23 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 */
 	protected int numSamplesPerObj;
 	
-	 
-	
+	 /**
+	  * runnable object to manage various tasks
+	  */
+	protected SOM_GeomObjBldrRunner objRunner;
 
 	public SOM_GeomMapManager(SOM_MapUIWin _win, float[] _dims, TreeMap<String, Object> _argsMap, String geomObjType) {
 		super(_win, _dims, _argsMap);
 		projConfigData.setSOMProjName(geomObjType);	
-		
+		objRunner = buildObjRunner();		
 	}
+	
+	/**
+	 * build the thread runner for this map manager that will manage the various tasks related to the geometric objects
+	 * @return
+	 */
+	protected abstract SOM_GeomObjBldrRunner buildObjRunner();
+	
 	
 	/**
 	 * build instance-specific project file configuration 
