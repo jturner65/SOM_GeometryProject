@@ -2,46 +2,47 @@ package SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers;
 
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_Objects.builders.runners.Geom_LineObjBldrRunner;
+import SOM_GeometryProj_PKG.geom_Objects.SOM_Line;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_LineExManager;
+import SOM_GeometryProj_PKG.geom_Utils.runners.Geom_LineObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
-import base_UI_Objects.my_procApplet;
 
 public class Geom_LineMapMgr extends SOM_GeomMapManager {
-
+	
+	public static final int numFlags = numBaseFlags;	
+	
 	public Geom_LineMapMgr(SOM_MapUIWin _win, float[] _dims, TreeMap<String, Object> _argsMap) {
 		super(_win, _dims, _argsMap, "Lines");
 	}
-
-	public Geom_LineMapMgr(float[] _dims, TreeMap<String, Object> _argsMap) {
-		this(null, _dims, _argsMap);
-	}
+	//ctor to support console execution - not necessary for
+	public Geom_LineMapMgr(float[] _dims, TreeMap<String, Object> _argsMap) {this(null, _dims, _argsMap);}
 	/**
 	 * build the thread runner for this map manager that will manage the various tasks related to the geometric objects
 	 * @return
 	 */
 	protected final SOM_GeomObjBldrRunner buildObjRunner() {
-		return new Geom_LineObjBldrRunner(this, th_exec, false, numObjsToBuild, 0);		
+		return new Geom_LineObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, worldBounds, SOM_GeomObjBldrTasks.buildObj);		
 	}
 
+	@Override
+	protected SOM_GeomObj[] buildEmptyObjArray() {		return new SOM_Line[numObjsToBuild];}
+	
 	/**
 	 * build the example data mapper specific to instancing class
 	 * @return
 	 */
 	@Override
 	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv() {return new Geom_LineExManager(this, "Lines", "Line Geometric Objects", useChiSqDist);}
-	
 	/**
-	 * (re)build examples
+	 * send any instance-specific control/ui values to objRunners
 	 */
 	@Override
-	public final void buildGeomExampleObjs() {
-		
-	}
-	
+	protected final void buildGeomExampleObjs_Indiv() {}
 
 
 	@Override
@@ -74,29 +75,6 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 
 	}
 
-	@Override
-	protected float getPreBuiltMapInfoDetail(my_procApplet pa, String[] str, int i, float yOff, boolean isLoaded) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	protected float drawResultBarPriv1(my_procApplet pa, float yOff) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	protected float drawResultBarPriv2(my_procApplet pa, float yOff) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	protected float drawResultBarPriv3(my_procApplet pa, float yOff) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public String getClassSegmentTitleString(int classID) {
@@ -109,17 +87,14 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
-	protected int getNumFlags() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	protected final int getNumFlags() {	return numFlags;}
 	@Override
 	protected void setFlag_Indiv(int idx, boolean val) {
-		// TODO Auto-generated method stub
-
+		switch (idx) {//special actions for each flag
+			default : {break;}
+		}
 	}
+
 
 }

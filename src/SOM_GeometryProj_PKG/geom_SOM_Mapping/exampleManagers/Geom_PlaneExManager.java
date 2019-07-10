@@ -2,22 +2,20 @@ package SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers;
 
 import java.util.ArrayList;
 
+import SOM_GeometryProj_PKG.geom_SOM_Examples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
 
 public class Geom_PlaneExManager extends SOM_GeomExampleManager {
 
-	public Geom_PlaneExManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName,
-			boolean _shouldValidate) {
+	public Geom_PlaneExManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName, boolean _shouldValidate) {
 		super(_mapMgr, _exName, _longExampleName, _shouldValidate);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void reset_Priv() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -25,6 +23,12 @@ public class Geom_PlaneExManager extends SOM_GeomExampleManager {
 		// TODO Auto-generated method stub
 
 	}
+	@Override
+	protected SOM_Example[] noValidateBuildExampleArray() {return (Geom_PlaneSOMExample[])(exampleMap.values().toArray(new Geom_PlaneSOMExample[0]));		}
+	@Override
+	protected SOM_Example[] castArray(ArrayList<SOM_Example> tmpList) {return (Geom_PlaneSOMExample[])(tmpList.toArray(new Geom_PlaneSOMExample[0]));		}
+
+
 
 	@Override
 	protected void buildAfterAllFtrVecsBuiltStructs_Priv() {
@@ -44,29 +48,7 @@ public class Geom_PlaneExManager extends SOM_GeomExampleManager {
 
 	}
 
-	@Override
-	protected void validateAndAddExToArray(ArrayList<SOM_Example> tmpList, SOM_Example ex) {
-		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	protected SOM_Example[] castArray(ArrayList<SOM_Example> tmpList) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected SOM_Example[] noValidateBuildExampleArray() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void buildExampleArrayEnd_Priv(boolean validate) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	protected SOM_Example buildSingleExample(String _oid, String _str) {

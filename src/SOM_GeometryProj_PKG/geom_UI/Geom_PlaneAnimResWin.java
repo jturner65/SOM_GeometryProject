@@ -38,9 +38,14 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	public SOM_MapManager buildMapManager() {
 		Geom_PlaneMapMgr _mgr = new Geom_PlaneMapMgr(SOMMapDims, ((SOM_GeometryMain)pa).argsMap);
+		_mgr.setWorldBounds(pa.cubeBnds);
 		return _mgr;
 	}
 
+	@Override
+	protected final void initMe_Indiv() {	
+	}
+	
 	/**
 	 * Instancing class-specific (application driven) UI buttons to display are built 
 	 * in this function.  Add an entry to tmpBtnNamesArray for each button, in the order 
@@ -52,22 +57,9 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 * @return total number of privBtnFlags in instancing class (including those not displayed)
 	 */
 	@Override
-	protected int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
+	protected final int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
 		//tmpBtnNamesArray.add(new Object[]{"Debugging","Debug",debugAnimIDX});
 		return numPrivFlags;
-	}
-
-	/**
-	 * call to build or rebuild geometric objects
-	 */
-	protected final void initAllGeomObjs_Indiv() {
-		
-	}
-
-	@Override
-	protected void saveGeomObjInfo() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**
@@ -76,7 +68,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 * @param val
 	 */
 	@Override
-	protected void setPrivFlags_Indiv(int idx, boolean val) {
+	protected final void setPrivFlags_Indiv(int idx, boolean val) {
 		switch (idx) {//special actions for each flag
 			default						: {return;}
 		}
@@ -94,119 +86,131 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 * @param tmpListObjVals treemap keyed by object IDX and value is list of strings of values for all UI list select objects
 	 */
 	@Override
-	protected void setupGUIObjsAras_Indiv(ArrayList<Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals) {
+	protected final void setupGUIObjsAras_Indiv(ArrayList<Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals) {
 		// TODO Auto-generated method stub
 		
 	}
+	/**
+	 * send all instance-specific values from UI to map manager
+	 */
+	protected final void initAllGeomObjs_Indiv() {};
+
+	
+	@Override
+	protected final int getMinNumObjs() {	return 1;}
+	@Override
+	protected final int getMaxNumObjs() {	return 100;}
+	@Override
+	protected final int getMinNumSmplsPerObj() {return 5;}
+	@Override
+	protected final int getMaxNumSmplsPerObj() {return 1000;}
 
 	@Override
-	protected void setUIWinVals_Indiv(int UIidx) {
-		float val = (float)guiObjs[UIidx].getVal();
+	protected final void setUIWinVals_Indiv(int UIidx, float val) {
 		int ival = (int)val;
 		switch(UIidx){		
 			default : {break;}
 		}	
 	}
 
+	/**
+	 * call to save the data for all the objects in the scene
+	 */
 	@Override
-	protected void initMe_Indiv() {	
+	protected final void saveGeomObjInfo() {		
 	}
+	
 
+	//////////////////////////////
+	// instance-based draw handling
+	
 	@Override
-	protected void launchMenuBtnHndlr() {
+	protected final void drawRightSideInfoBarPriv(float modAmtMillis) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected String[] getSaveFileDirNamesPriv() {
+	protected final void drawOnScreenStuffPriv(float modAmtMillis) {
 		// TODO Auto-generated method stub
-		return null;
+		
+	}
+
+	
+	/**
+	 * instance-specific drawing setup before objects are actually drawn 
+	 */
+	protected final void drawMeFirst_Indiv() {//need to translate by half the screen width to center coords
+		//pa.hint(pa.ENABLE_DEPTH_SORT);//slow
+	}
+	
+	/**
+	 * instance-specific drawing after objects are drawn but before info is saved
+	 */
+	protected final void drawMeLast_Indiv() {		
+		//pa.hint(pa.DISABLE_DEPTH_SORT);//slow
+		
+	}	
+	
+	//////////////////////////////
+	//  manage menu button selections and setup
+
+	@Override
+	protected final void setCustMenuBtnNames() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	protected final void launchMenuBtnHndlr() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	//////////////////////////////
+	// instance-based mouse handling
+
+	@Override
+	protected final boolean hndlMseMove_Priv(int mouseX, int mouseY, myPoint mseClckInWorld) {
+		return false;
 	}
 
 	@Override
-	protected void initDrwnTrajIndiv() {
+	protected final boolean hndlMseClick_Priv(int mouseX, int mouseY, myPoint mseClckInWorld, int mseBtn) {
+		return false;
 	}
 
+	@Override
+	protected final boolean hndlMseDrag_Priv(int mouseX, int mouseY, int pmouseX, int pmouseY, myPoint mouseClickIn3D,myVector mseDragInWorld, int mseBtn) {
+		return false;
+	}
+
+	@Override
+	protected final void hndlMseRelease_Priv() {		
+	}
+	
+	
+	@Override
+	public final void initDrwnTrajIndiv(){}
+	
+
+	//overrides function in base class mseClkDisp
+	@Override
+	public final void drawTraj3D(float animTimeMod,myPoint trans){
+		
+	}//drawTraj3D
+
+	
+	@Override
+	protected final void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {}	
+	@Override
+	protected final void endShiftKeyI() {}
+	@Override
+	protected final void endAltKeyI() {}
+	@Override
+	protected final void endCntlKeyI() {}
 	@Override
 	protected myPoint getMsePtAs3DPt(myPoint mseLoc) {		return new myPoint(mseLoc);	}
 
-	@Override
-	protected void setVisScreenDimsPriv() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected boolean hndlMouseMoveIndiv(int mouseX, int mouseY, myPoint mseClckInWorld) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	protected boolean hndlMouseClickIndiv(int mouseX, int mouseY, myPoint mseClckInWorld, int mseBtn) {
-		return false;
-	}
-
-	@Override
-	protected boolean hndlMouseDragIndiv(int mouseX, int mouseY, int pmouseX, int pmouseY, myPoint mouseClickIn3D,myVector mseDragInWorld, int mseBtn) {
-		return false;
-	}
-
-	@Override
-	protected void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {
-	}
-
-	@Override
-	protected void hndlMouseRelIndiv() {	}
-
-	@Override
-	protected void setCustMenuBtnNames() {
-		
-	}
-
-	@Override
-	protected void drawRightSideInfoBarPriv(float modAmtMillis) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void drawOnScreenStuffPriv(float modAmtMillis) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	@Override
-	protected void endShiftKeyI() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void endAltKeyI() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void endCntlKeyI() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void hndlFileLoad(File file, String[] vals, int[] stIdx) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public ArrayList<String> hndlFileSave(File file) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }//class Geom_PlaneSOMAnimResWin

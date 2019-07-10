@@ -9,6 +9,7 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.SOM_MapManager;
 import base_UI_Objects.*;
+import base_UI_Objects.windowUI.myDispWindow;
 import base_Utils_Objects.vectorObjs.myPoint;
 import base_Utils_Objects.vectorObjs.myVector;
 
@@ -18,7 +19,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 		gIDX_MinRadius		= numBaseAnimWinUIObjs + 0,
 		gIDX_MaxRadius		= numBaseAnimWinUIObjs + 1;		//ID of a UI object to be selected and highlighted
 
-	public final int numGUIObjs = numBaseAnimWinUIObjs + 2;											//# of gui objects for ui
+	//public final int numGUIObjs = numBaseAnimWinUIObjs + 2;											//# of gui objects for ui
 
 //	//private child-class flags - start at numBaseAnimWinPrivFlags
 //	public static final int 
@@ -41,11 +42,16 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 * return appropriate map manager for this window
 	 */
 	@Override
-	public SOM_MapManager buildMapManager() {
+	public final SOM_MapManager buildMapManager() {
 		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(SOMMapDims, ((SOM_GeometryMain)pa).argsMap);
+		_mgr.setWorldBounds(pa.cubeBnds);
 		return _mgr;
 	}
 
+	@Override
+	protected final void initMe_Indiv() {	
+	}
+	
 	/**
 	 * Instancing class-specific (application driven) UI buttons to display are built 
 	 * in this function.  Add an entry to tmpBtnNamesArray for each button, in the order 
@@ -57,34 +63,18 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 * @return total number of privBtnFlags in instancing class (including those not displayed)
 	 */
 	@Override
-	protected int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
+	protected final int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
 		//tmpBtnNamesArray.add(new Object[]{"Debugging","Debug",debugAnimIDX});
 		return numPrivFlags;
 	}
 
-	/**
-	 * call to build or rebuild geometric objects
-	 */
-	protected final void initAllGeomObjs_Indiv() {
-		
-	}
-	
-	/**
-	 * call to save the data for all the objects in the scene
-	 */
-	@Override
-	protected final void saveGeomObjInfo() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	/**
 	 * set values for instancing class-specific boolean flags
 	 * @param idx
 	 * @param val
 	 */
 	@Override
-	protected void setPrivFlags_Indiv(int idx, boolean val) {
+	protected final void setPrivFlags_Indiv(int idx, boolean val) {
 		switch (idx) {//special actions for each flag
 			default						: {return;}
 		}
@@ -102,19 +92,34 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 * @param tmpListObjVals treemap keyed by object IDX and value is list of strings of values for all UI list select objects
 	 */
 	@Override
-	protected void setupGUIObjsAras_Indiv(ArrayList<Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals) {
+	protected final void setupGUIObjsAras_Indiv(ArrayList<Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals) {
 		tmpUIObjArray.add(new Object[] {new double[]{1,100,1}, (double)minSphRad, "Min sphere radius", new boolean[]{false, false, true}});   				//gIDX_NumUIObjs 		                                                                        
 		tmpUIObjArray.add(new Object[] {new double[]{10,500,1},(double)maxSphRad, "Max sphere radius", new boolean[]{false, false, true}});  				//gIDX_NumUISamples 	                                                                        	
 	}
+	
+	@Override
+	protected final int getMinNumObjs() {	return 10;}
+	@Override
+	protected final int getMaxNumObjs() {	return 1000;}
+	@Override
+	protected final int getMinNumSmplsPerObj() {return 10;}
+	@Override
+	protected final int getMaxNumSmplsPerObj() {return 1000;}
+	
+	/**
+	 * send all instance-specific values from UI to map manager
+	 */
+	protected final void initAllGeomObjs_Indiv() {
+		((Geom_SphereMapMgr) mapMgr).setMinMaxRad(minSphRad, maxSphRad);
+		
+	};
 	
 	/**
 	 * For instance-class specific ui values
 	 * @param UIidx
 	 */
 	@Override
-	protected void setUIWinVals_Indiv(int UIidx) {
-		float val = (float)guiObjs[UIidx].getVal();
-		int ival = (int)val;
+	protected final void setUIWinVals_Indiv(int UIidx, float val) {
 
 		switch(UIidx){		
 			case gIDX_MinRadius : {
@@ -132,124 +137,107 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 			default : {break;}
 		}	
 	}
-
+	
+	/**
+	 * call to save the data for all the objects in the scene
+	 */
 	@Override
-	protected void initMe_Indiv() {	
+	protected final void saveGeomObjInfo() {
+		
+		
 	}
 	
+	
+
+	//////////////////////////////
+	// instance-based draw handling
+	
+	@Override
+	protected final void drawRightSideInfoBarPriv(float modAmtMillis) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
-	public void initDrwnTrajIndiv(){}
+	protected final void drawOnScreenStuffPriv(float modAmtMillis) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	/**
+	 * instance-specific drawing setup before objects are actually drawn 
+	 */
+	protected final void drawMeFirst_Indiv() {//need to translate by half the screen width to center coords
+				
+	}
+	
+	/**
+	 * instance-specific drawing after objects are drawn but before info is saved
+	 */
+	protected final void drawMeLast_Indiv() {		
+		
+	}	
+	
+	//////////////////////////////
+	//  manage menu button selections and setup
+
+	@Override
+	protected final void setCustMenuBtnNames() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	protected final void launchMenuBtnHndlr() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	//////////////////////////////
+	// instance-based mouse handling
+
+	@Override
+	protected final boolean hndlMseMove_Priv(int mouseX, int mouseY, myPoint mseClckInWorld) {
+		return false;
+	}
+
+	@Override
+	protected final boolean hndlMseClick_Priv(int mouseX, int mouseY, myPoint mseClckInWorld, int mseBtn) {
+		return false;
+	}
+
+	@Override
+	protected final boolean hndlMseDrag_Priv(int mouseX, int mouseY, int pmouseX, int pmouseY, myPoint mouseClickIn3D,myVector mseDragInWorld, int mseBtn) {
+		return false;
+	}
+
+	@Override
+	protected final void hndlMseRelease_Priv() {		
+	}
+	
+	
+	@Override
+	public final void initDrwnTrajIndiv(){}
 	
 
 	//overrides function in base class mseClkDisp
 	@Override
-	public void drawTraj3D(float animTimeMod,myPoint trans){
+	public final void drawTraj3D(float animTimeMod,myPoint trans){
 		
 	}//drawTraj3D
 
-	@Override
-	protected void drawRightSideInfoBarPriv(float modAmtMillis) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void drawOnScreenStuffPriv(float modAmtMillis) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-
-	@Override
-	protected void launchMenuBtnHndlr() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	
 	@Override
-	protected boolean hndlMouseMoveIndiv(int mouseX, int mouseY, myPoint mseClckInWorld){
-		return false;
-	}
-	//alt key pressed handles trajectory
-	//cntl key pressed handles unfocus of spherey
+	protected final void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {}	
 	@Override
-	protected boolean hndlMouseClickIndiv(int mouseX, int mouseY, myPoint mseClckInWorld, int mseBtn) {
-		boolean res = checkUIButtons(mouseX, mouseY);
-		if(res) {return res;}
-//		//pa.outStr2Scr("sphere ui click in world : " + mseClckInWorld.toStrBrf());
-//		if((!privFlags[sphereSelIDX]) && (curSelSphere!="")){			//set flags to fix sphere
-//			res = true;
-//			setPrivFlags(sphereSelIDX,true);			
-//		} else if((privFlags[sphereSelIDX]) && (curSelSphere!="")){
-//			if(pa.flags[pa.cntlKeyPressed]){			//cntl+click to deselect a sphere		
-//				setPrivFlags(sphereSelIDX,false);
-//				curSelSphere = ""; 
-//				res = true;
-//			} else {									//pass click through to selected sphere
-//				res = sphereCntls.get(curSelSphere).hndlMouseClickIndiv(mouseX, mouseY, mseClckInWorld,curMseLookVec);				
-//			}
-//		}
-		return res;
-	}//hndlMouseClickIndiv
-
+	protected final void endShiftKeyI() {}
 	@Override
-	protected boolean hndlMouseDragIndiv(int mouseX, int mouseY, int pmouseX, int pmouseY, myPoint mouseClickIn3D, myVector mseDragInWorld, int mseBtn) {
-		boolean res = false;
-		//pa.outStr2Scr("hndlMouseDragIndiv sphere ui drag in world mouseClickIn3D : " + mouseClickIn3D.toStrBrf() + " mseDragInWorld : " + mseDragInWorld.toStrBrf());
-//		if((privFlags[sphereSelIDX]) && (curSelSphere!="")){//pass drag through to selected sphere
-//			//pa.outStr2Scr("sphere ui drag in world mouseClickIn3D : " + mouseClickIn3D.toStrBrf() + " mseDragInWorld : " + mseDragInWorld.toStrBrf());
-//			res = sphereCntls.get(curSelSphere).hndlMouseDragIndiv(mouseX, mouseY, pmouseX, pmouseY, mouseClickIn3D,curMseLookVec, mseDragInWorld);
-//		}
-		return res;
-	}
+	protected final void endAltKeyI() {}
 	@Override
-	protected void hndlMouseRelIndiv() {}
-	
+	protected final void endCntlKeyI() {}
 	@Override
-	protected void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {}	
-	@Override
-	protected void endShiftKeyI() {}
-	@Override
-	protected void endAltKeyI() {}
-	@Override
-	protected void endCntlKeyI() {}
-
-	@Override
-	protected String[] getSaveFileDirNamesPriv() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected myPoint getMsePtAs3DPt(myPoint mseLoc) {		return new myPoint(mseLoc);	}
-
-	@Override
-	protected void setVisScreenDimsPriv() {
-		float xStart = rectDim[0] + .5f*(curVisScrDims[0] - (curVisScrDims[1]-(2*xOff)));
-
-		
-		
-	}
-
-	@Override
-	protected void setCustMenuBtnNames() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void hndlFileLoad(File file, String[] vals, int[] stIdx) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public ArrayList<String> hndlFileSave(File file) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	protected final myPoint getMsePtAs3DPt(myPoint mseLoc) {		return new myPoint(mseLoc);	}
 
 }//class Geom_SphereSOMAnimResWin
 

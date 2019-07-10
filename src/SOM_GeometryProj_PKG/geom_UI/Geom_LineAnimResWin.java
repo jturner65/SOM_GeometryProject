@@ -17,9 +17,28 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	 * # of private boolean flags for this window - expands upon those determined in SOM_AnimWorldWin
 	 */
 	private final int numPrivFlags = numBaseAnimWinPrivFlags;
-
+	/**
+	 * mins and diffs for window
+	 */
+	protected float[][] minsAndDiffs;
+	/**
+	 * 
+	 * @param _p
+	 * @param _n
+	 * @param _flagIdx
+	 * @param fc
+	 * @param sc
+	 * @param rd
+	 * @param rdClosed
+	 * @param _winTxt
+	 * @param _canDrawTraj
+	 */
+	
 	public Geom_LineAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
 		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, "Lines");
+		minsAndDiffs = new float[2][2];
+		minsAndDiffs[0]= new float[] {-.5f*rectDim[2] + 50, -.5f*rectDim[3] + 50};
+		minsAndDiffs[1] = new float[] {rectDim[2]-100, rectDim[3]-100};
 		super.initThisWin(_canDrawTraj, true, false);
 	}
 
@@ -29,9 +48,14 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	public SOM_MapManager buildMapManager() {
 		Geom_LineMapMgr _mgr = new Geom_LineMapMgr(SOMMapDims, ((SOM_GeometryMain)pa).argsMap);
+		_mgr.setWorldBounds(minsAndDiffs);
 		return _mgr;
 	}
 	
+	@Override
+	protected void initMe_Indiv() {	
+	}
+		
 	/**
 	 * Instancing class-specific (application driven) UI buttons to display are built 
 	 * in this function.  Add an entry to tmpBtnNamesArray for each button, in the order 
@@ -42,24 +66,10 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	 * 			the 3rd element is integer flag idx 
 	 * @return total number of privBtnFlags in instancing class (including those not displayed)
 	 */
-
 	@Override
 	protected int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
 		// TODO Auto-generated method stub
 		return numPrivFlags;
-	}
-	
-	/**
-	 * call to build or rebuild geometric objects
-	 */
-	protected final void initAllGeomObjs_Indiv() {
-		
-	}
-
-	@Override
-	protected void saveGeomObjInfo() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -73,124 +83,135 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	protected void setupGUIObjsAras_Indiv(ArrayList<Object[]> tmpUIObjArray,TreeMap<Integer, String[]> tmpListObjVals) {
 				
 	}
+	
+	/**
+	 * send all instance-specific values from UI to map manager
+	 */
+	protected final void initAllGeomObjs_Indiv() {};
+
+	
+	@Override
+	protected final int getMinNumObjs() {	return 2;}
+	@Override
+	protected final int getMaxNumObjs() {	return 50;}
+	@Override
+	protected final int getMinNumSmplsPerObj() {return 5;}
+	@Override
+	protected final int getMaxNumSmplsPerObj() {return 100;}
 
 	@Override
-	protected void setUIWinVals_Indiv(int UIidx) {
+	protected final void setUIWinVals_Indiv(int UIidx, float val) {
 		switch(UIidx){	
 		default : {break;}
 		}
 	}
 
+	/**
+	 * call to save the data for all the objects in the scene
+	 */
 	@Override
-	protected void initMe_Indiv() {
+	protected final void saveGeomObjInfo() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+
+	//////////////////////////////
+	// instance-based draw handling
+	
+	@Override
+	protected final void drawRightSideInfoBarPriv(float modAmtMillis) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void launchMenuBtnHndlr() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected String[] getSaveFileDirNamesPriv() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected void initDrwnTrajIndiv() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected myPoint getMsePtAs3DPt(myPoint mseLoc) {	return new myPoint(mseLoc.x, mseLoc.y, 0);}
-
-	@Override
-	protected void setVisScreenDimsPriv() {
-		float xStart = rectDim[0] + .5f*(curVisScrDims[0] - (curVisScrDims[1]-(2*xOff)));
-		
-	}
-
-	@Override
-	protected boolean hndlMouseMoveIndiv(int mouseX, int mouseY, myPoint mseClckInWorld) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	protected boolean hndlMouseClickIndiv(int mouseX, int mouseY, myPoint mseClckInWorld, int mseBtn) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	protected boolean hndlMouseDragIndiv(int mouseX, int mouseY, int pmouseX, int pmouseY, myPoint mouseClickIn3D,
-			myVector mseDragInWorld, int mseBtn) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	protected void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void hndlMouseRelIndiv() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void setCustMenuBtnNames() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void drawRightSideInfoBarPriv(float modAmtMillis) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void drawOnScreenStuffPriv(float modAmtMillis) {
+	protected final void drawOnScreenStuffPriv(float modAmtMillis) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	
+	/**
+	 * instance-specific drawing setup before objects are actually drawn 
+	 */
+	protected final void drawMeFirst_Indiv() {//need to translate by half the screen width to center coords
+		//msgObj.dispInfoMessage("Geom_LineAnimResWin", "drawMeFirst_Indiv", "here");
+		pa.translate(this.rectDim[0]+(this.rectDim[2]*.5f), (this.rectDim[1]+this.rectDim[3])*.5f);
+		pa.pushStyle();
+		pa.noStroke();
+		pa.setFill(new int[] {255,255,255}, 255);
+		pa.sphere(10.0f);
+		pa.popStyle();
+	}
+	
+	/**
+	 * instance-specific drawing after objects are drawn but before info is saved
+	 */
+	protected final void drawMeLast_Indiv() {		
+		
+	}	
+	
+	//////////////////////////////
+	//  manage menu button selections and setup
+
 	@Override
-	protected void endShiftKeyI() {
+	protected final void setCustMenuBtnNames() {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
-	protected void endAltKeyI() {
+	protected final void launchMenuBtnHndlr() {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	//////////////////////////////
+	// instance-based mouse handling
 
 	@Override
-	protected void endCntlKeyI() {
-		// TODO Auto-generated method stub
+	protected final boolean hndlMseMove_Priv(int mouseX, int mouseY, myPoint mseClckInWorld) {
+		return false;
+	}
+
+	@Override
+	protected final boolean hndlMseClick_Priv(int mouseX, int mouseY, myPoint mseClckInWorld, int mseBtn) {
+		return false;
+	}
+
+	@Override
+	protected final boolean hndlMseDrag_Priv(int mouseX, int mouseY, int pmouseX, int pmouseY, myPoint mouseClickIn3D,myVector mseDragInWorld, int mseBtn) {
+		return false;
+	}
+
+	@Override
+	protected final void hndlMseRelease_Priv() {		
+	}
+	
+	
+	@Override
+	public final void initDrwnTrajIndiv(){}
+	
+
+	//overrides function in base class mseClkDisp
+	@Override
+	public void drawTraj3D(float animTimeMod,myPoint trans){
 		
-	}
+	}//drawTraj3D
+
+	
+	@Override
+	protected final void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {}	
+	@Override
+	protected final void endShiftKeyI() {}
+	@Override
+	protected final void endAltKeyI() {}
+	@Override
+	protected final void endCntlKeyI() {}
 
 	@Override
-	public void hndlFileLoad(File file, String[] vals, int[] stIdx) {
-		// TODO Auto-generated method stub
-		
-	}
+	protected final myPoint getMsePtAs3DPt(myPoint mseLoc) {	return new myPoint(mseLoc.x, mseLoc.y, 0);}
 
-	@Override
-	public ArrayList<String> hndlFileSave(File file) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }//class Geom_LineSOMAnimResWin

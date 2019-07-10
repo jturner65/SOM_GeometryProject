@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_Objects.objs.SOM_GeomSampleForSOMExample;
+import SOM_GeometryProj_PKG.geom_Objects.SOM_GeomSampleForSOMExample;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_Example;

@@ -4,9 +4,12 @@ import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
 import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMProjConfig;
+import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_examples.SOM_ExampleManager;
@@ -50,11 +53,35 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	  * runnable object to manage various tasks
 	  */
 	protected SOM_GeomObjBldrRunner objRunner;
-
-	public SOM_GeomMapManager(SOM_MapUIWin _win, float[] _dims, TreeMap<String, Object> _argsMap, String geomObjType) {
+	
+	/** 
+	 * Type of geometric object
+	 */
+	protected String geomObjType;
+	
+	/**
+	 * coordinate bounds in world for the objects this map manager owns 
+	 * 		first idx : 0 is min; 1 is diff
+	 * 		2nd idx : 0 is x, 1 is y, 2 is z
+	 */
+	protected float[][] worldBounds;
+		
+	public SOM_GeomMapManager(SOM_MapUIWin _win, float[] _dims, TreeMap<String, Object> _argsMap, String _geomObjType) {
 		super(_win, _dims, _argsMap);
+		//worldBounds=_worldBounds;
+		geomObjType=_geomObjType;
 		projConfigData.setSOMProjName(geomObjType);	
+	}
+	
+	/**
+	 * coordinate bounds in world for the objects this map manager owns 
+	 * 		first idx : 0 is min; 1 is diff
+	 * 		2nd idx : 0 is x, 1 is y, 2 is z
+	 */
+	public void setWorldBounds(float[][] _worldBounds) {
+		worldBounds=_worldBounds;
 		objRunner = buildObjRunner();		
+		exMapper.setObjRunner(objRunner);
 	}
 	
 	/**
@@ -120,8 +147,28 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	/**
 	 * (re)build examples
 	 */
-	public abstract void buildGeomExampleObjs();	
+	public final SOM_GeomObj[] buildGeomExampleObjs() {
+		objRunner.setNumSamplesPerObj(numSamplesPerObj);
+		objRunner.setTaskType(SOM_GeomObjBldrTasks.buildObj);
+		//set instance-specific values
+		buildGeomExampleObjs_Indiv();
+		objRunner.setObjArray(buildEmptyObjArray());	//sets # of work units/objects to build based on size of array
+		getMsgObj().dispMessage("Geom_SOMMapManager","buildGeomExampleObjs", "Start building "+ numObjsToBuild+" geom example objects of type : " + this.geomObjType,MsgCodes.info1);
+		objRunner.runMe();
+		getMsgObj().dispMessage("Geom_SOMMapManager","buildGeomExampleObjs", "Finished building "+ numObjsToBuild+" geom example objects of type : " + this.geomObjType,MsgCodes.info1);
+		return objRunner.getObjArray();	
+	}
 	
+	/**
+	 * send any instance-specific control/ui values to objRunners
+	 */
+	protected abstract void buildGeomExampleObjs_Indiv();
+	
+	/**
+	 * This will build an appropriately sized empty object array, to be passed to the runner so that it can fill the array
+	 * @return
+	 */
+	protected abstract SOM_GeomObj[] buildEmptyObjArray();
 
 	@Override
 	/**
@@ -223,7 +270,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	}//setAllBMUsFromMap
 	
 	@Override
-	public int getPreProcDatPartSz() {return preProcDataPartSz;}
+	public final int getPreProcDatPartSz() {return preProcDataPartSz;}
 
 
 	@Override
@@ -237,6 +284,32 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+
+	@Override
+	protected final float getPreBuiltMapInfoDetail(my_procApplet pa, String[] str, int i, float yOff, boolean isLoaded) {
+		// TODO Auto-generated method stub
+		return yOff;
+	}
+	
+	@Override
+	protected final float drawResultBarPriv1(my_procApplet pa, float yOff) {
+		// TODO Auto-generated method stub
+		return yOff;
+	}
+
+	@Override
+	protected final float drawResultBarPriv2(my_procApplet pa, float yOff) {
+		// TODO Auto-generated method stub
+		return yOff;
+	}
+
+	@Override
+	protected final float drawResultBarPriv3(my_procApplet pa, float yOff) {
+		// TODO Auto-generated method stub
+		return yOff;
+	}
+
 	
 	/**
 	 * for saving bmu reports based on ftr vals
