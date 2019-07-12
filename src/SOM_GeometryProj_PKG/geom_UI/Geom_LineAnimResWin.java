@@ -1,6 +1,5 @@
 package SOM_GeometryProj_PKG.geom_UI;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -32,8 +31,7 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	 * @param rdClosed
 	 * @param _winTxt
 	 * @param _canDrawTraj
-	 */
-	
+	 */	
 	public Geom_LineAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
 		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, "Lines");
 		minsAndDiffs = new float[2][2];
@@ -48,7 +46,7 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	public SOM_MapManager buildMapManager() {
 		Geom_LineMapMgr _mgr = new Geom_LineMapMgr(SOMMapDims, ((SOM_GeometryMain)pa).argsMap);
-		_mgr.setWorldBounds(minsAndDiffs);
+		_mgr.setDispWinAndWorldBounds(this, minsAndDiffs);
 		return _mgr;
 	}
 	
@@ -71,6 +69,13 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 		// TODO Auto-generated method stub
 		return numPrivFlags;
 	}
+	/**
+	 * Instance class determines the true and false labels for button to control showing full object, or just wire frame
+	 * If empty no button is displayed
+	 * @return array holding true(idx0) and false(idx1) labels for button
+	 */
+	@Override
+	protected final String[] getShowWireFrameBtnTFLabels() {	return null;}
 
 	@Override
 	protected void setPrivFlags_Indiv(int idx, boolean val) {

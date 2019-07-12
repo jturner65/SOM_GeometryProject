@@ -13,13 +13,8 @@ import base_Utils_Objects.vectorObjs.myPointf;
 import base_Utils_Objects.vectorObjs.myVectorf;
 
 public class SOM_Line extends SOM_GeomObj {
-	public final int ID;
 	private static int IDGen = 0;
 
-	/**
-	 * given points that make up this line
-	 */
-	public final myPointf[] pts;
 	/**
 	 * direction vector for this line
 	 */
@@ -29,10 +24,18 @@ public class SOM_Line extends SOM_GeomObj {
 	 */
 	public final myPointf origin;
 	/**
-	 * display points for this line to draw maximally
+	 * display points for this line to draw maximally based on world bounds
 	 */
-	public final myPointf[] dispPts;
+	public final myPointf[] dispEndPts;
 	
+	
+	/**
+	 * coordinate bounds in world for line - static across all line objects
+	 * 		first idx : 0 is min; 1 is diff
+	 * 		2nd idx : 0 is x, 1 is y, 2 is z
+	 */
+	protected static float[][] worldBounds=null;
+
 	/**
 	 * Constructor for line object
 	 * @param _mapMgr owning som map manager
@@ -43,27 +46,46 @@ public class SOM_Line extends SOM_GeomObj {
 	 * 		first idx 	: 0 is min; 1 is diff
 	 * 		2nd idx 	: 0 is x, 1 is y
 	 */
-	public SOM_Line(SOM_GeomMapManager _mapMgr, myPointf _a, myPointf _b, int _numSmplPts, float[][] _worldBounds) {
-		super(_mapMgr, _a, _worldBounds, false);
-		ID = IDGen++;
-		pts = new myPointf[] {new myPointf(_a),new myPointf(_b)};
-		pts[0].z = 0.0f;
-		pts[1].z = 0.0f;
+	public SOM_Line(SOM_GeomMapManager _mapMgr, myPointf[] _pts, int _numSmplPts, float[][] _worldBounds) {
+		super(_mapMgr, _pts, _worldBounds, 2);
+		setID(IDGen++);
+		srcPts[0].z = 0.0f;
+		srcPts[1].z = 0.0f;
 		//z is always 0 - making this in 2 d
-		dir=new myVectorf(_a,_b);
+		dir=new myVectorf(srcPts[0],srcPts[1]);
 		dir.z = 0;
 		dir._normalize();	
 		//origin is closest point to 0,0 on line
 		origin = findClosestPointOnLine(myPointf.ZEROPT);
 		origin.z = 0;
 		
-		super.buildInitObjAndSamples(_numSmplPts);
+		super.buildLocClrInitObjAndSamples(srcPts[0], _numSmplPts);
 		float[][] wb = getWorldTBounds();
-		dispPts = new myPointf[2];
-		dispPts[0] = getPointOnLine(wb[0][0]);
-		dispPts[1] = getPointOnLine(wb[0][0] + wb[1][0]);
+		dispEndPts = new myPointf[2];
+		dispEndPts[0] = getPointOnLine(wb[0][0]);
+		dispEndPts[1] = getPointOnLine(wb[0][0] + wb[1][0]);
  
-	}//ctor	
+	}//ctor		
+	/**
+	 * call from ctor of base class, but set statically for each instancing class type
+	 * @param _worldBounds
+	 */
+	protected final void setWorldBounds(float[][]_worldBounds) {
+		if(null!=worldBounds) {return;}
+		worldBounds = new float[_worldBounds.length][];
+		for(int i=0;i<worldBounds.length;++i) {
+			float[] tmp = new float[_worldBounds[i].length];
+			for(int j=0;j<tmp.length;++j) {	tmp[j]=_worldBounds[i][j];}
+			worldBounds[i]=tmp;
+		}
+	}//setWorldBounds
+
+	/**
+	 * convert a world location within the bounded cube region to be a 4-int color array
+	 */
+	public final int[] getClrFromWorldLoc(myPointf pt){return getClrFromWorldLoc_2D(pt,worldBounds);}//getClrFromWorldLoc
+
+	
 	/**
 	 * calculate the bounds on s and t (if appropriate) for parametric formulation of object equation
 	 * worldBounds is 
@@ -74,8 +96,9 @@ public class SOM_Line extends SOM_GeomObj {
 	 * 		2nd idx 	: 0==t (only 1 value)
 	 * @return result array
 	 */
+	@Override
 	protected final float[][] calcTBounds(){
-		float[] ptA_ara = pts[0].asArray(), dirAra = dir.asArray();
+		float[] ptA_ara = srcPts[0].asArray(), dirAra = dir.asArray();
 		//eq  pt = pta + t * dir -> t = (pt-pta)/dir for each dof
 		//mins has location for each dof
 		float[] mins = worldBounds[0];		
@@ -110,15 +133,15 @@ public class SOM_Line extends SOM_GeomObj {
 
 	public final myPointf findClosestPointOnLine(myPointf p) {
 		//find projection t of vector ap (from a to p) on dir, then find a + t * dir
-		myVectorf proj = new myVectorf(pts[0],p);
-		return myVectorf._add(pts[0], proj._dot(dir), dir);
+		myVectorf proj = new myVectorf(srcPts[0],p);
+		return myVectorf._add(srcPts[0], proj._dot(dir), dir);
 	}
 	/**
 	 * return a point on the line 
 	 * @param t
 	 * @return
 	 */
-	public final myPointf getPointOnLine(float t) {return myVectorf._add(pts[0], t, dir);}
+	public final myPointf getPointOnLine(float t) {return myVectorf._add(srcPts[0], t, dir);}
 	
 	/**
 	 * find t value for point on line - expects point to be on line!
@@ -133,12 +156,7 @@ public class SOM_Line extends SOM_GeomObj {
 		else {									t = (pt.y - origin.y)/dir.y;}//vertical line			
 		return t;
 	}
-	
-	
-	/**
-	 * get an appropriate sample location to build sample sets, based on what kind of object is being built
-	 * @return
-	 */
+		
 	/**
 	 * build a geometry-based training/validation example for the SOM
 	 * @param _map owning map manager
@@ -152,13 +170,11 @@ public class SOM_Line extends SOM_GeomObj {
 	 * 		idx 3 : owning object's random color
 	 */
 	@Override
-	protected final SOM_GeomExample buildSample(int i) {
-		return new Geom_LineSOMExample(mapMgr, origin, dir, "Line_"+ID + "_Smp_" + i, new int[][] {locClrAra, rndClrAra,locClrAra, rndClrAra});
-	}
+	protected final SOM_GeomExample buildSample(int idx) {	return new Geom_LineSOMExample(mapMgr, "Line_"+getID() + "_Smp_" + idx, buildSrcObjDataAra(true), worldBounds);}
+	
 	@Override
-	protected final SOM_GeomExample buildObjExample() {
-		return new Geom_LineSOMExample(mapMgr, origin, dir, "Line "+ID, new int[][] {locClrAra, rndClrAra,locClrAra, rndClrAra});
-	}
+	protected final SOM_GeomExample buildObjExample() {		return new Geom_LineSOMExample(mapMgr, "Line "+getID(), buildSrcObjDataAra(false),worldBounds);}
+	
 	/**
 	 * return a random point on this object
 	 */
@@ -173,34 +189,48 @@ public class SOM_Line extends SOM_GeomObj {
 	@Override
 	protected final void _drawMe_Geom(my_procApplet pa) {
 		pa.strokeWeight(2.0f);
-		pa.line(dispPts[0],dispPts[1]);
-		pa.show(dispPts[0], 5.0f, "End 0", myVectorf.ZEROVEC, -1, true);
-		pa.show(dispPts[1], 5.0f, "End 1", myVectorf.ZEROVEC, -1, true);
-		pa.show(pts[0], 5.0f, "pt a", myVectorf.ZEROVEC, -1, true);
-		pa.show(pts[1], 5.0f, "pt b", myVectorf.ZEROVEC, -1, true);
-		pa.show(origin, 5.0f, "Origin "+ID, myVectorf.ZEROVEC, -1, true);
+		pa.line(dispEndPts[0],dispEndPts[1]);
+		pa.show(dispEndPts[0], 5.0f, "End 0", myVectorf.ZEROVEC, -1, true);
+		pa.show(dispEndPts[1], 5.0f, "End 1", myVectorf.ZEROVEC, -1, true);
+		pa.show(srcPts[0], 5.0f, "pt a", myVectorf.ZEROVEC, -1, true);
+		pa.show(srcPts[1], 5.0f, "pt b", myVectorf.ZEROVEC, -1, true);
+		pa.show(origin, 5.0f, "Origin "+getID(), myVectorf.ZEROVEC, -1, true);
+	}
+
+	/**
+	 * TODO we need to re-calculate drawing quantities based on bmu construction
+	 */
+	@Override
+	protected final void _drawMe_Geom_BMU(my_procApplet pa) {
+		pa.strokeWeight(2.0f);
+		pa.line(dispEndPts[0],dispEndPts[1]);
+		pa.show(dispEndPts[0], 5.0f, "End 0", myVectorf.ZEROVEC, -1, true);
+		pa.show(dispEndPts[1], 5.0f, "End 1", myVectorf.ZEROVEC, -1, true);
+		pa.show(srcPts[0], 5.0f, "pt a", myVectorf.ZEROVEC, -1, true);
+		pa.show(srcPts[1], 5.0f, "pt b", myVectorf.ZEROVEC, -1, true);
+		pa.show(origin, 5.0f, "Origin "+getID(), myVectorf.ZEROVEC, -1, true);
 	}
 
 	@Override
 	protected final void _drawMe_Geom_Lbl(my_procApplet pa) {
 		float[][] wb = getWorldTBounds();
 		pa.strokeWeight(2.0f);
-		pa.line(dispPts[0],dispPts[1]);
+		pa.line(dispEndPts[0],dispEndPts[1]);
 		//(myPointf P, float r, String s, myVectorf D, int clr, boolean flat)
-		String id0 = ID+" End point 0 using min t : " + wb[0][0] + " | "+dispPts[0].toStrBrf(),
-				id1 = ID+" End point 1 using max t : " + (wb[0][0]+wb[1][0])+ " | "+dispPts[1].toStrBrf();
-		pa.show(dispPts[0], 5.0f, id0, myVectorf.ZEROVEC, -1, true);
-		pa.show(dispPts[1], 5.0f, id1, myVectorf.ZEROVEC, -1, true);
-		pa.show(pts[0], 5.0f, "pt a :"+pts[0].toStrBrf(), myVectorf.ZEROVEC, -1, true);
-		pa.show(pts[1], 5.0f, "pt b :"+pts[1].toStrBrf(), myVectorf.ZEROVEC, -1, true);
-		pa.show(origin, 5.0f, "Origin "+ID + "|"+id0+"|"+id1, myVectorf.ZEROVEC, -1, true);
+		String id0 = getID()+" End point 0 using min t : " + wb[0][0] + " | "+dispEndPts[0].toStrBrf(),
+				id1 = getID()+" End point 1 using max t : " + (wb[0][0]+wb[1][0])+ " | "+dispEndPts[1].toStrBrf();
+		pa.show(dispEndPts[0], 5.0f, id0, myVectorf.ZEROVEC, -1, true);
+		pa.show(dispEndPts[1], 5.0f, id1, myVectorf.ZEROVEC, -1, true);
+		pa.show(srcPts[0], 5.0f, "pt a :"+srcPts[0].toStrBrf(), myVectorf.ZEROVEC, -1, true);
+		pa.show(srcPts[1], 5.0f, "pt b :"+srcPts[1].toStrBrf(), myVectorf.ZEROVEC, -1, true);
+		pa.show(origin, 5.0f, "Origin "+getID() + "|"+id0+"|"+id1, myVectorf.ZEROVEC, -1, true);
 	}
 
 	
 	
 
 	@Override
-	public void drawMeLabel(my_procApplet pa) {
+	public void drawMyLabel(my_procApplet pa) {
 		// TODO Auto-generated method stub
 
 	}
@@ -214,18 +244,6 @@ public class SOM_Line extends SOM_GeomObj {
 
 	@Override
 	public void drawMeLabel_BMU(my_procApplet pa) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void drawMeClrRnd_BMU(my_procApplet pa) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void drawMeClrLoc_BMU(my_procApplet pa) {
 		// TODO Auto-generated method stub
 
 	}

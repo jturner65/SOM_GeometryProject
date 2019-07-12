@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import base_Utils_Objects.MyMathUtils;
 import base_Utils_Objects.io.MessageObject;
 import base_Utils_Objects.vectorObjs.myPointf;
 import base_Utils_Objects.vectorObjs.myVectorf;
@@ -94,6 +95,25 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 		return x;
 	}
 	
+	/**
+	 * find an array of 3 non-colinear points
+	 * @return array of 3 non-colinear points
+	 */
+	protected myPointf[] getRandPlanePoints() {
+		myPointf a = getRandPointInBounds_3D();
+		myPointf b = getRandPointInBounds_3D();
+		myPointf c;
+		myVectorf ab = new myVectorf(a,b), ac;
+		ab._normalize();
+		do {
+			c = getRandPointInBounds_3D();
+			ac = new myVectorf(a,c);
+			ac._normalize();
+		} while (Math.abs(ab._dot(ac))==1.0f);
+		myPointf[] planePts = new myPointf[] {a,b,c};		
+		return planePts;
+	}
+	
 	protected myVectorf getRandNormal_3D() {
 		myVectorf x = new myVectorf( 
 				(ThreadLocalRandom.current().nextFloat() *2.0f)-1.0f, 
@@ -102,6 +122,52 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 		return x._normalized();
 	}
 	
+	/**
+	 * get random position on sphere surface with passed radius and center
+	 * @param rad
+	 * @param ctr
+	 * @return
+	 */
+	protected final myPointf getRandPosOnSphere(double rad, myPointf ctr){
+		myPointf pos = new myPointf();
+		double 	cosTheta = ThreadLocalRandom.current().nextDouble(-1,1), sinTheta =  Math.sin(Math.acos(cosTheta)),
+				phi = ThreadLocalRandom.current().nextDouble(0,MyMathUtils.twoPi_f);
+		pos.set(sinTheta * Math.cos(phi), sinTheta * Math.sin(phi),cosTheta);
+		pos._mult((float) rad);
+		pos._add(ctr);
+		return pos;
+	}//getRandPosOnSphere
+	
+	/**
+	 * return 4 points that describe a sphere uniquely - no trio of points can be colinear, and the 4 points cannot be co planar
+	 * get 3 non-colinear points, find 4th by finding normal of plane 3 points describe
+	 * @param rad radius of desired sphere
+	 * @param ctr center of desired sphere
+	 */
+	
+	protected final myPointf[] getRandSpherePoints(double rad, myPointf ctr){
+		myPointf a = getRandPosOnSphere(rad, ctr);
+		myPointf b = getRandPosOnSphere(rad, ctr);
+		myPointf c,d;
+		myVectorf ab = new myVectorf(a,b), ac, bc, ad;
+		ab._normalize();
+		do {
+			c = getRandPosOnSphere(rad, ctr);
+			ac = new myVectorf(a,c);
+			ac._normalize();
+		} while (Math.abs(ab._dot(ac))==1.0f);
+		bc = new myVectorf(b,c);
+		bc._normalize();
+		//now find d
+		do {
+			d = getRandPosOnSphere(rad, ctr);
+			ad = new myVectorf(a,d);
+			ad._normalize();
+		} while ((Math.abs(ab._dot(ad))==1.0f) || (Math.abs(ac._dot(ad))==1.0f) || (Math.abs(bc._dot(ad))==1.0f)) ;
+		
+		myPointf[] spherePts = new myPointf[] {a,b,c,d};		
+		return spherePts;
+	}
 
 	
 	protected final void incrProgress(int idx) {

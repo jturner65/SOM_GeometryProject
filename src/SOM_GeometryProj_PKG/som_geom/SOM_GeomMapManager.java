@@ -30,6 +30,10 @@ import base_Utils_Objects.vectorObjs.Tuple;
  */
 public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	/**
+	 * owning window to display samples in sim world
+	 */
+	protected SOM_AnimWorldWin dispWin;
+	/**
 	 * mapper to manage the example geometric objects and their training data
 	 */
 	protected SOM_GeomExampleManager exMapper;
@@ -78,7 +82,8 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 * 		first idx : 0 is min; 1 is diff
 	 * 		2nd idx : 0 is x, 1 is y, 2 is z
 	 */
-	public void setWorldBounds(float[][] _worldBounds) {
+	public final void setDispWinAndWorldBounds(SOM_AnimWorldWin _dispWin, float[][] _worldBounds) {
+		dispWin = _dispWin;
 		worldBounds=_worldBounds;
 		objRunner = buildObjRunner();		
 		exMapper.setObjRunner(objRunner);
@@ -174,7 +179,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	/**
 	 * this function will build the input data used by the SOM - this will be partitioned by some amount into test and train data (usually will use 100% train data, but may wish to test label mapping)
 	 */
-	protected SOM_Example[] buildSOM_InputData() {
+	protected final SOM_Example[] buildSOM_InputData() {
 		SOM_Example[] res = exMapper.buildExampleArray();	//cast to appropriate mapper when flag custOrdersAsTrainDataIDX is set
 		getMsgObj().dispMessage("Geom_SOMMapManager","buildSOM_InputData", "Size of input data : " + res.length,MsgCodes.info5);
 		return res;
@@ -183,7 +188,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 * load some previously saved geometric object information
 	 */
 	@Override
-	protected void loadPreProcTrainData(String subDir, boolean forceLoad) {
+	protected final void loadPreProcTrainData(String subDir, boolean forceLoad) {
 		// TODO Auto-generated method stub
 
 	}
@@ -204,28 +209,28 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 * This functionality doesn't need to be available for this application
 	 */
 	@Override
-	public void loadAllDataAndBuildMappings() {}
+	public final void loadAllDataAndBuildMappings() {}
 
 	@Override
 	/**
 	 * no secondary maps for this project
 	 */
-	protected int _getNumSecondaryMaps() {		return 0;}
+	protected final int _getNumSecondaryMaps() {		return 0;}
 	
 	/**
 	 * we never ignore zero features since these objects will be sufficiently low dimensional to use dense training
 	 */
 	@Override
-	public void setMapExclZeroFtrs(boolean val) {}
+	public final void setMapExclZeroFtrs(boolean val) {}
 
 	@Override
-	protected void saveAllSegment_BMUReports_Indiv() {}
+	protected final void saveAllSegment_BMUReports_Indiv() {}
 
 	@Override
 	/**
 	 * products are zone/segment descriptors corresponding to certain feature, class or category configurations that are descriptive of training data
 	 */
-	protected void setProductBMUs() {
+	protected final void setProductBMUs() {
 		// TODO Auto-generated method stub
 
 	}
@@ -234,13 +239,10 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	/**
 	 * any instance-class specific code to execute when new map nodes are being loaded
 	 */
-	protected void initMapNodesPriv() {
+	protected final void initMapNodesPriv() {
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc, String[] tkns) {return new SOM_GeomMapNode(this,mapLoc, tkns);}	
 
 	@Override
 	//return appropriately pathed file name for map image of specified ftr idx

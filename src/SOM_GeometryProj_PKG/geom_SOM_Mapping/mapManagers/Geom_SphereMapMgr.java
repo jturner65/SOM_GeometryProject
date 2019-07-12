@@ -7,11 +7,14 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_SphereExManage
 import SOM_GeometryProj_PKG.geom_Utils.runners.Geom_SphereObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
+import base_SOM_Objects.som_examples.SOM_MapNode;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.windowUI.myDispWindow;
+import base_Utils_Objects.vectorObjs.Tuple;
 
 public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	
@@ -87,6 +90,9 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 		// TODO Auto-generated method stub
 
 	}
+	
+	@Override
+	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc, String[] tkns) {return new SOM_GeomMapNode(this,mapLoc, tkns);}	
 
 	@Override
 	public String getClassSegmentTitleString(int classID) {

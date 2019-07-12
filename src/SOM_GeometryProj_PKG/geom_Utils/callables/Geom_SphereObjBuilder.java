@@ -26,7 +26,11 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 		
 		float rad = (ThreadLocalRandom.current().nextFloat()*diffRad) + minRad;
 		myPointf ctr = this.getRandPointInBounds_3D(rad);
-		return new SOM_Sphere(mapMgr,ctr, rad, numSmplsPerObj, worldBounds);
+			
+		//now get 4 points to determine this sphere - make sure they are ortho		
+		myPointf[] spherePts = getRandSpherePoints(rad,ctr);		
+		
+		return new SOM_Sphere(mapMgr,spherePts,ctr, rad, numSmplsPerObj, worldBounds);
 	}
 
-}
+}//Geom_SphereObjBuilder

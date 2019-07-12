@@ -2,6 +2,7 @@ package SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import SOM_GeometryProj_PKG.geom_Objects.SOM_GeomSmplForSOMExample;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExample;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
@@ -16,6 +17,7 @@ import base_Utils_Objects.vectorObjs.myPointf;
  * @author john
  */
 public abstract class SOM_GeomObj {
+	private int ID;
 	/**
 	 * reference to the owning map manager - can't be static, may have many different mapmanagers
 	 */
@@ -23,20 +25,35 @@ public abstract class SOM_GeomObj {
 	/**
 	 * message object manages logging/printing to screen
 	 */
-	protected  MessageObject msgObj;	
-	
+	protected MessageObject msgObj;	
+	/**
+	 * given source points that make up this object
+	 */
+	public final myPointf[] srcPts;
+	/**
+	 * label to display, based on ID and object type
+	 */
+	protected String dispLabel;
 	/**
 	 * radius of sample point to display
 	 */
-	public final float ptRad;
+	public static final float ptRad = 1.0f;
 	/**
 	 * sphere detail of sample point to display
 	 */
-	public final int ptDet;
+	public static final int ptDet = 2;	
+	
+	/**
+	 * # of sample points required to uniquely define an object of this type (i.e. # of examples used to build training example)
+	 */
+	public final int numSmplsForEachExample;
+	
 	/**
 	 * location-based and random color arrays, for display
 	 */
-	public final int[] locClrAra,rndClrAra;
+	public int[] locClrAra;
+	public final int[] rndClrAra;
+	
 	/**
 	 * state flags
 	 */
@@ -47,49 +64,50 @@ public abstract class SOM_GeomObj {
 	public static final int numFlags = 2;	
 		
 	/**
-	 * som example corresponding to this object explicitly (based on instancing object descriptor)
+	 * som example corresponding to this object explicitly (based on instancing object description)
 	 */
-	public SOM_GeomExample objExample;				//ref to best matching unit of map
-
+	public SOM_GeomExample objExample;	
+	
 	/**
-	 * som examples corresponding to sample points
+	 * som examples corresponding to sample points on this object
 	 */
 	public SOM_GeomExample[] smplPtExamples;
 	
-	protected myPointf baseObjBMUWorldLoc;				//location of center of sphere for bmu
-	
 	/**
-	 * coordinate bounds in world 
-	 * 		first idx : 0 is min; 1 is diff
-	 * 		2nd idx : 0 is x, 1 is y, 2 is z
-	 */
-	protected final float[][] worldBounds;
+	 * location of center/origin of object from bmu
+	 */	
+	protected myPointf baseObjBMUWorldLoc;	
 	
 	/**
 	 * an object to restrict the bounds on this line - min,max, diff s,t value within which to sample plane
 	 */
 	private float[][] worldTBounds;
-
 	
-	public SOM_GeomObj(SOM_GeomMapManager _mapMgr, myPointf _locForClr, float[][] _worldBounds, boolean _is3D) {
+	public SOM_GeomObj(SOM_GeomMapManager _mapMgr, myPointf[] _pts, float[][] _worldBounds, int _numSmplsForExample) {
 		mapMgr = _mapMgr;msgObj = mapMgr.buildMsgObj();
+		srcPts = _pts;
 		initFlags();
-		setFlag(is3dIDX, _is3D);
+		numSmplsForEachExample=_numSmplsForExample;
+		setFlag(is3dIDX, numSmplsForEachExample>2);
 		rndClrAra = getRandClr();	
-		//sample size/detail
-		ptRad = 1.0f;
-		ptDet = 2;
+		
 		baseObjBMUWorldLoc = new myPointf(0,0,0);
-		worldBounds = new float[_worldBounds.length][];
-		for(int i=0;i<worldBounds.length;++i) {
-			float[] tmp = new float[_worldBounds[i].length];
-			for(int j=0;j<tmp.length;++j) {	tmp[j]=_worldBounds[i][j];}
-			worldBounds[i]=tmp;
-		}
-		locClrAra = getClrFromWorldLoc(_locForClr);
+		
+		setWorldBounds(_worldBounds);
+		
+		
+		
 	}//ctor
 	
+	/**
+	 * call from ctor of base class, but set statically for each instancing class type
+	 * @param _worldBounds
+	 */
+	protected abstract void setWorldBounds(float[][] _worldBounds);
+
 	
+	protected final void setID(int _id) {ID=_id;}
+	public final int getID() {return ID;}
 	
 	/**
 	 * calculate the bounds on s and t (if appropriate) for parametric formulation of object equation
@@ -103,7 +121,9 @@ public abstract class SOM_GeomObj {
 	 * build a specified # of sample points for this object
 	 * @param _numSmplPts
 	 */
-	protected final void buildInitObjAndSamples(int _numSmplPts) {
+	protected final void buildLocClrInitObjAndSamples(myPointf _locForClr, int _numSmplPts) {
+		locClrAra = getClrFromWorldLoc(_locForClr);
+		
 		//build bounds on s and t, if appropriate - by here equations define objects should be built
 		worldTBounds = calcTBounds();
 		objExample = buildObjExample();
@@ -120,12 +140,13 @@ public abstract class SOM_GeomObj {
 		//for each sphere build its surface samples
 		for(int i = 0; i<_numSmplPts;++i){			smplPtExamples[i] = buildSample(i);		}
 	}
-	
+		
 	/**
 	 * get an appropriate sample location to build sample sets, based on what kind of object is being built
 	 * @return
 	 */
 	protected abstract SOM_GeomExample buildSample(int i);
+	
 	/**
 	 * build this object's "exemplar" example
 	 */
@@ -153,17 +174,42 @@ public abstract class SOM_GeomObj {
 	}//setBaseObjBMULoc	
 			
 
-	private final int lBnd = 40, uBnd = 255, rndBnd = uBnd - lBnd;
+	protected final int lBnd = 40, uBnd = 255, rndBnd = uBnd - lBnd;
 	//convert a world location within the bounded cube region to be a 4-int color array
-	public final int[] getClrFromWorldLoc(myPointf t){
-		if(getFlag(is3dIDX)) {			//for 3d world bounds is idx 0 == 0,1 for min,diff; idx 1 == 0,1,2 for x,y,z
-			return new int[]{(int)(255*(t.x-worldBounds[0][0])/worldBounds[1][0]),(int)(255*(t.y-worldBounds[0][1])/worldBounds[1][1]),(int)(255*(t.z-worldBounds[0][2])/worldBounds[1][2]),255};}
-		else {							//for 2d world bounds is idx 0 == 0,1 for min, diff, idx 1 == 0,1 for x,y
-			float rs = (t.x-worldBounds[0][0])/worldBounds[1][0], gs = (t.y-worldBounds[0][1])/worldBounds[1][1];
-			float bs = Math.abs(rs - gs);
-			return new int[]{(int)(rndBnd*rs)+lBnd,(int)(rndBnd*gs)+lBnd,(int)(rndBnd*bs)+lBnd,255};
-		}
-	}//getClrFromWorldLoc
+	public abstract int[] getClrFromWorldLoc(myPointf pt);
+	/**
+	 * 2 d get world loc color
+	 * @param pt
+	 * @param _worldBounds
+	 * @return
+	 */
+	public final int[] getClrFromWorldLoc_2D(myPointf pt,float[][] _worldBounds) {		//for 2d world bounds is idx 0 == 0,1 for min, diff, idx 1 == 0,1 for x,y
+		float rs = (pt.x-_worldBounds[0][0])/_worldBounds[1][0], gs = (pt.y-_worldBounds[0][1])/_worldBounds[1][1];
+		float bs = Math.abs(rs - gs);
+		return new int[]{(int)(rndBnd*rs)+lBnd,(int)(rndBnd*gs)+lBnd,(int)(rndBnd*bs)+lBnd,255};
+	}
+	
+	/**
+	 * 3 d get world loc color
+	 * @param pt point
+	 * @param _worldBounds
+	 * @return
+	 */
+	public final int[] getClrFromWorldLoc_3D(myPointf pt,float[][] _worldBounds) {		
+		return new int[]{(int)(255*(pt.x-_worldBounds[0][0])/_worldBounds[1][0]),(int)(255*(pt.y-_worldBounds[0][1])/_worldBounds[1][1]),(int)(255*(pt.z-_worldBounds[0][2])/_worldBounds[1][2]),255};
+	}
+		
+	/**
+	 * build an array of constituent SOM_GeomSmplForSOMExample objects, either from source points, or from randomly derived values
+	 * @param isRand
+	 * @return
+	 */
+	protected SOM_GeomSmplForSOMExample[] buildSrcObjDataAra(boolean isRand) {
+		SOM_GeomSmplForSOMExample[] srcSamples = new SOM_GeomSmplForSOMExample[numSmplsForEachExample];
+		if(isRand) {	for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new SOM_GeomSmplForSOMExample(this, getRandPointOnObj());}} 
+		else {			for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new SOM_GeomSmplForSOMExample(this, srcPts[i]);	}}
+		return srcSamples;
+	}	
 	
 	/**
 	 * build a random color
@@ -174,47 +220,124 @@ public abstract class SOM_GeomObj {
 		return new int[] {r,g,b};
 	}
 	
-	
-	/**
-	 * Draw this object with a label
-	 * @param pa
-	 */
-	public abstract void drawMeLabel(my_procApplet pa);
-	
+
 	/**
 	 * draw entire object this class represents, using location as color or using randomly assigned color
 	 * @param pa
-	 */
-	
-	public final void drawMeClrRnd(my_procApplet pa, int alpha) {
+	 */	
+	public final void drawMeClrRnd(my_procApplet pa) {
 		pa.pushMatrix();pa.pushStyle();		
-		pa.setFill(rndClrAra,alpha);
-		pa.setStroke(rndClrAra,alpha);
+		pa.setFill(rndClrAra,255);
+		pa.setStroke(rndClrAra,255);
 		_drawMe_Geom(pa);
 		pa.popStyle();pa.popMatrix();	
 	}	
 	
 	
-	public final void drawMeClrLoc(my_procApplet pa, int alpha) {
+	public final void drawMeClrLoc(my_procApplet pa) {
 		pa.pushMatrix();pa.pushStyle();		
-		pa.setFill(locClrAra,50);
-		pa.setStroke(locClrAra,50);
+		pa.setFill(locClrAra,255);
+		pa.setStroke(locClrAra,255);
 		_drawMe_Geom(pa);
 		pa.popStyle();pa.popMatrix();	
 	}
 	
+	/**
+	 * draw entire object this class represents, using location as color or using randomly assigned color
+	 * @param pa
+	 */	
+	public final void drawMeClrRnd_WF(my_procApplet pa) {
+		pa.pushMatrix();pa.pushStyle();		
+		pa.noFill();
+		pa.setStroke(rndClrAra,255);
+		_drawMe_Geom(pa);
+		pa.popStyle();pa.popMatrix();	
+	}	
 	
+	
+	public final void drawMeClrLoc_WF(my_procApplet pa) {
+		pa.pushMatrix();pa.pushStyle();		
+		pa.noFill();
+		pa.setStroke(locClrAra,255);
+		_drawMe_Geom(pa);
+		pa.popStyle();pa.popMatrix();	
+	}
+	
+	/**
+	 * draw entire object this class represents at location dictated by BMU, using location as color or using randomly assigned color
+	 * @param pa
+	 */	
+	public final void drawMeClrRnd_BMU(my_procApplet pa) {
+		pa.pushMatrix();pa.pushStyle();		
+		pa.setFill(rndClrAra,255);
+		pa.setStroke(rndClrAra,255);
+		_drawMe_Geom_BMU(pa);
+		pa.popStyle();pa.popMatrix();	
+	}	
+	
+	
+	public final void drawMeClrLoc_BMU(my_procApplet pa) {
+		pa.pushMatrix();pa.pushStyle();		
+		pa.setFill(locClrAra,255);
+		pa.setStroke(locClrAra,255);
+		_drawMe_Geom_BMU(pa);
+		pa.popStyle();pa.popMatrix();	
+	}
+	
+	/**
+	 * draw entire object this class represents, using location as color or using randomly assigned color
+	 * @param pa
+	 */	
+	public final void drawMeClrRnd_WF_BMU(my_procApplet pa) {
+		pa.pushMatrix();pa.pushStyle();		
+		pa.noFill();
+		pa.setStroke(rndClrAra,255);
+		_drawMe_Geom_BMU(pa);
+		pa.popStyle();pa.popMatrix();	
+	}	
+	
+	
+	public final void drawMeClrLoc_WF_BMU(my_procApplet pa) {
+		pa.pushMatrix();pa.pushStyle();		
+		pa.noFill();
+		pa.setStroke(locClrAra,255);
+		_drawMe_Geom_BMU(pa);
+		pa.popStyle();pa.popMatrix();	
+	}
+		
+	/**
+	 * Draw this object's
+	 * @param pa
+	 */
+	public abstract void drawMyLabel(my_procApplet pa);
+		
 	/**
 	 * draw this object
 	 * @param pa
 	 */
 	protected abstract void _drawMe_Geom(my_procApplet pa);
 	
+	/**
+	 * draw this object at location dictated by bmu
+	 * @param pa
+	 * @param animTmMod
+	 */	
+	protected abstract void _drawMe_Geom_BMU(my_procApplet pa);
 	
-	protected abstract void _drawMe_Geom_Lbl(my_procApplet pa);
-	
-
+	/**
+	 * draw this object with appropriate selected highlight/cue
+	 * @param pa
+	 * @param animTmMod
+	 */
 	public abstract void drawMeSelected(my_procApplet pa,float animTmMod);
+	
+	
+	
+	/**
+	 * TODO : temp function until better labeled rendering method
+	 * @param pa
+	 */
+	protected abstract void _drawMe_Geom_Lbl(my_procApplet pa);
 	
 	
 	/**
@@ -227,7 +350,7 @@ public abstract class SOM_GeomObj {
 //		pa.setStroke(rndClrAra,255);
 //		pa.sphereDetail(ptDet);
 		for(SOM_GeomExample pt : smplPtExamples){
-			pt.drawMeObjRandClr(pa,ptDet);
+			//pt.drawMeObjRandClr(pa);
 //			pa.pushMatrix(); 
 //			pa.translate(pt.worldLoc); 
 //			pa.sphere(ptRad); 
@@ -243,7 +366,7 @@ public abstract class SOM_GeomObj {
 	public final void drawMeSmplsClrLoc(my_procApplet pa){
 		pa.pushMatrix();pa.pushStyle();		
 		for(SOM_GeomExample pt : smplPtExamples){
-			pt.drawMeObjLocClr(pa,ptDet);
+			//pt.drawMeObjLocClr(pa);
 //			pa.pushMatrix(); 
 //			pa.translate(pt.worldLoc); 
 //			pa.sphere(ptRad); 
@@ -261,7 +384,7 @@ public abstract class SOM_GeomObj {
 		//pa.noStroke();
 		//pa.sphereDetail(ptDet);
 		for(SOM_GeomExample pt : smplPtExamples){
-			pt.drawMeMyLocClr(pa, ptDet);
+			//pt.drawMeMyLocClr(pa);
 //			pa.pushMatrix(); pa.pushStyle();
 //			pa.fill(pt.locClrs[0],pt.locClrs[1],pt.locClrs[2], pt.locClrs[3]);
 //			pa.stroke(pt.locClrs[0],pt.locClrs[1],pt.locClrs[2], pt.locClrs[3]);			
@@ -279,8 +402,6 @@ public abstract class SOM_GeomObj {
 	 * @param pa
 	 */
 	public abstract void drawMeLabel_BMU(my_procApplet pa);
-	public abstract void drawMeClrRnd_BMU(my_procApplet pa);
-	public abstract void drawMeClrLoc_BMU(my_procApplet pa);
 	public abstract void drawMeSelected_BMU(my_procApplet pa,float animTmMod);
 	
 	public final void drawMeSmplsClrRnd_BMU(my_procApplet pa){
@@ -289,7 +410,7 @@ public abstract class SOM_GeomObj {
 //		pa.setStroke(rndClrAra,255);
 //		pa.sphereDetail(ptDet);
 		for(SOM_GeomExample pt : smplPtExamples){
-			pt.drawMeObjRandClr_BMU(pa,ptDet);
+			//pt.drawMeObjRandClr_BMU(pa);
 //			pa.pushMatrix(); 
 //			pa.translate(((Geom_SOMMapNode)(pt.getBmu())).mapLoc); 
 //			pa.sphere(ptRad); 
@@ -304,7 +425,7 @@ public abstract class SOM_GeomObj {
 //		pa.setStroke(locClrAra,255);
 //		pa.sphereDetail(ptDet);
 		for(SOM_GeomExample pt : smplPtExamples){
-			pt.drawMeObjLocClr_BMU(pa,ptDet);
+			//pt.drawMeObjLocClr_BMU(pa);
 //			pa.pushMatrix(); 
 //			pa.translate(((Geom_SOMMapNode)(pt.getBmu())).worldLoc); 
 //			pa.sphere(ptRad); 
@@ -318,7 +439,7 @@ public abstract class SOM_GeomObj {
 		//pa.noStroke();
 		//pa.sphereDetail(ptDet);
 		for(SOM_GeomExample pt : smplPtExamples){
-			pt.drawMeMyLocClr_BMU(pa, ptDet);
+			//pt.drawMeMyLocClr_BMU(pa);
 			
 //			pa.pushMatrix(); pa.pushStyle();
 //			pa.fill(pt.locClrs[0],pt.locClrs[1],pt.locClrs[2], pt.locClrs[3]);

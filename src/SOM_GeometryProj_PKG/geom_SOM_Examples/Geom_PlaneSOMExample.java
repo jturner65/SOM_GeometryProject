@@ -2,9 +2,9 @@ package SOM_GeometryProj_PKG.geom_SOM_Examples;
 
 import java.util.TreeMap;
 
+import SOM_GeometryProj_PKG.geom_Objects.SOM_GeomSmplForSOMExample;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExample;
 import base_SOM_Objects.SOM_MapManager;
-import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.myPointf;
 import base_Utils_Objects.vectorObjs.myVectorf;
 
@@ -24,6 +24,13 @@ public class Geom_PlaneSOMExample extends SOM_GeomExample {
 	protected myVectorf normVec;
 
 	/**
+	 * coordinate bounds for lines in sim/geom world - each object/example type has its own world bounds
+	 * 		first idx : 0 is min; 1 is diff
+	 * 		2nd idx : 0 is x, 1 is y, 2 is z (if z is present)
+	 */
+	protected static float[][] worldBounds = null;
+
+	/**
 	 * build a geometry-based training/validation example for the SOM
 	 * @param _map owning map manager
 	 * @param _originPt : the point on this plane closest to 0,0,0
@@ -34,11 +41,12 @@ public class Geom_PlaneSOMExample extends SOM_GeomExample {
 	 * 		idx 1 : random color
 	 * 		idx 2 : color based on owning object's location in space
 	 * 		idx 3 : owning object's random color
+	 * @param _worldBounds : bounds in sim world : 
+	 * 
+	 * 
 	 */
-	public Geom_PlaneSOMExample(SOM_MapManager _map, myPointf _originPt, myVectorf _normVec, String _id, int[][] _clrs) {
-		super(_map, _id, _clrs);
-		originPt = new myPointf(_originPt);
-		normVec = new myVectorf(_normVec);
+	public Geom_PlaneSOMExample(SOM_MapManager _map, String _id, SOM_GeomSmplForSOMExample[] _srcSmpls, float[][] _worldBounds) {
+		super(_map, _id,  _srcSmpls, _worldBounds);
 	}
 
 	public Geom_PlaneSOMExample(Geom_PlaneSOMExample _otr) {
@@ -48,22 +56,71 @@ public class Geom_PlaneSOMExample extends SOM_GeomExample {
 	}
 
 	/**
-	 * draw this example in the world - instance-class specific
+	 * build this example from passed source samples
+	 * @param _srcSmpls
 	 */
-	@Override
-	protected void _drawMe_Geom(my_procApplet pa) {
+	protected final void buildExampleFromSrcObjs(SOM_GeomSmplForSOMExample[] _srcSmpls) {
+		
+		
+	}//buildExampleFromSrcObjs
+	
+	/**
+	 * calculate the bounds on s and t (if appropriate) for parametric formulation of object equation
+	 * worldBounds is 
+	 * 		first idx 	: 0 is min; 1 is diff
+	 * 		2nd idx 	: 0 is x, 1 is y, 2 is z
+	 * result is
+	 * 		first idx 	: 0==min, 1==diff
+	 * 		2nd idx 	: 0==s, 1==t
+	 * @return result array
+	 */
+	@Override	protected float[][] calcTBounds() {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	/**
-	 * draw this example in the world based on BMU - instance-class specific
+	 * call from ctor of base class, but set statically for each instancing class type
+	 * @param _worldBounds
 	 */
-	@Override
-	protected void _drawMe_Geom_BMU(my_procApplet pa) {
-		// TODO Auto-generated method stub
+	protected final void setWorldBounds(float[][]_worldBounds) {
+		if(null!=worldBounds) {return;}
+		worldBounds = new float[_worldBounds.length][];
+		for(int i=0;i<worldBounds.length;++i) {
+			float[] tmp = new float[_worldBounds[i].length];
+			for(int j=0;j<tmp.length;++j) {	tmp[j]=_worldBounds[i][j];}
+			worldBounds[i]=tmp;
+		}
+	}//setWorldBounds
+	
+	/**
+	 * point normal form of plane
+	 * @param _n unit normal of plane
+	 * @param _p point on plane
+	 * @return eq : coefficients of the plane equation in the form eq[0]*x + eq[1]*y + eq[2]*z + eq[3] = 0
+	 */
+	public float[] getPlanarEqFromPointAndNorm(myVectorf _n, myPointf _p) {return new float[] { _n.x, _n.y, _n.z, _n.x * -_p.x + _n.y * -_p.y + _n.z * -_p.z};}
 
-	}
+//	
+//	
+//	
+//	/**
+//	 * draw this example in the world - instance-class specific
+//	 */
+//	@Override
+//	protected void _drawMe_Geom(my_procApplet pa) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	/**
+//	 * draw this example in the world based on BMU - instance-class specific
+//	 */
+//	@Override
+//	protected void _drawMe_Geom_BMU(my_procApplet pa) {
+//		// TODO Auto-generated method stub
+//
+//	}
 
 	@Override
 	protected void buildFeaturesMap() {

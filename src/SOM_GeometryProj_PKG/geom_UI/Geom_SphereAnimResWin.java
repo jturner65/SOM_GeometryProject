@@ -1,6 +1,5 @@
 package SOM_GeometryProj_PKG.geom_UI;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -9,7 +8,6 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.SOM_MapManager;
 import base_UI_Objects.*;
-import base_UI_Objects.windowUI.myDispWindow;
 import base_Utils_Objects.vectorObjs.myPoint;
 import base_Utils_Objects.vectorObjs.myVector;
 
@@ -44,7 +42,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	public final SOM_MapManager buildMapManager() {
 		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(SOMMapDims, ((SOM_GeometryMain)pa).argsMap);
-		_mgr.setWorldBounds(pa.cubeBnds);
+		_mgr.setDispWinAndWorldBounds(this, pa.cubeBnds);
 		return _mgr;
 	}
 
@@ -67,6 +65,13 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 		//tmpBtnNamesArray.add(new Object[]{"Debugging","Debug",debugAnimIDX});
 		return numPrivFlags;
 	}
+	/**
+	 * Instance class determines the true and false labels for button to control showing full object, or just wire frame
+	 * If empty no button is displayed
+	 * @return array holding true(idx0) and false(idx1) labels for button
+	 */
+	@Override
+	protected final String[] getShowWireFrameBtnTFLabels() {	return new String[] {"Showing Sphere Wireframe","Showing Full Sphere"};}
 
 	/**
 	 * set values for instancing class-specific boolean flags

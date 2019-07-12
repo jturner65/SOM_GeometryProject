@@ -3,7 +3,6 @@
  */
 package SOM_GeometryProj_PKG.geom_UI;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -22,9 +21,8 @@ import base_Utils_Objects.vectorObjs.myVector;
 public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	
 	
-//	//private child-class flags - start at numBaseAnimWinPrivFlags
-//	public static final int 
-//		XXXXAnimIDX = 0;						//debug
+	//private child-class flags - start at numBaseAnimWinPrivFlags
+	//public static final int 
 	/**
 	 * # of private boolean flags for this window - expands upon those determined in SOM_AnimWorldWin
 	 */
@@ -38,7 +36,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	public SOM_MapManager buildMapManager() {
 		Geom_PlaneMapMgr _mgr = new Geom_PlaneMapMgr(SOMMapDims, ((SOM_GeometryMain)pa).argsMap);
-		_mgr.setWorldBounds(pa.cubeBnds);
+		_mgr.setDispWinAndWorldBounds(this, pa.cubeBnds);
 		return _mgr;
 	}
 
@@ -61,6 +59,15 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 		//tmpBtnNamesArray.add(new Object[]{"Debugging","Debug",debugAnimIDX});
 		return numPrivFlags;
 	}
+	
+	/**
+	 * Instance class determines the true and false labels for button to control showing full object, or just wire frame
+	 * If empty no button is displayed
+	 * @return array holding true(idx0) and false(idx1) labels for button
+	 */
+	@Override
+	protected final String[] getShowWireFrameBtnTFLabels() {	return new String[] {"Showing Plane Wireframe","Showing Full Plane"};}
+
 
 	/**
 	 * set values for instancing class-specific boolean flags

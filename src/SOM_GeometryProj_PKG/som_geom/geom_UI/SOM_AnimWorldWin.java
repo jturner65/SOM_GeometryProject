@@ -30,11 +30,9 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	public static final int
 		gIDX_NumUIObjs 			= 0,
 		gIDX_NumUISamples 		= 1,
-		gIDX_SelDispUIObj		= 2,//ID of a ui obj to be selected and highlighted
-		gIDX_DispAlpha			= 3;	//alpha for object display
-							
+		gIDX_SelDispUIObj		= 2;//ID of a ui obj to be selected and highlighted					
 
-	protected static final int numBaseAnimWinUIObjs = 4;
+	protected static final int numBaseAnimWinUIObjs = 3;
 	//instancing class will specify numGUIObjs	
 	protected double[] uiVals;				
 	
@@ -56,12 +54,13 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		showMapBasedLocsIDX 	= 8,				//show map-derived locations of training data instead of actual locations (or along with?)
 		uiObjBMUsSetIDX			= 9,				//ui object's bmus have been set
 		mapBuiltToCurUIObjsIDX 	= 10,				//the current ui obj configuration has an underlying map built to it
-		regenUIObjsIDX 			= 11;				//regenerate ui objs with current specs
+		regenUIObjsIDX 			= 11,				//regenerate ui objs with current specs
+		showObjByWireFrmIDX		= 12;				//show object as wireframe, or as filled-in
 	
-	protected static final int numBaseAnimWinPrivFlags = 12;
+	protected static final int numBaseAnimWinPrivFlags = 13;
 		
 	//initial values
-	public int numGeomObjs = 200, numSmplPoints = 200, curSelGeomObjIDX = 0, curDispAlpha = 255;
+	public int numGeomObjs = 200, numSmplPoints = 200, curSelGeomObjIDX = 0;
 	
 	//represented random/generated uiObjs
 	public SOM_GeomObj[] geomObjects;
@@ -107,11 +106,14 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		tmpBtnNamesArray.add(new Object[]{"Showing Sample Points", "Showing " +geomObjType + " Objects", showSamplePntsIDX});		
 		tmpBtnNamesArray.add(new Object[]{"Hide Labels", "Show Labels", showUIObjIdIDX});    		
 		tmpBtnNamesArray.add(new Object[]{"Showing Loc-based Color", "Showing Random Color", useUIObjLocAsClrIDX});		
-		tmpBtnNamesArray.add(new Object[]{"Hi-Light Sel " +geomObjType + " ", "Enable " +geomObjType + " Hi-Light", showSelUIObjIDX});  
-		
+		tmpBtnNamesArray.add(new Object[]{"Hi-Light Sel " +geomObjType + " ", "Enable " +geomObjType + " Hi-Light", showSelUIObjIDX});  		
 		tmpBtnNamesArray.add(new Object[]{"Train From " +geomObjType + " Samples", "Train From " +geomObjType + " Centers/Bases", useSmplsForTrainIDX});    
 		tmpBtnNamesArray.add(new Object[]{"Save Data", "Save Data", saveUIObjDataIDX});        
 		tmpBtnNamesArray.add(new Object[]{"Showing BMU-derived Locs", "Showing Actual Locs", showMapBasedLocsIDX});  
+		
+		String[] showWFObjsTFLabels = getShowWireFrameBtnTFLabels();
+		if((null != showWFObjsTFLabels) && (showWFObjsTFLabels.length == 2)) {tmpBtnNamesArray.add(new Object[]{showWFObjsTFLabels[0],showWFObjsTFLabels[1],showObjByWireFrmIDX});}		
+		
 
 		//add instancing-class specific buttons - returns total # of private flags in instancing class
 		numPrivFlags = initAllAnimWorldPrivBtns_Indiv(tmpBtnNamesArray);
@@ -139,6 +141,16 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	 * @return total number of privBtnFlags in instancing class (including those not displayed)
 	 */
 	protected abstract int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray);
+	
+	/**
+	 * Instance class determines the true and false labels for button to control showing full object, or just wire frame
+	 * If empty no button is displayed
+	 * @return array holding true(idx0) and false(idx1) labels for button
+	 */
+	protected abstract String[] getShowWireFrameBtnTFLabels();
+
+	
+	
 	
 	/**
 	 * call to build or rebuild geometric objects
@@ -180,6 +192,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 			case uiObjBMUsSetIDX		: { break;}
 			case mapBuiltToCurUIObjsIDX : { break;}     //whether map has been built and loaded for current config of spheres
 			case regenUIObjsIDX			: { if(val){initAllGeomObjs(); addPrivBtnToClear(regenUIObjsIDX);} break;}		//remake all objects, turn off flag
+			case showObjByWireFrmIDX	: { break;}
 			default						: { setPrivFlags_Indiv(idx,val);}
 		}
 	}//setPrivFlags
@@ -211,8 +224,6 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		tmpUIObjArray.add(new Object[] {new double[]{minNumSmplsPerObj,maxNumSmplsPerObj,diffNumSmplsPerObj}, (double)(numSmplPoints), "# of samples per Object", new boolean[]{true, false, true}});  				//gIDX_NumUISamples 	                                                                        
 		tmpUIObjArray.add(new Object[] {new double[]{0,numGeomObjs-1,1}, (double)(curSelGeomObjIDX), "ID of Object to Select", new boolean[]{true, false, true}});   													//gIDX_SelDispUIObj	      
 	
-		tmpUIObjArray.add(new Object[] {new double[]{0,255,1}, (double)(this.curDispAlpha), "Alpha for object display", new boolean[]{true, false, true}});   				//gIDX_DispAlpha
-		
 		
 		//populate instancing application objects
 		setupGUIObjsAras_Indiv(tmpUIObjArray,tmpListObjVals);
@@ -270,9 +281,6 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		case gIDX_SelDispUIObj :{
 			if(ival != curSelGeomObjIDX){curSelGeomObjIDX = pa.min(ival, numGeomObjs-1);}//don't select a sphere Higher than the # of spheres
 			break;}
-		case gIDX_DispAlpha : {
-			if(ival != curDispAlpha) {curDispAlpha = ival;}
-		}
 		default : {setUIWinVals_Indiv(UIidx, val);}
 		}	
 	}
@@ -314,44 +322,76 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 
 	@Override
 	protected final void drawMe(float animTimeMod) {
-//		curMseLookVec = pa.c.getMse2DtoMse3DinWorld(pa.sceneCtrVals[pa.sceneIDX]);			//need to be here
-//		curMseLoc3D = pa.c.getMseLoc(pa.sceneCtrVals[pa.sceneIDX]);
-		//pa.outStr2Scr("Current mouse loc in 3D : " + curMseLoc3D.toStrBrf() + "| scenectrvals : " + pa.sceneCtrVals[pa.sceneIDX].toStrBrf() +"| current look-at vector from mouse point : " + curMseLookVec.toStrBrf());
 		pa.pushMatrix();pa.pushStyle();//nested ifthen shenannigans to get rid of if checks in each individual draw
 		drawMeFirst_Indiv();
-		if(getPrivFlags(uiObjDataLoadedIDX)){ 
+		if(getPrivFlags(uiObjDataLoadedIDX)){ 	//cannot draw object unless data has been loaded
 			//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is true");
-			if(getPrivFlags(showMapBasedLocsIDX)){	
-				//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is true");
-				if (getPrivFlags(mapBuiltToCurUIObjsIDX)){//show all spheres/samples based on map-derived locations if selected and map is made
-					//draw spheres/samples based on map info - use 1st 3 features of non-scaled ftr data from map's nodes as x-y-z 
-					if(getPrivFlags(useUIObjLocAsClrIDX)){
-						if(getPrivFlags(showSamplePntsIDX)){  	for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrLoc_BMU(pa);}			}//useSmplLocAsClrIDX
-						else {									for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc_BMU(pa);}}
-					} else {
-						if(getPrivFlags(showSamplePntsIDX)){	for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrRnd_BMU(pa);}} 
-						else {									for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd_BMU(pa);}}
-					}
-					if(getPrivFlags(showUIObjIdIDX)){			for(SOM_GeomObj s : geomObjects){s.drawMeLabel_BMU(pa);}	}
-					if(getPrivFlags(showSelUIObjIDX)){			geomObjects[curSelGeomObjIDX].drawMeSelected_BMU(pa,animTimeMod);     }
-				} else {										setPrivFlags(showMapBasedLocsIDX, false);	}	//turn off flag if not possible to draw 
-			} else {				
-				//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is false");
-				if(getPrivFlags(useUIObjLocAsClrIDX)){
-					if(getPrivFlags(showSamplePntsIDX)){		for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrLoc(pa);}} //useSmplLocAsClrIDX
-					else {										for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc(pa,curDispAlpha);}}
-				} else {
-					if(getPrivFlags(showSamplePntsIDX)){		for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrRnd(pa);}} 
-					else {										for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd(pa,curDispAlpha);}}
-				}
-				if(getPrivFlags(showUIObjIdIDX)){				for(SOM_GeomObj s : geomObjects){s.drawMeLabel(pa);}	}
-				if(getPrivFlags(showSelUIObjIDX)){				geomObjects[curSelGeomObjIDX].drawMeSelected(pa,animTimeMod);     }
+			if(getPrivFlags(showMapBasedLocsIDX)){				//show map-based locations
+				_drawMe_UseBMUs(animTimeMod);
+			} else {										//show objects based on their own location/data, not map-derived quantities		
+				_drawMe_UseActual(animTimeMod);
 			}//use locs or map-locs
 		} //else {			msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is false");}
 		drawMeLast_Indiv();
 		pa.popStyle();pa.popMatrix();
 		
 	}//drawMe
+	
+	private void _drawMe_UseBMUs(float animTimeMod) {
+		//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is true");
+		if (getPrivFlags(mapBuiltToCurUIObjsIDX)){//show all objs based on map-derived locations if selected and map is made (i.e. draw bmu's location for object, instead of object itself
+			//draw spheres/samples based on map info - use 1st 3 features of non-scaled ftr data from map's nodes as x-y-z 
+			if(getPrivFlags(showSamplePntsIDX)){			//sample points don't use wire frames
+				if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrLoc_BMU(pa);}} //loc color
+				else {											for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrRnd_BMU(pa);}}//rand color
+			} else {										//draw objects
+				if(getPrivFlags(showObjByWireFrmIDX)) {			//draw objects with wire frames
+					if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc_WF_BMU(pa);}} //loc color
+					else {										for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd_WF_BMU(pa);}}//rand color
+				} else {
+					if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc_BMU(pa);}} //loc color
+					else {										for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd_BMU(pa);}}//rand color
+				}
+			}//if show sample points only, else
+
+			
+			
+			
+			if(getPrivFlags(useUIObjLocAsClrIDX)){	//loc color
+				if(getPrivFlags(showSamplePntsIDX)){  	for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrLoc_BMU(pa);}			}//useSmplLocAsClrIDX
+				else {									for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc_BMU(pa);}}
+			} else {								//rand color
+				if(getPrivFlags(showSamplePntsIDX)){	for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrRnd_BMU(pa);}} 
+				else {									for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd_BMU(pa);}}
+			}
+			if(getPrivFlags(showUIObjIdIDX)){			for(SOM_GeomObj s : geomObjects){s.drawMeLabel_BMU(pa);}	}
+			if(getPrivFlags(showSelUIObjIDX)){			geomObjects[curSelGeomObjIDX].drawMeSelected_BMU(pa,animTimeMod);     }
+			
+			
+			
+		} else {										setPrivFlags(showMapBasedLocsIDX, false);	}	//turn off flag if not possible to draw 
+		
+	}
+	
+	private void _drawMe_UseActual(float animTimeMod) {
+		//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is false");
+		
+		if(getPrivFlags(showSamplePntsIDX)){			//sample points don't use wire frames
+			if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrLoc(pa);}} //loc color
+			else {											for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrRnd(pa);}}//rand color
+		} else {										//draw objects
+			if(getPrivFlags(showObjByWireFrmIDX)) {			//draw objects with wire frames
+				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc_WF(pa);}} //loc color
+				else {										for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd_WF(pa);}}//rand color
+			} else {
+				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc(pa);}} //loc color
+				else {										for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd(pa);}}//rand color
+			}
+		}//if show sample points only, else
+		if(getPrivFlags(showUIObjIdIDX)){				for(SOM_GeomObj s : geomObjects){s.drawMyLabel(pa);}	}
+		if(getPrivFlags(showSelUIObjIDX)){				geomObjects[curSelGeomObjIDX].drawMeSelected(pa,animTimeMod);     }
+	}//_drawMe_UseActual
+	
 	
 	/**
 	 * instance-specific drawing setup before objects are actually drawn 

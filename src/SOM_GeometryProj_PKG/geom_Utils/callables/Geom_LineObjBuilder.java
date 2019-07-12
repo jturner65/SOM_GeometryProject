@@ -27,10 +27,9 @@ public class Geom_LineObjBuilder extends SOM_GeomObjBuilder {
 //		 * 		2nd idx 	: 0 is x, 1 is y
 //		 */
 //		public SOM_Line(SOM_GeomMapManager _mapMgr, myPointf _a, myPointf _b, int _numSmplPts, float[][] _worldBounds) {
-		myPointf a = getRandPointInBounds_2D();
-		myPointf b = getRandPointInBounds_2D();
+		myPointf[] pts = new myPointf[] {getRandPointInBounds_2D(),getRandPointInBounds_2D()};
 		
-		SOM_Line line = new SOM_Line(mapMgr,a, b,numSmplsPerObj, worldBounds);
+		SOM_Line line = new SOM_Line(mapMgr,pts,numSmplsPerObj, worldBounds);
 		return line;
 	}
 
