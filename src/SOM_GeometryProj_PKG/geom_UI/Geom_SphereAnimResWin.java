@@ -17,18 +17,15 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 		gIDX_MinRadius		= numBaseAnimWinUIObjs + 0,
 		gIDX_MaxRadius		= numBaseAnimWinUIObjs + 1;		//ID of a UI object to be selected and highlighted
 
-	//public final int numGUIObjs = numBaseAnimWinUIObjs + 2;											//# of gui objects for ui
-
-//	//private child-class flags - start at numBaseAnimWinPrivFlags
-//	public static final int 
-//		XXXXAnimIDX = 0;						//debug
 	/**
 	 * # of private boolean flags for this window - expands upon those determined in SOM_AnimWorldWin
 	 */
 	private final int numPrivFlags = numBaseAnimWinPrivFlags;
 	
-
-	public float minSphRad = 5, maxSphRad = 50;
+	/**
+	 * set initial valuess
+	 */
+	public float minSphRad = 10, maxSphRad = 50;
 	
 
 	public Geom_SphereAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed,String _winTxt, boolean _canDrawTraj) {
@@ -41,8 +38,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	public final SOM_MapManager buildMapManager() {
-		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(SOMMapDims, ((SOM_GeometryMain)pa).argsMap);
-		_mgr.setDispWinAndWorldBounds(this, pa.cubeBnds);
+		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(null, this, SOMMapDims, pa.cubeBnds, ((SOM_GeometryMain)pa).argsMap);
 		return _mgr;
 	}
 
@@ -98,19 +94,27 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	protected final void setupGUIObjsAras_Indiv(ArrayList<Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals) {
-		tmpUIObjArray.add(new Object[] {new double[]{1,100,1}, (double)minSphRad, "Min sphere radius", new boolean[]{false, false, true}});   				//gIDX_NumUIObjs 		                                                                        
-		tmpUIObjArray.add(new Object[] {new double[]{10,500,1},(double)maxSphRad, "Max sphere radius", new boolean[]{false, false, true}});  				//gIDX_NumUISamples 	                                                                        	
+		tmpUIObjArray.add(new Object[] {new double[]{10,100,1}, (double)minSphRad, "Min sphere radius", new boolean[]{false, false, true}});   				//gIDX_NumUIObjs 		                                                                        
+		tmpUIObjArray.add(new Object[] {new double[]{50,500,1},(double)maxSphRad, "Max sphere radius", new boolean[]{false, false, true}});  				//gIDX_NumUISamples 	                                                                        	
 	}
 	
 	@Override
-	protected final int getMinNumObjs() {	return 10;}
+	protected final int getMinNumObjs() {	return 2;}
 	@Override
-	protected final int getMaxNumObjs() {	return 1000;}
+	protected final int getMaxNumObjs() {	return 50;}
 	@Override
 	protected final int getMinNumSmplsPerObj() {return 10;}
 	@Override
-	protected final int getMaxNumSmplsPerObj() {return 1000;}
-	
+	protected final int getMaxNumSmplsPerObj() {return 500;}
+	/**
+	 * calculate the max # of examples for this type object : n choose k where k is degree
+	 */
+	@Override
+	protected final long getNumTrainingExamples(int objs, int smplPerObj) {
+		long ttlNumSamples = objs * smplPerObj;
+		return (ttlNumSamples *(ttlNumSamples-1)*(ttlNumSamples-2)*(ttlNumSamples-3))/24;
+	}
+
 	/**
 	 * send all instance-specific values from UI to map manager
 	 */

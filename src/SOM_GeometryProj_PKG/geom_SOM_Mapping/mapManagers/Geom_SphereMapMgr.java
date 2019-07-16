@@ -2,10 +2,11 @@ package SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers;
 
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_Objects.SOM_Sphere;
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_SphereExManager;
 import SOM_GeometryProj_PKG.geom_Utils.runners.Geom_SphereObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
+import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
@@ -13,7 +14,6 @@ import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRu
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.som_examples.SOM_MapNode;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
-import base_UI_Objects.windowUI.myDispWindow;
 import base_Utils_Objects.vectorObjs.Tuple;
 
 public class Geom_SphereMapMgr extends SOM_GeomMapManager {
@@ -25,24 +25,21 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	 */
 	protected float minRad, maxRad;
 
-	public Geom_SphereMapMgr(SOM_MapUIWin _win, float[] _dims, TreeMap<String, Object> _argsMap) {
-		super(_win, _dims, _argsMap, "Spheres");
+	public Geom_SphereMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
+		super(_win, _dispWin, _dims, _worldBounds, _argsMap, "Spheres");
 	}
 
-	public Geom_SphereMapMgr(float[] _dims, TreeMap<String, Object> _argsMap) {
-		this(null,_dims, _argsMap);
-	}
-	
 	/**
 	 * build the thread runner for this map manager that will manage the various tasks related to the geometric objects
 	 * assign default task
 	 * @return
 	 */
 	protected final SOM_GeomObjBldrRunner buildObjRunner() {
-		return new Geom_SphereObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, worldBounds, SOM_GeomObjBldrTasks.buildObj);		
+		return new Geom_SphereObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, worldBounds, SOM_GeomObjBldrTasks.buildBaseObj);		
 	}
 	@Override
-	protected SOM_GeomObj[] buildEmptyObjArray() {		return new SOM_Sphere[numObjsToBuild];}
+	protected final SOM_GeomObj[] buildEmptyObjArray() {		return new Geom_SphereSOMExample[numObjsToBuild];}
+	
 
 	/**
 	 * build the example data mapper specific to instancing class
@@ -114,5 +111,7 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 			default : {break;}
 		}
 	}
+	
+
 
 }

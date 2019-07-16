@@ -3,11 +3,16 @@ package SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadLocalRandom;
 
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
+import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_Utils_Objects.MyMathUtils;
 import base_Utils_Objects.io.MessageObject;
+import base_Utils_Objects.vectorObjs.myPoint;
 import base_Utils_Objects.vectorObjs.myPointf;
+import base_Utils_Objects.vectorObjs.myVector;
 import base_Utils_Objects.vectorObjs.myVectorf;
 
 /**
@@ -17,6 +22,10 @@ import base_Utils_Objects.vectorObjs.myVectorf;
  */
 public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 	protected final SOM_GeomMapManager mapMgr;
+	/**
+	 * owning animation win holding geometric objects
+	 */
+	protected final SOM_AnimWorldWin animWin;
 	protected final MessageObject msgObj;
 	protected final int stIdx, endIdx, thdIDX, numSmplsPerObj;	
 
@@ -50,6 +59,7 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 	 */
 	public SOM_GeomObjBuilder(SOM_GeomMapManager _mapMgr, SOM_GeomObj[] _objArray, int[] _intVals, SOM_GeomObjBldrTasks _taskToDo, String _datatype, float[][] _worldBounds) {
 		mapMgr = _mapMgr;
+		animWin = mapMgr.dispWin; 
 		msgObj = mapMgr.buildMsgObj();
 		
 		stIdx = _intVals[0];
@@ -69,6 +79,24 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 		}
 		
 	}//ctor
+	
+	/**
+	 * build array of SOM_GeomSmplForSOMExample objects, which each holds a sample 
+	 * point in anim space and the object it came from, or null if new
+	 * @param objs the array of source objects, or null if creating new source objects
+	 * @param pts the array of points
+	 * @return
+	 */
+	protected Geom_SmplDataForSOMExample[] buildSrcGeomSmplAra(SOM_GeomObj[] objs, myPointf[] pts) {
+		Geom_SmplDataForSOMExample[] srcGeomData = new Geom_SmplDataForSOMExample[pts.length];
+		if(null==objs) {//creation
+			for(int i=0;i<pts.length;++i) {	srcGeomData[i] = new Geom_SmplDataForSOMExample(null, pts[i]);}
+		} else {
+			for(int i=0;i<pts.length;++i) {	srcGeomData[i] = new Geom_SmplDataForSOMExample(objs[i], pts[i]);}
+		}
+		return srcGeomData;
+	}
+	
 	
 	protected myPointf getRandPointInBounds_2D() {
 		myPointf x = new myPointf( 
@@ -95,16 +123,42 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 		return x;
 	}
 	
+	protected myPoint getRandPointInBounds_2D_Double() {
+		myPoint x = new myPoint( 
+				(ThreadLocalRandom.current().nextDouble() *worldBounds[1][0])+worldBounds[0][0], 
+				(ThreadLocalRandom.current().nextDouble() *worldBounds[1][1])+worldBounds[0][1],0);
+		return x;
+	}
+	
+
+	protected myPoint getRandPointInBounds_3D_Double() {
+		myPoint x = new myPoint( 
+				(ThreadLocalRandom.current().nextDouble() *worldBounds[1][0])+worldBounds[0][0], 
+				(ThreadLocalRandom.current().nextDouble() *worldBounds[1][1])+worldBounds[0][1],
+				(ThreadLocalRandom.current().nextDouble() *worldBounds[1][2])+worldBounds[0][2]);
+		return x;
+	}
+	
+	protected myPoint getRandPointInBounds_3D_Double(double bnd) {
+		double tbnd = 2.0*bnd;
+		myPoint x = new myPoint( 
+				(ThreadLocalRandom.current().nextDouble() *(worldBounds[1][0]-tbnd))+worldBounds[0][0]+bnd, 
+				(ThreadLocalRandom.current().nextDouble() *(worldBounds[1][1]-tbnd))+worldBounds[0][1]+bnd,
+				(ThreadLocalRandom.current().nextDouble() *(worldBounds[1][2]-tbnd))+worldBounds[0][2]+bnd);
+		return x;
+	}
+	
 	/**
-	 * find an array of 3 non-colinear points
+	 * find an array of 3 non-colinear points 
 	 * @return array of 3 non-colinear points
 	 */
 	protected myPointf[] getRandPlanePoints() {
 		myPointf a = getRandPointInBounds_3D();
 		myPointf b = getRandPointInBounds_3D();
-		myPointf c;
 		myVectorf ab = new myVectorf(a,b), ac;
-		ab._normalize();
+		ab._normalize();		
+		myPointf c;
+		
 		do {
 			c = getRandPointInBounds_3D();
 			ac = new myVectorf(a,c);
@@ -114,6 +168,29 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 		return planePts;
 	}
 	
+	/**
+	 * find an array of 3 non-colinear points
+	 * @return array of 3 non-colinear points
+	 */
+	protected myPoint[] getRandPlanePoints_Double() {
+		myPoint a = getRandPointInBounds_3D_Double();
+		myPoint b = getRandPointInBounds_3D_Double();
+		myPoint c;
+		myVector ab = new myVector(a,b), ac;
+		ab._normalize();
+		do {
+			c = getRandPointInBounds_3D_Double();
+			ac = new myVector(a,c);
+			ac._normalize();
+		} while (Math.abs(ab._dot(ac))==1.0f);
+		myPoint[] planePts = new myPoint[] {a,b,c};		
+		return planePts;
+	}
+	
+	/**
+	 * get random unit vector
+	 * @return
+	 */
 	protected myVectorf getRandNormal_3D() {
 		myVectorf x = new myVectorf( 
 				(ThreadLocalRandom.current().nextFloat() *2.0f)-1.0f, 
@@ -123,7 +200,7 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 	}
 	
 	/**
-	 * get random position on sphere surface with passed radius and center
+	 * get uniformly random position on sphere surface with passed radius and center
 	 * @param rad
 	 * @param ctr
 	 * @return
@@ -143,29 +220,37 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 	 * get 3 non-colinear points, find 4th by finding normal of plane 3 points describe
 	 * @param rad radius of desired sphere
 	 * @param ctr center of desired sphere
-	 */
-	
+	 */	
 	protected final myPointf[] getRandSpherePoints(double rad, myPointf ctr){
 		myPointf a = getRandPosOnSphere(rad, ctr);
 		myPointf b = getRandPosOnSphere(rad, ctr);
 		myPointf c,d;
 		myVectorf ab = new myVectorf(a,b), ac, bc, ad;
 		ab._normalize();
+		int iter = 0;
 		do {
+			++iter;
 			c = getRandPosOnSphere(rad, ctr);
 			ac = new myVectorf(a,c);
 			ac._normalize();
-		} while (Math.abs(ab._dot(ac))==1.0f);
-		bc = new myVectorf(b,c);
-		bc._normalize();
-		//now find d
+		} while (Math.abs(ab._dot(ac))==1.0f);		//if 1 or -1 then collinear
+		//4th point needs to be non-coplanar - will guarantee that 
+		//it is also not collinear with any pair of existing points
+		//normal to abc plane
+		myVectorf planeNorm = ab._cross(ac)._normalize();
+		//now find d so that it does not line in plane of abc - vector from ab
 		do {
+			++iter;
 			d = getRandPosOnSphere(rad, ctr);
 			ad = new myVectorf(a,d);
 			ad._normalize();
-		} while ((Math.abs(ab._dot(ad))==1.0f) || (Math.abs(ac._dot(ad))==1.0f) || (Math.abs(bc._dot(ad))==1.0f)) ;
+		} while (ad._dot(planeNorm) == 0.0f);//if 0 then in plane (ortho to normal)
 		
 		myPointf[] spherePts = new myPointf[] {a,b,c,d};		
+		if(iter>2) {
+			msgObj.dispInfoMessage("SOM_GeomObjBuilder","getRandSpherePoints::thdIDX=" + String.format("%02d", thdIDX)+" ", "Took Longer than 2 iterations to generate 4 points for sphere : " + iter);
+			
+		}
 		return spherePts;
 	}
 
@@ -183,9 +268,9 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 	/**
 	 * build objects
 	 */
-	protected void _buildTask() {
+	protected void _buildBaseObj_Task() {
 		msgObj.dispInfoMessage("SOM_GeomObjBuilder", "_buildTask::thdIDX=", "Start building " + (endIdx-stIdx) + " " +dataType +" objects at idxs : ["+stIdx+", "+endIdx+"]");
-		for(int i=stIdx; i<endIdx;++i) {	objArray[i]=_buildSingleObject(i);	}
+		for(int i=stIdx; i<endIdx;++i) {	objArray[i]=_buildSingleObject(SOM_ExDataType.Training,i);	}
 		msgObj.dispInfoMessage("SOM_GeomObjBuilder", "_buildTask::thdIDX=", "Finished building " + (endIdx-stIdx) + " " +dataType +" objects at idxs : ["+stIdx+", "+endIdx+"]");
 	}
 	/**
@@ -193,12 +278,12 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 	 * @param idx idx of object in resultant array
 	 * @return build object
 	 */
-	protected abstract SOM_GeomObj _buildSingleObject(int idx);
+	protected abstract SOM_GeomObj _buildSingleObject(SOM_ExDataType _exDataType, int idx);
 
 	@Override
 	public final Boolean call() throws Exception {
 		switch (taskToDo) {
-			case buildObj : { _buildTask(); break;}
+			case buildBaseObj : { _buildBaseObj_Task(); break;}
 			default :{
 				msgObj.dispErrorMessage("SOM_GeomObjBuilder", "call::thdIDX=", "Unsupported task chosen : " + taskToDo.toString() +".  Aborting");
 			}

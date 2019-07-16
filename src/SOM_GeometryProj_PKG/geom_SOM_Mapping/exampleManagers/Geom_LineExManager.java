@@ -2,9 +2,8 @@ package SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers;
 
 import java.util.ArrayList;
 
-import SOM_GeometryProj_PKG.geom_SOM_Examples.Geom_LineSOMExample;
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
 

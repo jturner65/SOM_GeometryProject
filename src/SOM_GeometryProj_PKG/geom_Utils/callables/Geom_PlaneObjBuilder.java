@@ -1,11 +1,13 @@
 package SOM_GeometryProj_PKG.geom_Utils.callables;
 
 
-import SOM_GeometryProj_PKG.geom_Objects.SOM_Plane;
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBuilder;
+import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_Utils_Objects.vectorObjs.myPointf;
 
 public class Geom_PlaneObjBuilder extends SOM_GeomObjBuilder {
@@ -15,7 +17,7 @@ public class Geom_PlaneObjBuilder extends SOM_GeomObjBuilder {
 	}
 
 	@Override
-	protected SOM_GeomObj _buildSingleObject(int idx) {
+	protected SOM_GeomObj _buildSingleObject(SOM_ExDataType _exDataType, int idx) {
 //		/**
 //		 * Constructor for line object
 //		 * @param _mapMgr owning som map manager
@@ -27,7 +29,12 @@ public class Geom_PlaneObjBuilder extends SOM_GeomObjBuilder {
 //		public SOM_Plane(SOM_GeomMapManager _mapMgr, myPointf[] _ptsOnPlane, myVectorf[] _basis, int _numSmplPts, float[][] _worldBounds) {
 		//points must not be colinear
 		myPointf[] planePts = getRandPlanePoints();
-		return new SOM_Plane(mapMgr, planePts, numSmplsPerObj, worldBounds);
+		String ID = "Plane_"+String.format("%05d", idx);
+		Geom_SmplDataForSOMExample[] _srcSmpls = buildSrcGeomSmplAra(null, planePts);
+		
+		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds)
+		//animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj, worldBounds);
+		return new Geom_PlaneSOMExample(mapMgr, animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj, worldBounds);
 	}
 
 }

@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.SOM_GeometryMain;
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import base_SOM_Objects.SOM_MapManager;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.myPoint;
@@ -22,11 +24,13 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	
 	
 	//private child-class flags - start at numBaseAnimWinPrivFlags
-	//public static final int 
 	/**
 	 * # of private boolean flags for this window - expands upon those determined in SOM_AnimWorldWin
 	 */
-	private final int numPrivFlags = numBaseAnimWinPrivFlags;	
+	public static final int 
+		showOrthoFrameIDX 			= numBaseAnimWinPrivFlags + 0;
+	private final int numPrivFlags = numBaseAnimWinPrivFlags + 1;	
+	
 
 	public Geom_PlaneAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
 		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, "Planes");
@@ -35,13 +39,14 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	public SOM_MapManager buildMapManager() {
-		Geom_PlaneMapMgr _mgr = new Geom_PlaneMapMgr(SOMMapDims, ((SOM_GeometryMain)pa).argsMap);
-		_mgr.setDispWinAndWorldBounds(this, pa.cubeBnds);
+		//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
+		Geom_PlaneMapMgr _mgr = new Geom_PlaneMapMgr(null, this, SOMMapDims, pa.cubeBnds, ((SOM_GeometryMain)pa).argsMap);
 		return _mgr;
 	}
 
 	@Override
 	protected final void initMe_Indiv() {	
+		setPrivFlags(showOrthoFrameIDX, true);
 	}
 	
 	/**
@@ -56,7 +61,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	protected final int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
-		//tmpBtnNamesArray.add(new Object[]{"Debugging","Debug",debugAnimIDX});
+		tmpBtnNamesArray.add(new Object[]{"Showing Plane Ortho Frame","Hiding Plane Ortho Frame",showOrthoFrameIDX});
 		return numPrivFlags;
 	}
 	
@@ -77,7 +82,8 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final void setPrivFlags_Indiv(int idx, boolean val) {
 		switch (idx) {//special actions for each flag
-			default						: {return;}
+			case showOrthoFrameIDX 	: {break;}
+			default					: {return;}
 		}
 	}//setPrivFlags_Indiv
 	
@@ -106,11 +112,19 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final int getMinNumObjs() {	return 1;}
 	@Override
-	protected final int getMaxNumObjs() {	return 100;}
+	protected final int getMaxNumObjs() {	return 20;}
 	@Override
-	protected final int getMinNumSmplsPerObj() {return 5;}
+	protected final int getMinNumSmplsPerObj() {return 10;}
 	@Override
-	protected final int getMaxNumSmplsPerObj() {return 1000;}
+	protected final int getMaxNumSmplsPerObj() {return 100;}
+	/**
+	 * calculate the max # of examples for this type object - clique of object description degree 
+	 */
+	@Override
+	protected final long getNumTrainingExamples(int objs, int smplPerObj) {
+		long ttlNumSamples = objs * smplPerObj;
+		return (ttlNumSamples *(ttlNumSamples-1)*(ttlNumSamples-2))/6;
+	}
 
 	@Override
 	protected final void setUIWinVals_Indiv(int UIidx, float val) {
@@ -156,7 +170,9 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 */
 	protected final void drawMeLast_Indiv() {		
 		//pa.hint(pa.DISABLE_DEPTH_SORT);//slow
-		
+		if(getPrivFlags(uiObjDataLoadedIDX)){
+			if(getPrivFlags(showOrthoFrameIDX)) {for(SOM_GeomObj s : geomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(pa);}}
+		}
 	}	
 	
 	//////////////////////////////

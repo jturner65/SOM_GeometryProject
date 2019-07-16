@@ -2,11 +2,13 @@ package SOM_GeometryProj_PKG.geom_Utils.callables;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import SOM_GeometryProj_PKG.geom_Objects.SOM_Sphere;
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBuilder;
+import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_Utils_Objects.vectorObjs.myPointf;
 
 public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
@@ -21,7 +23,7 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 	}
 
 	@Override
-	protected SOM_GeomObj _buildSingleObject(int idx) {
+	protected SOM_GeomObj _buildSingleObject(SOM_ExDataType _exDataType, int idx) {
 		//SOM_Sphere(SOM_GeomMapManager _mapMgr, myPointf _loc, float _rad, int _numSmplPts, float[][] _worldBounds)
 		
 		float rad = (ThreadLocalRandom.current().nextFloat()*diffRad) + minRad;
@@ -29,8 +31,11 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 			
 		//now get 4 points to determine this sphere - make sure they are ortho		
 		myPointf[] spherePts = getRandSpherePoints(rad,ctr);		
+		String ID = "Sphere_"+String.format("%05d", idx);
+		Geom_SmplDataForSOMExample[] _srcSmpls = buildSrcGeomSmplAra(null, spherePts);
 		
-		return new SOM_Sphere(mapMgr,spherePts,ctr, rad, numSmplsPerObj, worldBounds);
+		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, myPointf _ctr, float _rad, int _numSmplPts, float[][] _worldBounds)
+		return new Geom_SphereSOMExample(mapMgr,animWin, _exDataType, ID, _srcSmpls, ctr, rad, numSmplsPerObj, worldBounds);
 	}
 
 }//Geom_SphereObjBuilder

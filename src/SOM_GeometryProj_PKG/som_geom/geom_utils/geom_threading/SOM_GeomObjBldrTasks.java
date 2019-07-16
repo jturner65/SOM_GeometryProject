@@ -8,7 +8,7 @@ import java.util.Map;
  *
  */
 public enum SOM_GeomObjBldrTasks {
-	buildObj(0);
+	buildBaseObj(0);
 	private int value; 
 	private static Map<Integer, SOM_GeomObjBldrTasks> map = new HashMap<Integer, SOM_GeomObjBldrTasks>(); 
 	static { for (SOM_GeomObjBldrTasks enumV : SOM_GeomObjBldrTasks.values()) { map.put(enumV.value, enumV);}}

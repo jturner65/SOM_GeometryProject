@@ -2,9 +2,11 @@ package SOM_GeometryProj_PKG.som_geom;
 
 import java.util.TreeMap;
 
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
 import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
 import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMProjConfig;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExample;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
@@ -32,7 +34,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	/**
 	 * owning window to display samples in sim world
 	 */
-	protected SOM_AnimWorldWin dispWin;
+	public SOM_AnimWorldWin dispWin;
 	/**
 	 * mapper to manage the example geometric objects and their training data
 	 */
@@ -68,26 +70,24 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 * 		first idx : 0 is min; 1 is diff
 	 * 		2nd idx : 0 is x, 1 is y, 2 is z
 	 */
-	protected float[][] worldBounds;
+	protected final float[][] worldBounds;
 		
-	public SOM_GeomMapManager(SOM_MapUIWin _win, float[] _dims, TreeMap<String, Object> _argsMap, String _geomObjType) {
+	public SOM_GeomMapManager(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap, String _geomObjType) {
 		super(_win, _dims, _argsMap);
 		//worldBounds=_worldBounds;
 		geomObjType=_geomObjType;
 		projConfigData.setSOMProjName(geomObjType);	
+		dispWin = _dispWin;
+		if(dispWin != null) {
+			worldBounds=_worldBounds;
+			objRunner = buildObjRunner();		
+			exMapper.setObjRunner(objRunner);
+		} else {
+			worldBounds = null;
+			objRunner = null;
+		}
 	}
 	
-	/**
-	 * coordinate bounds in world for the objects this map manager owns 
-	 * 		first idx : 0 is min; 1 is diff
-	 * 		2nd idx : 0 is x, 1 is y, 2 is z
-	 */
-	public final void setDispWinAndWorldBounds(SOM_AnimWorldWin _dispWin, float[][] _worldBounds) {
-		dispWin = _dispWin;
-		worldBounds=_worldBounds;
-		objRunner = buildObjRunner();		
-		exMapper.setObjRunner(objRunner);
-	}
 	
 	/**
 	 * build the thread runner for this map manager that will manage the various tasks related to the geometric objects
@@ -154,7 +154,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 */
 	public final SOM_GeomObj[] buildGeomExampleObjs() {
 		objRunner.setNumSamplesPerObj(numSamplesPerObj);
-		objRunner.setTaskType(SOM_GeomObjBldrTasks.buildObj);
+		objRunner.setTaskType(SOM_GeomObjBldrTasks.buildBaseObj);
 		//set instance-specific values
 		buildGeomExampleObjs_Indiv();
 		objRunner.setObjArray(buildEmptyObjArray());	//sets # of work units/objects to build based on size of array
@@ -174,6 +174,32 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 * @return
 	 */
 	protected abstract SOM_GeomObj[] buildEmptyObjArray();
+	
+
+	/**
+	 * build an array of constituent SOM_GeomSmplForSOMExample objects, either from source points, or from randomly derived values, for array of geom objects passed
+	 * @param isRand whether points should be randomly generated from object or built from object constituent points
+	 * @return
+	 */
+	public Geom_SmplDataForSOMExample[] buildSrcObjDataAra(SOM_GeomObj[] objAra, int[] perObjIDX, boolean isRand) {
+		Geom_SmplDataForSOMExample[] srcSamples = new Geom_SmplDataForSOMExample[objAra.length];
+		if(isRand) {	for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new Geom_SmplDataForSOMExample(objAra[i], objAra[i].getRandPointOnObj());}} 
+		else {			for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new Geom_SmplDataForSOMExample(objAra[i], objAra[i].objSamplePts[perObjIDX[i]]);	}}
+		return srcSamples;
+	}	
+
+	/**
+	 * build an array of constituent SOM_GeomSmplForSOMExample objects, either from source points, or from randomly derived values, for array of geom objects passed
+	 * @param isRand whether points should be randomly generated from object or built from object constituent points
+	 * @return
+	 */
+	public Geom_SmplDataForSOMExample[] buildSrcObjDataAra(SOM_GeomObj obj, boolean isRand) {
+		Geom_SmplDataForSOMExample[] srcSamples = new Geom_SmplDataForSOMExample[obj.srcPts.length];
+		if(isRand) {	for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new Geom_SmplDataForSOMExample(obj, obj.getRandPointOnObj());}} 
+		else {			for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new Geom_SmplDataForSOMExample(obj, obj.srcPts[i]);	}}
+		return srcSamples;
+	}	
+
 
 	@Override
 	/**

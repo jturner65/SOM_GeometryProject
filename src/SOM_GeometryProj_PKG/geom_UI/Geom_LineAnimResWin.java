@@ -7,6 +7,7 @@ import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.SOM_MapManager;
+import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.myPoint;
 import base_Utils_Objects.vectorObjs.myVector;
@@ -17,9 +18,9 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	 */
 	private final int numPrivFlags = numBaseAnimWinPrivFlags;
 	/**
-	 * mins and diffs for window
+	 * mins and diffs for window display
 	 */
-	protected float[][] minsAndDiffs;
+	protected float[][] win2DMinsAndDiffs;
 	/**
 	 * 
 	 * @param _p
@@ -34,9 +35,9 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	 */	
 	public Geom_LineAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
 		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, "Lines");
-		minsAndDiffs = new float[2][2];
-		minsAndDiffs[0]= new float[] {-.5f*rectDim[2] + 50, -.5f*rectDim[3] + 50};
-		minsAndDiffs[1] = new float[] {rectDim[2]-100, rectDim[3]-100};
+		win2DMinsAndDiffs = new float[2][2];
+		win2DMinsAndDiffs[0]= new float[] {-.5f*rectDim[2] + 50, -.5f*rectDim[3] + 50};
+		win2DMinsAndDiffs[1] = new float[] {rectDim[2]-100, rectDim[3]-100};
 		super.initThisWin(_canDrawTraj, true, false);
 	}
 
@@ -45,8 +46,8 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	public SOM_MapManager buildMapManager() {
-		Geom_LineMapMgr _mgr = new Geom_LineMapMgr(SOMMapDims, ((SOM_GeometryMain)pa).argsMap);
-		_mgr.setDispWinAndWorldBounds(this, minsAndDiffs);
+		//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
+		Geom_LineMapMgr _mgr = new Geom_LineMapMgr(null, this, SOMMapDims, win2DMinsAndDiffs, ((SOM_GeometryMain)pa).argsMap);
 		return _mgr;
 	}
 	
@@ -102,8 +103,17 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final int getMinNumSmplsPerObj() {return 5;}
 	@Override
-	protected final int getMaxNumSmplsPerObj() {return 100;}
-
+	protected final int getMaxNumSmplsPerObj() {return 50;}
+	/**
+	 * calculate the max # of examples for this type object - clique of object description degree 
+	 */
+	@Override
+	protected final long getNumTrainingExamples(int objs, int smplPerObj) {
+		long ttlNumSamples = objs * smplPerObj;
+		return (ttlNumSamples *(ttlNumSamples-1))/2;
+	}
+	
+	
 	@Override
 	protected final void setUIWinVals_Indiv(int UIidx, float val) {
 		switch(UIidx){	
@@ -136,7 +146,6 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 		// TODO Auto-generated method stub
 		
 	}
-
 	
 	/**
 	 * instance-specific drawing setup before objects are actually drawn 
@@ -147,7 +156,7 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 		pa.pushStyle();
 		pa.noStroke();
 		pa.setFill(new int[] {255,255,255}, 255);
-		pa.sphere(10.0f);
+		pa.sphere(3.0f);
 		pa.popStyle();
 	}
 	

@@ -67,7 +67,7 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 	protected SOM_MapManager buildMapMgr(float[] SOM_mapDims) {
 		//no need to set win here - this is set in SOM Win UI Base class
 		//this is just a place holder - windows will set proper map manager when this window is selected to be active
-		return new Geom_LineMapMgr(SOM_mapDims, argsMap);
+		return new Geom_LineMapMgr(null, null, SOM_mapDims, null, argsMap);
 	}
 	
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_Objects.SOM_GeomSmplForSOMExample;
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_Example;
@@ -20,7 +20,7 @@ public abstract class SOM_GeomExample extends SOM_Example {
 	 * list of point samples and their owning objects making up this training example - 
 	 * these will be used to determine the classes for this object, to be passed to bmu map node for this example 
 	 */
-	protected final SOM_GeomSmplForSOMExample[] geomSrcSamples;	
+	protected final Geom_SmplDataForSOMExample[] geomSrcSamples;	
 
 	
 	/**
@@ -35,13 +35,14 @@ public abstract class SOM_GeomExample extends SOM_Example {
 	
 	
 	/**
-	 * an object to restrict the bounds on this line - min,max, diff s,t value within which to sample plane
+	 * an parameterized bounds to restrict the allowable region of this object in the world
 	 */
 	private float[][] worldTBounds;
 	
 	/**
 	 * build a geometry-based training/validation example for the SOM
 	 * @param _map owning map manager
+	 * @param _type data type of example (training, testing, validation, etc)
 	 * @param _id the unique ID info for this training example
 	 * @param _clrs 4 element array of colors for this object
 	 * 		idx 0 : color based on location of this element in space
@@ -53,8 +54,8 @@ public abstract class SOM_GeomExample extends SOM_Example {
 	 * 		first idx : 0 is min; 1 is diff
 	 * 		2nd idx : 0 is x, 1 is y, 2 is z (if z is present)
 	 */
-	public SOM_GeomExample(SOM_MapManager _map, String _id, SOM_GeomSmplForSOMExample[] _srcSmpls, float[][] _worldBounds) {
-		super(_map, SOM_ExDataType.Training, _id);
+	public SOM_GeomExample(SOM_MapManager _map, SOM_ExDataType _type, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, float[][] _worldBounds) {
+		super(_map, _type, _id);
 		classIDs = new HashSet<Integer>();
 		categoryIDs = new HashSet<Integer>();
 		//done this way so can be set statically for each instancing class type
@@ -76,7 +77,7 @@ public abstract class SOM_GeomExample extends SOM_Example {
 	 * build this example's relevant info from passed source samples
 	 * @param _srcSmpls
 	 */
-	protected abstract void buildExampleFromSrcObjs(SOM_GeomSmplForSOMExample[] _srcSmpls);
+	protected abstract void buildExampleFromSrcObjs(Geom_SmplDataForSOMExample[] _srcSmpls);
 	
 	/**
 	 * call from ctor of base class, but set statically for each instancing class type
@@ -134,83 +135,6 @@ public abstract class SOM_GeomExample extends SOM_Example {
 		return "idx : " + idx + " | val : " + String.format("%1.4g",  ftr) + " || ";
 	}
 	
-	///////////////////
-	// drawing functions in geom sim world space - drawing training example 
-	
-//	public final void drawMeObjLocClr(my_procApplet pa) {
-//		pa.pushMatrix();pa.pushStyle();		
-//		pa.setFill(objLocClr,255);
-//		pa.setStroke(objLocClr,255);
-//		_drawMe_Geom(pa);
-//		pa.popStyle();pa.popMatrix();	
-//	}
-//	
-//	public final void drawMeObjRandClr(my_procApplet pa) {
-//		pa.pushMatrix();pa.pushStyle();		
-//		pa.setFill(objRandClr,255);
-//		pa.setStroke(objRandClr,255);
-//		_drawMe_Geom(pa);
-//		pa.popStyle();pa.popMatrix();	
-//	}
-//	
-//	public final void drawMeMyLocClr(my_procApplet pa) {
-//		pa.pushMatrix();pa.pushStyle();		
-//		pa.setFill(ptLocClr,255);
-//		pa.setStroke(ptLocClr,255);
-//		_drawMe_Geom(pa);
-//		pa.popStyle();pa.popMatrix();	
-//	}
-//	
-//	public final void drawMeMyRandClr(my_procApplet pa) {
-//		pa.pushMatrix();pa.pushStyle();		
-//		pa.setFill(ptRandClr,255);
-//		pa.setStroke(ptRandClr,255);
-//		_drawMe_Geom(pa);
-//		pa.popStyle();pa.popMatrix();	
-//	}
-//	
-//	public final void drawMeObjLocClr_BMU(my_procApplet pa) {
-//		pa.pushMatrix();pa.pushStyle();		
-//		pa.setFill(objLocClr,255);
-//		pa.setStroke(objLocClr,255);
-//		_drawMe_Geom_BMU(pa);
-//		pa.popStyle();pa.popMatrix();	
-//	}
-//	
-//	public final void drawMeObjRandClr_BMU(my_procApplet pa) {
-//		pa.pushMatrix();pa.pushStyle();		
-//		pa.setFill(objRandClr,255);
-//		pa.setStroke(objRandClr,255);
-//		_drawMe_Geom_BMU(pa);
-//		pa.popStyle();pa.popMatrix();	
-//	}
-//	
-//	public final void drawMeMyLocClr_BMU(my_procApplet pa) {
-//		pa.pushMatrix();pa.pushStyle();		
-//		pa.setFill(ptLocClr,255);
-//		pa.setStroke(ptLocClr,255);
-//		_drawMe_Geom_BMU(pa);
-//		pa.popStyle();pa.popMatrix();	
-//	}
-//	
-//	public final void drawMeMyRandClr_BMU(my_procApplet pa) {
-//		pa.pushMatrix();pa.pushStyle();		
-//		pa.setFill(ptRandClr,255);
-//		pa.setStroke(ptRandClr,255);
-//		_drawMe_Geom_BMU(pa);
-//		pa.popStyle();pa.popMatrix();	
-//	}
-//	
-//
-//	
-//	/**
-//	 * draw this example in the world - instance-class specific
-//	 */
-//	protected abstract void _drawMe_Geom(my_procApplet pa);
-//
-//	/**
-//	 * draw this example in the world based on BMU - instance-class specific
-//	 */
-//	protected abstract void _drawMe_Geom_BMU(my_procApplet pa);
+
 
 }//Sphere_SOMExample
