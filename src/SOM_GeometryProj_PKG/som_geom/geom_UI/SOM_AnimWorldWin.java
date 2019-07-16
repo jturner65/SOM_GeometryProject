@@ -47,7 +47,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		debugAnimIDX 			= 0,				//debug
 		uiObjDataLoadedIDX 		= 1,				//all SOM ui objs have been loaded
 		showSamplePntsIDX 		= 2,				//show/hide sample points
-		showFullObjIDX			= 3,				//show/hide full object
+		showFullSourceObjIDX	= 3,				//show/hide full source object(sources of sample points)
 		saveUIObjDataIDX 		= 4,				//save ui obj locations as training data on next draw cycle
 		useUIObjLocAsClrIDX		= 5,				//should use ui obj's location as both its and its samples' color
 		showUIObjIdIDX			= 6,				//display the ui obj's ID as a text tag
@@ -65,12 +65,12 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	public int numGeomObjs = 200, numSmplPointsPerObj = 200, numTrainingExamples = 40000, curSelGeomObjIDX = 0;
 	
 	/**
-	 * base actual represented random/generated uiObjs
+	 * actual represented random/generated uiObjs - source of training examples
 	 */
-	public SOM_GeomObj[] geomObjects;
+	public SOM_GeomObj[] sourceGeomObjects;
 	
 	/**
-	 * synthesized objects to be used to train SOM
+	 * synthesized objects to be used to train SOM (should include source objs)
 	 */
 	public SOM_GeomObj[] synthGeomObjects;
 	
@@ -113,7 +113,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		tmpBtnNamesArray.add(new Object[]{"Debugging","Debug",debugAnimIDX});
 		tmpBtnNamesArray.add(new Object[]{"Regenerating " +geomObjType + " Objs","Regenerate " +geomObjType + " Objs",regenUIObjsIDX});		
 		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Sample Points", "Hiding " +geomObjType + " Sample Points", showSamplePntsIDX});	
-		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Objects", "Hiding " +geomObjType + " Objects", showFullObjIDX});	
+		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Objects", "Hiding " +geomObjType + " Objects", showFullSourceObjIDX});	
 		tmpBtnNamesArray.add(new Object[]{"Hide Labels", "Show Labels", showUIObjIdIDX});    		
 		tmpBtnNamesArray.add(new Object[]{"Showing Loc-based Color", "Showing Random Color", useUIObjLocAsClrIDX});		
 		tmpBtnNamesArray.add(new Object[]{"Hi-Light Sel " +geomObjType + " ", "Enable " +geomObjType + " Hi-Light", showSelUIObjIDX});  		
@@ -167,7 +167,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		((SOM_GeomMapManager) mapMgr).setNumObjsAndSamples(numGeomObjs, numSmplPointsPerObj);
 		initAllGeomObjs_Indiv();
 		setPrivFlags(uiObjDataLoadedIDX, false);
-		geomObjects = ((SOM_GeomMapManager) mapMgr).buildGeomExampleObjs();
+		sourceGeomObjects = ((SOM_GeomMapManager) mapMgr).buildGeomExampleObjs();
 		setPrivFlags(uiObjDataLoadedIDX, true);
 		msgObj.dispInfoMessage("SOM_AnimWorldWin", "initAllGeomObjs", "Finished to (re)build all objects of type " + this.geomObjType);
 	}
@@ -188,7 +188,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 			case debugAnimIDX 			: {	break;}				
 			case uiObjDataLoadedIDX 	: {	break;}		//object data has been loaded				
 			case showSamplePntsIDX 		: {	break;}		//show/hide object's sample points
-			case showFullObjIDX			: { break;}		//show/hide full object
+			case showFullSourceObjIDX			: { break;}		//show/hide full object
 			case saveUIObjDataIDX 		: { if(val){saveGeomObjInfo();addPrivBtnToClear(saveUIObjDataIDX);}break;}		//save all object data
 			case showUIObjIdIDX  		: { break;}		//show labels for objects
 			case useUIObjLocAsClrIDX 	: {
@@ -232,7 +232,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		tmpUIObjArray.add(new Object[] {new double[]{minNumSmplsPerObj,maxNumSmplsPerObj,diffNumSmplsPerObj}, (double)(numSmplPointsPerObj), "# of samples per Object", new boolean[]{true, false, true}});  				//gIDX_NumUISamplesPerObj 
 		
 		//gIDX_NumTraingEx
-		long minNumTrainingExamples = getNumTrainingExamples(minNumObjs,minNumSmplsPerObj), maxNumTrainingExamples = getNumTrainingExamples(numGeomObjs,numSmplPointsPerObj), diffNumTrainingEx = (maxNumTrainingExamples - minNumTrainingExamples > 100 ? 10 : 1);
+		long minNumTrainingExamples = getNumTrainingExamples(minNumObjs,minNumSmplsPerObj), maxNumTrainingExamples = getNumTrainingExamples(numGeomObjs,numSmplPointsPerObj), diffNumTrainingEx = (maxNumTrainingExamples - minNumTrainingExamples) > 1000 ? 1000 : 10;
 		numTrainingExamples = (int) minNumTrainingExamples;
 		tmpUIObjArray.add(new Object[] {new double[]{minNumTrainingExamples,maxNumTrainingExamples,diffNumTrainingEx}, (double)(numTrainingExamples), "Ttl # of Train Ex ["+minNumTrainingExamples+", "+maxNumTrainingExamples+"]", new boolean[]{true, false, true}});  				//gIDX_NumUISamplesPerObj 
 		
@@ -336,7 +336,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		setFlags(drawRightSideMenu, true);	
 		//init specific sim flags
 		initPrivFlags(numPrivFlags);
-		setPrivFlags(showFullObjIDX,true);
+		setPrivFlags(showFullSourceObjIDX,true);
 		//build objects - instance class - only execute if window is being shown
 		//initAllGeomObjs();
 		//instance-specific init
@@ -380,42 +380,43 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		if (getPrivFlags(mapBuiltToCurUIObjsIDX)){//show all objs based on map-derived locations if selected and map is made (i.e. draw bmu's location for object, instead of object itself
 			//draw spheres/samples based on map info - use 1st 3 features of non-scaled ftr data from map's nodes as x-y-z 
 			if(getPrivFlags(showSamplePntsIDX)){			//sample points don't use wire frames
-				if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrLoc_BMU(pa);}} //loc color
-				else {											for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrRnd_BMU(pa);}}//rand color
+				if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : sourceGeomObjects){s.drawMeSmplsClrLoc_BMU(pa);}} //loc color
+				else {											for(SOM_GeomObj s : sourceGeomObjects){s.drawMeSmplsClrRnd_BMU(pa);}}//rand color
 			} 
-			if(getPrivFlags(showFullObjIDX)){										//draw objects
+			if(getPrivFlags(showFullSourceObjIDX)){										//draw objects
 				if(getPrivFlags(showObjByWireFrmIDX)) {			//draw objects with wire frames
-					if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc_WF_BMU(pa);}} //loc color
-					else {										for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd_WF_BMU(pa);}}//rand color
+					if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : sourceGeomObjects){s.drawMeClrLoc_WF_BMU(pa);}} //loc color
+					else {										for(SOM_GeomObj s : sourceGeomObjects){s.drawMeClrRnd_WF_BMU(pa);}}//rand color
 				} else {
-					if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc_BMU(pa);}} //loc color
-					else {										for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd_BMU(pa);}}//rand color
+					if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : sourceGeomObjects){s.drawMeClrLoc_BMU(pa);}} //loc color
+					else {										for(SOM_GeomObj s : sourceGeomObjects){s.drawMeClrRnd_BMU(pa);}}//rand color
 				}
 			}//if show sample points only, else
-			if(getPrivFlags(showUIObjIdIDX)){			for(SOM_GeomObj s : geomObjects){s.drawMeLabel_BMU(pa);}	}
-			if(getPrivFlags(showSelUIObjIDX)){			geomObjects[curSelGeomObjIDX].drawMeSelected_BMU(pa,animTimeMod);     }
+			if(getPrivFlags(showUIObjIdIDX)){			for(SOM_GeomObj s : sourceGeomObjects){s.drawMeLabel_BMU(pa);}	}
+			if(getPrivFlags(showSelUIObjIDX)){			sourceGeomObjects[curSelGeomObjIDX].drawMeSelected_BMU(pa,animTimeMod);     }
 		} else {										setPrivFlags(showMapBasedLocsIDX, false);	}	//turn off flag if not possible to draw 
 		
-	}
+	}//_drawMe_UseBMUs
 	
 	private void _drawMe_UseActual(float animTimeMod) {
 		//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is false");
 		
 		if(getPrivFlags(showSamplePntsIDX)){			//sample points don't use wire frames
-			if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrLoc(pa);}} //loc color
-			else {											for(SOM_GeomObj s : geomObjects){s.drawMeSmplsClrRnd(pa);}}//rand color
+			if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : sourceGeomObjects){s.drawMeSmplsClrLoc(pa);}} //loc color
+			else {											for(SOM_GeomObj s : sourceGeomObjects){s.drawMeSmplsClrRnd(pa);}}//rand color
+			if(getPrivFlags(showUIObjIdIDX)){				for(SOM_GeomObj s : sourceGeomObjects){s.drawMySmplsLabel(pa);}	}
 		} 
-		if(getPrivFlags(showFullObjIDX)){										//draw objects
+		if(getPrivFlags(showFullSourceObjIDX)){										//draw objects
 			if(getPrivFlags(showObjByWireFrmIDX)) {			//draw objects with wire frames
-				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc_WF(pa);}} //loc color
-				else {										for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd_WF(pa);}}//rand color
+				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : sourceGeomObjects){s.drawMeClrLoc_WF(pa);}} //loc color
+				else {										for(SOM_GeomObj s : sourceGeomObjects){s.drawMeClrRnd_WF(pa);}}//rand color
 			} else {
-				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : geomObjects){s.drawMeClrLoc(pa);}} //loc color
-				else {										for(SOM_GeomObj s : geomObjects){s.drawMeClrRnd(pa);}}//rand color
+				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : sourceGeomObjects){s.drawMeClrLoc(pa);}} //loc color
+				else {										for(SOM_GeomObj s : sourceGeomObjects){s.drawMeClrRnd(pa);}}//rand color
 			}
+			if(getPrivFlags(showUIObjIdIDX)){				for(SOM_GeomObj s : sourceGeomObjects){s.drawMyLabel(pa);}	}
 		}//if show sample points only, else
-		if(getPrivFlags(showUIObjIdIDX)){				for(SOM_GeomObj s : geomObjects){s.drawMyLabel(pa);}	}
-		if(getPrivFlags(showSelUIObjIDX)){				geomObjects[curSelGeomObjIDX].drawMeSelected(pa,animTimeMod);     }
+		if(getPrivFlags(showSelUIObjIDX)){				sourceGeomObjects[curSelGeomObjIDX].drawMeSelected(pa,animTimeMod);     }
 	}//_drawMe_UseActual
 	
 	

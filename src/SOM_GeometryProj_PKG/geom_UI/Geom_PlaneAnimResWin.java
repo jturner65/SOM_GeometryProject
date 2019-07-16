@@ -116,7 +116,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final int getMinNumSmplsPerObj() {return 10;}
 	@Override
-	protected final int getMaxNumSmplsPerObj() {return 100;}
+	protected final int getMaxNumSmplsPerObj() {return 500;}
 	/**
 	 * calculate the max # of examples for this type object - clique of object description degree 
 	 */
@@ -171,7 +171,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	protected final void drawMeLast_Indiv() {		
 		//pa.hint(pa.DISABLE_DEPTH_SORT);//slow
 		if(getPrivFlags(uiObjDataLoadedIDX)){
-			if(getPrivFlags(showOrthoFrameIDX)) {for(SOM_GeomObj s : geomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(pa);}}
+			if(getPrivFlags(showOrthoFrameIDX)) {for(SOM_GeomObj s : sourceGeomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(pa);}}
 		}
 	}	
 	

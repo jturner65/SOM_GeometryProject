@@ -25,7 +25,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	/**
 	 * set initial valuess
 	 */
-	public float minSphRad = 10, maxSphRad = 50;
+	public float minSphRad = 20, maxSphRad = 100;
 	
 
 	public Geom_SphereAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed,String _winTxt, boolean _canDrawTraj) {
@@ -94,8 +94,8 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	protected final void setupGUIObjsAras_Indiv(ArrayList<Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals) {
-		tmpUIObjArray.add(new Object[] {new double[]{10,100,1}, (double)minSphRad, "Min sphere radius", new boolean[]{false, false, true}});   				//gIDX_NumUIObjs 		                                                                        
-		tmpUIObjArray.add(new Object[] {new double[]{50,500,1},(double)maxSphRad, "Max sphere radius", new boolean[]{false, false, true}});  				//gIDX_NumUISamples 	                                                                        	
+		tmpUIObjArray.add(new Object[] {new double[]{20,500,1}, (double)minSphRad, "Min sphere radius", new boolean[]{false, false, true}});   				//gIDX_NumUIObjs 		                                                                        
+		tmpUIObjArray.add(new Object[] {new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius", new boolean[]{false, false, true}});  				//gIDX_NumUISamples 	                                                                        	
 	}
 	
 	@Override
@@ -103,9 +103,9 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final int getMaxNumObjs() {	return 50;}
 	@Override
-	protected final int getMinNumSmplsPerObj() {return 10;}
+	protected final int getMinNumSmplsPerObj() {return 50;}
 	@Override
-	protected final int getMaxNumSmplsPerObj() {return 500;}
+	protected final int getMaxNumSmplsPerObj() {return 1000;}
 	/**
 	 * calculate the max # of examples for this type object : n choose k where k is degree
 	 */

@@ -36,8 +36,8 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	public Geom_LineAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
 		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, "Lines");
 		win2DMinsAndDiffs = new float[2][2];
-		win2DMinsAndDiffs[0]= new float[] {-.5f*rectDim[2] + 50, -.5f*rectDim[3] + 50};
-		win2DMinsAndDiffs[1] = new float[] {rectDim[2]-100, rectDim[3]-100};
+		win2DMinsAndDiffs[0]= new float[] {-.5f*rectDim[2] + 10, -.5f*rectDim[3] + 10};
+		win2DMinsAndDiffs[1] = new float[] {rectDim[2]-20, rectDim[3]-20};
 		super.initThisWin(_canDrawTraj, true, false);
 	}
 

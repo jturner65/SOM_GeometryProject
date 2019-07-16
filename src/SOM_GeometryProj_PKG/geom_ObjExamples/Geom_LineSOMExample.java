@@ -37,6 +37,14 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 */
 	protected static float[][] worldBounds=null;
 
+	
+	/**
+	 * an object to restrict the bounds on this line - min,max, diff s,t value within which to sample plane
+	 */
+	private float[][] worldTBounds;
+	
+	private String[] dispAra;
+	
 	/**
 	 * Constructor for line object
 	 * @param _mapMgr owning som map manager
@@ -60,11 +68,17 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		origin = findClosestPointOnLine(myPointf.ZEROPT);
 		origin.z = 0;
 		
+		//build bounds on s and t, if appropriate - by here equations define objects should be built
+		worldTBounds = calcTBounds();
 		super.buildLocClrInitObjAndSamples(srcPts[0], _numSmplPts);
-		float[][] wb = getWorldTBounds();
 		dispEndPts = new myPointf[2];
-		dispEndPts[0] = getPointOnLine(wb[0][0]);
-		dispEndPts[1] = getPointOnLine(wb[0][0] + wb[1][0]);
+		dispAra = new String[2];
+		dispEndPts[0] = getPointOnLine(worldTBounds[0][0]);
+		dispEndPts[1] = getPointOnLine(worldTBounds[0][0] + worldTBounds[1][0]);
+		
+		dispAra[0] = "End pt 0 w/min t : " + worldTBounds[0][0] + " | "+dispEndPts[0].toStrBrf();
+		dispAra[1] = "End pt 1 w/max t : " + (worldTBounds[0][0]+worldTBounds[1][0])+ " | "+dispEndPts[1].toStrBrf();
+
  
 	}//ctor		
 	
@@ -108,7 +122,6 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 * 		2nd idx 	: 0==t (only 1 value)
 	 * @return result array
 	 */
-	@Override
 	protected final float[][] calcTBounds(){
 		float[] ptA_ara = srcPts[0].asArray(), dirAra = dir.asArray();
 		//eq  pt = pta + t * dir -> t = (pt-pta)/dir for each dof
@@ -174,8 +187,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 */
 	@Override
 	public final myPointf getRandPointOnObj() {
-		float[][] wb = getWorldTBounds();
-		float t = ((float) ThreadLocalRandom.current().nextFloat() *wb[1][0])+wb[0][0];
+		float t = ((float) ThreadLocalRandom.current().nextFloat() *worldTBounds[1][0])+worldTBounds[0][0];
 		return getPointOnLine(t);
 	}
 	
@@ -207,40 +219,11 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	}
 
 	@Override
-	public void finalizeBuildBeforeFtrCalc() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void postFtrVecBuild() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void _buildFeatureVectorEnd_Priv() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void setIsTrainingDataIDX_Priv() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public TreeMap<Integer, Integer> getTrainingLabels() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public void buildCompFtrVector(float _ratio) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	///////////////////////////
 	// draw functionality
@@ -248,11 +231,11 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	protected final void _drawMe_Geom(my_procApplet pa, GeomObjDrawType drawType) {
 		pa.strokeWeight(2.0f);
 		pa.line(dispEndPts[0],dispEndPts[1]);
-		pa.show(dispEndPts[0], 5.0f, "End 0", myVectorf.ZEROVEC, -1, true);
-		pa.show(dispEndPts[1], 5.0f, "End 1", myVectorf.ZEROVEC, -1, true);
-		pa.show(srcPts[0], 5.0f, "pt a", myVectorf.ZEROVEC, -1, true);
-		pa.show(srcPts[1], 5.0f, "pt b", myVectorf.ZEROVEC, -1, true);
-		pa.show(origin, 5.0f, "Origin "+getID(), myVectorf.ZEROVEC, -1, true);
+		pa.show(dispEndPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+		pa.show(dispEndPts[1], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+		pa.show(srcPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+		pa.show(srcPts[1], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+		pa.show(origin, 5.0f, "", myVectorf.ZEROVEC, -1, true);
 	}
 
 	/**
@@ -262,27 +245,41 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	protected final void _drawMe_Geom_BMU(my_procApplet pa, GeomObjDrawType drawType) {
 		pa.strokeWeight(2.0f);
 		pa.line(dispEndPts[0],dispEndPts[1]);
-		pa.show(dispEndPts[0], 5.0f, "End 0", myVectorf.ZEROVEC, -1, true);
-		pa.show(dispEndPts[1], 5.0f, "End 1", myVectorf.ZEROVEC, -1, true);
-		pa.show(srcPts[0], 5.0f, "pt a", myVectorf.ZEROVEC, -1, true);
-		pa.show(srcPts[1], 5.0f, "pt b", myVectorf.ZEROVEC, -1, true);
-		pa.show(origin, 5.0f, "Origin "+getID(), myVectorf.ZEROVEC, -1, true);
+		pa.show(dispEndPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+		pa.show(dispEndPts[1], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+		pa.show(srcPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+		pa.show(srcPts[1], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+		pa.show(origin, 5.0f, "", myVectorf.ZEROVEC, -1, true);
 	}
-
 
 	@Override
-	public void drawMyLabel(my_procApplet pa) {
-		float[][] wb = getWorldTBounds();
+	public void drawMyLabel(my_procApplet pa) {		
 		//(myPointf P, float r, String s, myVectorf D, int clr, boolean flat)
-		String id0 = getID()+" End point 0 using min t : " + wb[0][0] + " | "+dispEndPts[0].toStrBrf(),
-				id1 = getID()+" End point 1 using max t : " + (wb[0][0]+wb[1][0])+ " | "+dispEndPts[1].toStrBrf();
-		pa.show(dispEndPts[0], 5.0f, id0, myVectorf.ZEROVEC, -1, true);
-		pa.show(dispEndPts[1], 5.0f, id1, myVectorf.ZEROVEC, -1, true);
+		pa.show(dispEndPts[0], 5.0f, "ID " + getID()+dispAra[0], myVectorf.ZEROVEC, -1, true);
+		pa.show(dispEndPts[1], 5.0f, "ID " + getID()+dispAra[1], myVectorf.ZEROVEC, -1, true);
 		pa.show(srcPts[0], 5.0f, "pt a :"+srcPts[0].toStrBrf(), myVectorf.ZEROVEC, -1, true);
 		pa.show(srcPts[1], 5.0f, "pt b :"+srcPts[1].toStrBrf(), myVectorf.ZEROVEC, -1, true);
-		pa.show(origin, 5.0f, "Origin "+getID() + "|"+id0+"|"+id1, myVectorf.ZEROVEC, -1, true);
+		pa.show(origin, 5.0f, "ID " + getID()+"| Origin " + origin.toStrBrf() + " | Dir : " + dir.toStrBrf() +" | " +dispAra[0]+"->"+dispAra[1], myVectorf.ZEROVEC, -1, true);
 	}
-
+	
+	/**
+	 * draw this object's samples, using the random color
+	 * @param pa
+	 */
+	@Override
+	public final void drawMySmplsLabel(my_procApplet pa){
+		pa.pushMatrix();pa.pushStyle();
+		pa.setFill(labelClrAra,255); 
+		pa.setStroke(labelClrAra,255);
+		for(int i=0;i<objSamplePts.length;++i){
+			myPointf pt = objSamplePts[i];
+			pa.pushMatrix(); pa.pushStyle();
+			pa.translate(pt); 
+			pa.text(""+getID() + "_"+i, .33f*rad,-.33f*rad,0); 
+			pa.popStyle();pa.popMatrix();
+		}
+		pa.popStyle();pa.popMatrix();
+	}//
 
 	@Override
 	public void drawMeSelected(my_procApplet pa, float animTmMod) {

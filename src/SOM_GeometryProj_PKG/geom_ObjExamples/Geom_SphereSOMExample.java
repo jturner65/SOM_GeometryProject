@@ -36,10 +36,9 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		super(_mapMgr, _animWin,  _exType, _id, _srcSmpls, _worldBounds,  SOM_GeomObjTypes.sphere);
 		setID(IDGen++);
 		
-		//TODO build center from non-planar points - center will be point equi-distant from all given points
 		//with 4 srcPts, find center of sphere
-		String res = "";
-		for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
+		//String res = "";
+		//for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
       	//msgObj.dispInfoMessage("SOM_Sphere", "ctor", "\nUsed Ctr : " + _ctr.toStrBrf() + " rad : "  + _rad +" | Find center and radius of sphere with pts : " + res);
       	ctrLoc = new myPointf();
       	rad = findCenterAndRadFromPtsUsingDet(srcPts, ctrLoc);
@@ -91,19 +90,20 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
     		Minors[i]=tmpMinor;
     	}
     	//Minor 11 is done (idx 0)
+    	double[][] tmpMinor;
     	//set minor 1->5 first value properly - every minor has mag of each point as first col
     	for(int i=1;i<Minors.length;++i) {
-    		double[][] tmpMinor = Minors[i];
+    		tmpMinor = Minors[i];
     		for(int row=0;row<tmpMinor.length;++row) {	tmpMinor[row][0] = ptSqMags[row];}
     	}
     	//Minor 12 is done (idx 1) (mag y z 1 per row) - all rest of minors have x_i as 2nd col value
     	for(int i=2;i<Minors.length;++i) {
-    		double[][] tmpMinor = Minors[i];
+    		tmpMinor = Minors[i];
     		for(int row=0;row<tmpMinor.length;++row) {	tmpMinor[row][1] = ptsAsAra[row][0];}   		
     	}
     	//Minor 13 is done (idx 2) (mag x z 1 per row)
     	for(int i=3;i<Minors.length;++i) {
-    		double[][] tmpMinor = Minors[i];
+    		tmpMinor = Minors[i];
     		for(int row=0;row<tmpMinor.length;++row) {	tmpMinor[row][2] = ptsAsAra[row][1];}   		
     	}
     	//Minor 14 is done (idx 3) (mag x y 1 per row) 
@@ -176,11 +176,8 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 //		float t1 = ((bPtAra[sIDX]-aPtAra[sIDX]) * (aDirAra[tIDX]))/adS_bdT;
 //		float t = (t0 + t1)/d;		
 //		myPointf res = myPointf._add(a, t, aDir);
-//		
-//		
 //		return res;
-//	}
-	
+//	}	
 
 	
 	/**
@@ -211,18 +208,6 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		pos._add(ctr);
 		return pos;
 	}//getRandPosOnSphere
-	
-	/**
-	 * calculate the bounds on s and t (if appropriate) for parametric formulation of object equation
-	 * idx 0 : 0==min, 1==diff
-	 * idx 1 : 0==t, 1==s, 
-	 * @return
-	 */
-	protected final float[][] calcTBounds(){
-		float[][] res = new float[][] {{0.0f,0.0f},{0.0f,0.0f}};
-		
-		return res;
-	}
 
 	/**
 	 * return a random point on this object
@@ -251,40 +236,11 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	}
 
 	@Override
-	public void finalizeBuildBeforeFtrCalc() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void postFtrVecBuild() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void _buildFeatureVectorEnd_Priv() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void setIsTrainingDataIDX_Priv() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public TreeMap<Integer, Integer> getTrainingLabels() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public void buildCompFtrVector(float _ratio) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	///////////////////////////
 	// draw functionality
@@ -346,9 +302,27 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		pa.text(""+getID(), .33f*rad,-.33f*rad,0); 
 		pa.popStyle();pa.popMatrix();
 	}
+	/**
+	 * draw this object's samples, using the random color
+	 * @param pa
+	 */
+	@Override
+	public final void drawMySmplsLabel(my_procApplet pa){
+		pa.pushMatrix();pa.pushStyle();
+		pa.setFill(labelClrAra,255); 
+		pa.setStroke(labelClrAra,255);
+		for(int i=0;i<objSamplePts.length;++i){
+			myPointf pt = objSamplePts[i];
+			pa.pushMatrix(); pa.pushStyle();
+			pa.translate(pt); 
+			animWin.unSetCamOrient();
+			pa.text(""+getID() + "_"+i, .33f*rad,-.33f*rad,0); 
+			pa.popStyle();pa.popMatrix();
+		}
+		pa.popStyle();pa.popMatrix();
+	}//
 
 	
-
 ///////////////BMU / datapoint drawing
 	
 	@Override

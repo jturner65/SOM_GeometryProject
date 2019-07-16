@@ -66,7 +66,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	/**
 	 * array, idx 0 is rand color, idx 1 is loc color, idx 2 is no fill rnd, idx 3 is no fill loc clr, idx 4 is selected
 	 */
-	protected PShape[] polygon;	
+	protected PShape[] planeObjs;	
 	
 	/**
 	 * Constructor for plane object
@@ -127,12 +127,12 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		
 		super.buildLocClrInitObjAndSamples(planeOrigin, _numSmplPts);
 		//create representation
-		polygon = new PShape[GeomObjDrawType.getNumVals()];
-		polygon[GeomObjDrawType.rndClr.getVal()] = buildPoly(true, rndClrAra);
-		polygon[GeomObjDrawType.locClr.getVal()] = buildPoly(true, locClrAra);
-		polygon[GeomObjDrawType.noFillRndClr.getVal()] = buildPoly(false, rndClrAra);
-		polygon[GeomObjDrawType.noFillLocClr.getVal()] = buildPoly(false, locClrAra);
-		polygon[GeomObjDrawType.selected.getVal()] = buildSelectedPoly();
+		planeObjs = new PShape[GeomObjDrawType.getNumVals()];
+		planeObjs[GeomObjDrawType.rndClr.getVal()] = buildPoly(true, rndClrAra);
+		planeObjs[GeomObjDrawType.locClr.getVal()] = buildPoly(true, locClrAra);
+		planeObjs[GeomObjDrawType.noFillRndClr.getVal()] = buildPoly(false, rndClrAra);
+		planeObjs[GeomObjDrawType.noFillLocClr.getVal()] = buildPoly(false, locClrAra);
+		planeObjs[GeomObjDrawType.selected.getVal()] = buildSelectedPoly();
 
 	}//ctor
 	
@@ -283,24 +283,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		return resMap;
 	}//sortBoundPoints	
 	
-	
-	/**
-	 * calculate the bounds on s and t (if appropriate) for parametric formulation of object equation
-	 * worldBounds is 
-	 * 		first idx 	: 0 is min; 1 is diff
-	 * 		2nd idx 	: 0 is x, 1 is y, 2 is z
-	 * result is
-	 * 		first idx 	: 0==min, 1==diff
-	 * 		2nd idx 	: 0==s, 1==t, 
-	 * @return
-	 */
-	protected final float[][] calcTBounds(){
-		//TODO CURRENTLY NOT USED FOR PLANE		
-		float[][] res = new float[][] {{0.0f,0.0f},{0.0f,0.0f}};
-		
-		return res;
-	}
-
 	/**
 	 * return the t value for point along given basis - POINT IS ASSUMED TO BE ON PLANE ALREADY
 	 * @param pt
@@ -315,7 +297,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		//BA.dot(basis(idx)) == distance along basis for projection
 		return ptFromOrigin._dot(basisVecs[idx]);
 	}
-	
 	
 	/**
 	 * point normal form of plane
@@ -333,21 +314,22 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		//myPointf _add(myPointf O, float a, myVectorf I, float b, myVectorf J)
 		// idx 0 : 0==min, 1==diff
 		// idx 1 : 0==s, 1==t, 
-		myPointf pt;
+		myPointf pt,ptTmp;
 		//minMaxDiffValAra : idx 0 : 0 is min, idx 1 is max, idx 2 is diff; idx 1 : 0,1,2 is x,y,z
 		do {
-		myPointf ptTmp = new myPointf((ThreadLocalRandom.current().nextFloat() * minMaxDiffValAra[2][0]) + minMaxDiffValAra[0][0],
+			ptTmp = new myPointf(
+				(ThreadLocalRandom.current().nextFloat() * minMaxDiffValAra[2][0]) + minMaxDiffValAra[0][0],
 				(ThreadLocalRandom.current().nextFloat() * minMaxDiffValAra[2][1]) + minMaxDiffValAra[0][1],
 				(ThreadLocalRandom.current().nextFloat() * minMaxDiffValAra[2][2]) + minMaxDiffValAra[0][2]);
-		//point in space bounded by limits - now project to plane using origin point
-		
-		myVectorf OP = new myVectorf(planeOrigin, ptTmp);
-		//project onto plane
-		myVectorf OPNorm = myVectorf._mult(basisVecs[0], basisVecs[0]._dot(OP));
-		myVectorf OPTan = myVectorf._sub(OP, OPNorm);
-		pt = new myPointf(planeOrigin,OPTan);
+			//point in space bounded by limits - now project to plane using origin point
+			
+			myVectorf OP = new myVectorf(planeOrigin, ptTmp);
+			//project onto plane
+			myVectorf OPNorm = myVectorf._mult(basisVecs[0], basisVecs[0]._dot(OP));
+			myVectorf OPTan = myVectorf._sub(OP, OPNorm);
+			pt = new myPointf(planeOrigin,OPTan);
 		} while ((minMaxDiffValAra[0][0] > pt.x) || (pt.x > minMaxDiffValAra[1][0]) ||
-				(minMaxDiffValAra[0][1] > pt.y) || (pt.y > minMaxDiffValAra[1][1]) ||
+				(minMaxDiffValAra[0][1] > pt.y) || (pt.y > minMaxDiffValAra[1][1])  ||
 				(minMaxDiffValAra[0][2] > pt.z) || (pt.z > minMaxDiffValAra[1][2])	);
 
 		return pt;
@@ -380,40 +362,11 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	}
 
 	@Override
-	public void finalizeBuildBeforeFtrCalc() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void postFtrVecBuild() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void _buildFeatureVectorEnd_Priv() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void setIsTrainingDataIDX_Priv() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public TreeMap<Integer, Integer> getTrainingLabels() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public void buildCompFtrVector(float _ratio) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	///////////////////////////
 	// draw functionality
@@ -440,6 +393,25 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		
 		pa.popStyle();pa.popMatrix();
 	}//drawMyLabel
+	/**
+	 * draw this object's samples, using the random color
+	 * @param pa
+	 */
+	@Override
+	public final void drawMySmplsLabel(my_procApplet pa){
+		pa.pushMatrix();pa.pushStyle();
+		pa.setFill(labelClrAra,255); 
+		pa.setStroke(labelClrAra,255);
+		for(int i=0;i<objSamplePts.length;++i){
+			myPointf pt = objSamplePts[i];
+			pa.pushMatrix(); pa.pushStyle();
+			pa.translate(pt); 
+			animWin.unSetCamOrient();
+			pa.text(""+getID() + "_"+i, .33f*rad,-.33f*rad,0); 
+			pa.popStyle();pa.popMatrix();
+		}
+		pa.popStyle();pa.popMatrix();
+	}//
 
 	@Override
 	protected void _drawMe_Geom(my_procApplet pa, GeomObjDrawType drawType) {
@@ -455,7 +427,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 //			//pa.box(500,500,1);
 //			
 //		pa.popStyle();pa.popMatrix();
-		pa.shape(polygon[drawType.getVal()]);
+		pa.shape(planeObjs[drawType.getVal()]);
 		//pa.showNoClose(dispBoundPts);//, basisVecs[0]);
 		
 		pa.popStyle();pa.popMatrix();
@@ -470,7 +442,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		if(modCnt > .5){	modCnt = 0;	}//blink every ~second
 		pa.pushMatrix();pa.pushStyle();			
 		pa.strokeWeight(2.0f);
-		pa.shape(polygon[GeomObjDrawType.locClr.getVal()]);
+		pa.shape(planeObjs[GeomObjDrawType.locClr.getVal()]);
 		pa.translate(planeOrigin);
 		pa.scale(1.0f + modCnt*.5f);
 		pa.translate(-planeOrigin.x,-planeOrigin.y,-planeOrigin.z);
@@ -484,7 +456,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 //			//pa.box(500,500,1);
 //			
 //		pa.popStyle();pa.popMatrix();
-		pa.shape(polygon[selIDX]);
+		pa.shape(planeObjs[selIDX]);
 		//pa.showNoClose(dispBoundPts);//, basisVecs[0]);
 		
 		pa.popStyle();pa.popMatrix();
