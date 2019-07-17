@@ -1,7 +1,6 @@
 package SOM_GeometryProj_PKG.geom_ObjExamples;
 
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_Utils_Objects.vectorObjs.myPointf;
 
 /**
@@ -16,19 +15,21 @@ public class Geom_SmplDataForSOMExample {
 	/**
 	 * point for this sample
 	 */
-	protected final myPointf pt;
+	protected myPointf pt;
 	/**
 	 * owning object for this sample
 	 */
-	protected final SOM_GeomObj obj;
+	protected SOM_GeomObj obj;
 	
 	public Geom_SmplDataForSOMExample(SOM_GeomObj _obj, myPointf _pt) {
 		obj = _obj;
-		pt = new myPointf(_pt);
+		pt = _pt;
 	}
 	
 	public myPointf getPoint() {return pt;}
+	public void setPoint(myPointf _pt) {pt=_pt;}
 	public SOM_GeomObj getObj() {return obj;}
+	public void setObj(SOM_GeomObj _obj){obj=_obj;}
 	
 	public String toCSVStr_Header() {	return "smpl pt x, smpl pt y, smpl pt z, "+ obj.toCSVStr_Header();}
 	

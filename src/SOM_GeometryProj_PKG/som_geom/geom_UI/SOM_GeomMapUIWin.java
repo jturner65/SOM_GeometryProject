@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
-import SOM_GeometryProj_PKG.geom_UI.mySideBarMenu;
+import SOM_GeometryProj_PKG.geom_UI.Geom_SideBarMenu;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
@@ -25,15 +25,7 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 		mapShowLocClrIDX 			= numSOMBasePrivFlags + 0;			//show img built of map with each pxl clr built from the 1st 3 features of the interpolated point at that pxl between the map nodes
 	
 	public final int _numPrivFlags = numSOMBasePrivFlags + 1;
-	
-	public String[][] menuBtnNames = new String[][] {		//each must have literals for every button defined in side bar menu, or ignored
-		{"---", "---","---"},		//row 1
-		{"---","---","---","---"},	//row 2
-		{"---","---","---","---"},	//row 3
-		{"---","---","---","---"},
-		{"---","---","---","---","---"}	
-	};
-	
+
 	/**
 	 * default args for building map manager
 	 */
@@ -79,7 +71,7 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 		//default to showing right side bar menu
 		//setFlags(showRightSideMenu, true);	
 		//moved from mapMgr ctor, to remove dependence on papplet in that object
-		pa.setAllMenuBtnNames(menuBtnNames);	
+		//pa.setAllMenuBtnNames(menuBtnNames);	
 		initMapAras(1, 1);
 	}
 
@@ -187,121 +179,7 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 	protected void setCameraIndiv(float[] camVals){	}
 	@Override
 	protected void stopMe() {}	
-	@Override
-	protected void launchMenuBtnHndlr() {
-		msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Begin requested action", MsgCodes.info4);
-		int btn = curCustBtn[curCustBtnType];
-		switch(curCustBtnType) {
-		case mySideBarMenu.btnAuxFunc1Idx : {//row 1 of menu side bar buttons
-			msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Click Functions 1 in "+name+" : btn : " + btn, MsgCodes.info4);
-			switch(btn){
-				case 0 : {	
-					resetButtonState();
-					break;}
-				case 1 : {	
-					resetButtonState();
-					break;}
-				case 2 : {	
-					resetButtonState();
-					break;}
-				default : {
-					msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Unknown Functions 1 btn : "+btn, MsgCodes.warning2);
-					break;}
-			}	
-			break;}//row 1 of menu side bar buttons
-	
-		case mySideBarMenu.btnAuxFunc2Idx : {//row 2 of menu side bar buttons
-			msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Click Functions 2 in "+name+" : btn : " + btn, MsgCodes.info4);//{"Ld&Bld SOM Data", "Load SOM Config", "Ld & Make Map", "Ld Prebuilt Map"},	//row 2
-			//		{"Train Data","True Prspcts", "Prods", "SOM Cfg", "Func 14"},	//row 2
 
-			switch(btn){
-				case 0 : {	
-					mapMgr.loadPreprocAndBuildTestTrainPartitions(getTrainTestDatPartition(), true);
-					resetButtonState();
-					break;}
-				case 1 : {	
-					resetButtonState();
-					break;}
-				case 2 : {	
-					//this will load all true prospects from preprocessed prospect files.
-					resetButtonState();
-					break;}
-				case 3 : {//load all training data, default map config, and build map
-					mapMgr.loadSOMConfig();//pass fraction of data to use for training
-					resetButtonState();
-					break;}
-				default : {
-					msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Unknown Functions 2 btn : "+btn, MsgCodes.warning2);
-					resetButtonState();
-					break;}	
-			}
-			break;}//row 2 of menu side bar buttons
-		case mySideBarMenu.btnAuxFunc3Idx : {//row 3 of menu side bar buttons
-			msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Click Functions 3 in "+name+" : btn : " + btn, MsgCodes.info4);//{"Ld&Bld SOM Data", "Load SOM Config", "Ld & Make Map", "Ld Prebuilt Map"},	//row 2
-			switch(btn){
-				case 0 : {	
-					mapMgr.loadTrainDataMapConfigAndBuildMap(false);
-					resetButtonState();
-					break;}
-				case 1 : {	
-					resetButtonState();
-					break;}
-				case 2 : {	
-					resetButtonState();
-					break;}
-				case 3 : {
-					resetButtonState();
-					break;}
-				default : {
-					msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Unknown Functions 3 btn : "+btn, MsgCodes.warning2);
-					resetButtonState();
-					break;}	
-			}
-			break;}//row 3 of menu side bar buttons
-		case mySideBarMenu.btnAuxFunc4Idx : {//row 3 of menu side bar buttons
-			msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Click Functions 3 in "+name+" : btn : " + btn, MsgCodes.info4);//{"Ld&Bld SOM Data", "Load SOM Config", "Ld & Make Map", "Ld Prebuilt Map"},	//row 2
-			switch(btn){
-				case 0 :
-				case 1 : 
-				case 2 : 
-				case 3 : {//load all training data, default map config, and build map
-					mapMgr.loadPretrainedExistingMap(btn, true);//runs in thread, button state reset there
-					resetButtonState();
-					break;}
-				default : {
-					msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Unknown Functions 3 btn : "+btn, MsgCodes.warning2);
-					resetButtonState();
-					break;}	
-			}
-			break;}//row 3 of menu side bar buttons
-		case mySideBarMenu.btnDBGSelCmpIdx : {//row 4 of menu side bar buttons (debug)	
-			msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Click Debug in "+name+" : btn : " + btn, MsgCodes.info4);
-			//{"All->Bld Map","All Dat To Map", "Func 22", "Func 23", "Prblt Map"},	//row 3
-			switch(btn){
-				case 0 : {	
-					resetButtonState();
-					break;}
-				case 1 : {	
-					resetButtonState();
-					break;}
-				case 2 : {	
-					resetButtonState();
-					break;}
-				case 3 : {//show current mapdat status
-					resetButtonState();
-					break;}
-				case 4 : {						
-					resetButtonState();
-					break;}
-				default : {
-					msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","Unknown Debug btn : "+btn, MsgCodes.warning2);
-					resetButtonState();
-					break;}
-			}				
-			break;}//row 4 of menu side bar buttons (debug)			
-		}		
-		msgObj.dispMessage("mySOMMapUIWin","launchMenuBtnHndlr","End requested action (multithreaded actions may still be working).", MsgCodes.info4);
-	}
 	@Override
 	protected String[] getSaveFileDirNamesPriv() {
 		// TODO Auto-generated method stub
@@ -404,5 +282,8 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	protected final void launchMenuBtnHndlr() {	}
 
 }//myTrajEditWin

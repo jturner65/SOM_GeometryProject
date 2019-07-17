@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.geom_UI.Geom_LineAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_PlaneAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_SphereAnimResWin;
-import SOM_GeometryProj_PKG.geom_UI.mySideBarMenu;
+import SOM_GeometryProj_PKG.geom_UI.Geom_SideBarMenu;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_GeomMapUIWin;
 import base_SOM_Objects.SOM_MapManager;
@@ -108,7 +108,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		buildInitMenuWin(showUIMenu);
 		//menu bar init
 		int wIdx = dispMenuIDX,fIdx=showUIMenu;
-		dispWinFrames[wIdx] = new mySideBarMenu(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);	
+		dispWinFrames[wIdx] = new Geom_SideBarMenu(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);	
 		//instanced window dimensions when open and closed - only showing 1 open at a time
 		float[] _dimOpen  =  new float[]{menuWidth, 0, width-menuWidth, height}, _dimClosed  =  new float[]{menuWidth, 0, hideWinWidth, height};	
 		//setInitDispWinVals : use this to define the values of a display window
@@ -208,7 +208,7 @@ public class SOM_GeometryMain extends my_procApplet {
 	//these tie using the UI buttons to modify the window in with using the boolean tags - PITA but currently necessary
 	public void handleShowWin(int btn, int val, boolean callFlags){//display specific windows - multi-select/ always on if sel
 		if(!callFlags){//called from setflags - only sets button state in UI to avoid infinite loop
-			setMenuBtnState(mySideBarMenu.btnShowWinIdx,btn, val);
+			setMenuBtnState(Geom_SideBarMenu.btnShowWinIdx,btn, val);
 		} else {//called from clicking on buttons in UI
 		
 			//val is btn state before transition 
@@ -250,7 +250,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		//init boolean state machine flags for program
 	public void initVisFlags(){
 		visFlags = new int[1 + numVisFlags/32];for(int i =0; i<numVisFlags;++i){forceVisFlag(i,false);}	
-		((mySideBarMenu)dispWinFrames[dispMenuIDX]).initPFlagColors();			//init sidebar window flags
+		((Geom_SideBarMenu)dispWinFrames[dispMenuIDX]).initPFlagColors();			//init sidebar window flags
 	}		
 	@Override
 	//address all flag-setting here, so that if any special cases need to be addressed they can be

@@ -26,6 +26,7 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 	protected SOM_GeomObj _buildSingleObject(SOM_ExDataType _exDataType, int idx) {
 		//SOM_Sphere(SOM_GeomMapManager _mapMgr, myPointf _loc, float _rad, int _numSmplPts, float[][] _worldBounds)
 		
+		//pick characteristics of target sphere
 		float rad = (ThreadLocalRandom.current().nextFloat()*diffRad) + minRad;
 		myPointf ctr = this.getRandPointInBounds_3D(rad);
 			
@@ -35,7 +36,9 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 		Geom_SmplDataForSOMExample[] _srcSmpls = buildSrcGeomSmplAra(null, spherePts);
 		
 		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, myPointf _ctr, float _rad, int _numSmplPts, float[][] _worldBounds)
-		return new Geom_SphereSOMExample(mapMgr,animWin, _exDataType, ID, _srcSmpls, ctr, rad, numSmplsPerObj, worldBounds);
+		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(mapMgr,animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj, worldBounds);
+		boolean passed = obj.testSphereConstruction(ctr, rad, 1.0f);
+		return obj;
 	}
 
 }//Geom_SphereObjBuilder

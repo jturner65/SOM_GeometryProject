@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomSamplePointf;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
@@ -15,6 +16,11 @@ import base_Utils_Objects.vectorObjs.myVectorf;
 
 public class Geom_LineSOMExample extends SOM_GeomObj {
 	private static int IDGen = 0;
+	
+	/**
+	 * feature vector size for this object 2d point  + 2d line
+	 */
+	public static final int _numFtrs = 4;
 
 	/**
 	 * direction vector for this line
@@ -57,7 +63,6 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 */
 	public Geom_LineSOMExample(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds) {
 		super(_mapMgr, _animWin,  _exType, _id, _srcSmpls, _worldBounds, SOM_GeomObjTypes.line);
-		setID(IDGen++);
 		srcPts[0].z = 0.0f;
 		srcPts[1].z = 0.0f;
 		//z is always 0 - making this in 2 d
@@ -82,16 +87,57 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
  
 	}//ctor		
 	
+	public Geom_LineSOMExample(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _oid, String _csvDat, float[][] _worldBounds) {
+		super(_mapMgr, _animWin, _exType, _oid, _csvDat, _worldBounds, SOM_GeomObjTypes.line);
+		srcPts[0].z = 0.0f;
+		srcPts[1].z = 0.0f;
+		//z is always 0 - making this in 2 d
+		dir=new myVectorf(srcPts[0],srcPts[1]);
+		dir.z = 0;
+		dir._normalize();	
+		//origin is closest point to 0,0 on line
+		origin = findClosestPointOnLine(myPointf.ZEROPT);
+		origin.z = 0;
+		
+		//build bounds on s and t, if appropriate - by here equations define objects should be built
+		worldTBounds = calcTBounds();
+		super.buildLocClrAndSamplesFromCSVStr(srcPts[0], _csvDat);
+		
+		dispEndPts = new myPointf[2];
+		dispAra = new String[2];
+		dispEndPts[0] = getPointOnLine(worldTBounds[0][0]);
+		dispEndPts[1] = getPointOnLine(worldTBounds[0][0] + worldTBounds[1][0]);
+		
+		dispAra[0] = "End pt 0 w/min t : " + worldTBounds[0][0] + " | "+dispEndPts[0].toStrBrf();
+		dispAra[1] = "End pt 1 w/max t : " + (worldTBounds[0][0]+worldTBounds[1][0])+ " | "+dispEndPts[1].toStrBrf();
+		
+	}
+	
 	public Geom_LineSOMExample(Geom_LineSOMExample _otr) {
 		super(_otr);
 		dir = _otr.dir;
 		origin = _otr.origin;
 		dispEndPts = _otr.dispEndPts;
 		worldBounds = _otr.worldBounds;
+	}//copy ctor
+	
+	/**
+	 * initialize object's ID, and build SOM_GeomSamplePointf array from the source samples used to derive this object
+	 * @param _srcSmpls
+	 * @return
+	 */
+	@Override
+	protected SOM_GeomSamplePointf[] initAndBuildSamplePoints(Geom_SmplDataForSOMExample[] _srcSmpls) {
+		//set here since this is called from the base class constructor
+		setID(IDGen++);
+		SOM_GeomSamplePointf[] ptAra = new SOM_GeomSamplePointf[geomSrcSamples.length];
+		for(int i=0;i<geomSrcSamples.length;++i) {
+			if(geomSrcSamples[i].getObj() == null) {geomSrcSamples[i].setObj(this);}
+			ptAra[i]=new SOM_GeomSamplePointf(geomSrcSamples[i].getPoint(), objGeomType.toString()+"_"+getID()+"_SrcPt_"+i);
+		}
+		return ptAra;
 	}
-	
-	
-	
+
 	/**
 	 * call from ctor of base class, but set statically for each instancing class type
 	 * @param _worldBounds
@@ -193,31 +239,34 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	
 	////////////////////////////
 	// feature functionality (inherited from SOM_Example
-
+	
+	/**
+	 * object shape-specific feature building - ftrVecMag calced in base class
+	 */
 	@Override
-	protected void buildFeaturesMap() {
-		clearFtrMap(ftrMapTypeKey);//
+	protected final void buildFeaturesMap_Indiv() {
 		//build feature-based example for this example - for lines example should be closest origin point + normalized dir vector
-		float[] dirAra = dir.asArray();
-		float[] originAra = origin.asArray();
-		for(int i=0;i<dirAra.length;++i) {
-			ftrMaps[ftrMapTypeKey].put(i,dirAra[i]);
-			ftrMaps[ftrMapTypeKey].put(i+dirAra.length,originAra[i]);
-		}
+		//ONLY USE x,y VALS
+		ftrMaps[ftrMapTypeKey].put(0,dir.x);
+		ftrMaps[ftrMapTypeKey].put(1,dir.y);
+		
+		ftrMaps[ftrMapTypeKey].put(2,origin.x);
+		ftrMaps[ftrMapTypeKey].put(3,origin.y);
 	}
-
+	/**
+	 * Instance-class specific required info for this example to build feature data - use this so we don't have to reload and rebuilt from data every time
+	 * @return
+	 */
 	@Override
-	public String getPreProcDescrForCSV() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	protected final String getPreProcDescrForCSV_Indiv() {return "";}	
+	/**
+	 * Instance-class specific column names of rawDescrForCSV data
+	 * @return
+	 */
 	@Override
-	public String getRawDescColNamesForCSV() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	protected String getRawDescColNamesForCSV_Indiv() {	return "";}
+	
+	
 	@Override
 	public TreeMap<Integer, Integer> getTrainingLabels() {
 		// TODO Auto-generated method stub

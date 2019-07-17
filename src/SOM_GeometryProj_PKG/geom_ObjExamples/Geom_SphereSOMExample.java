@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomSamplePointf;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
@@ -20,6 +21,10 @@ import base_Utils_Objects.vectorObjs.myPointf;
 public class Geom_SphereSOMExample extends SOM_GeomObj{
 	private static int IDGen = 0;
 	/**
+	 * feature vector size for this object rad + 3d center
+	 */
+	public static final int _numFtrs = 4;
+	/**
 	 * center location
 	 */
 	public final myPointf ctrLoc;
@@ -32,37 +37,82 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * 		2nd idx : 0 is x, 1 is y, 2 is z
 	 */
 	protected static float[][] worldBounds=null;
-	public Geom_SphereSOMExample(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, myPointf _ctr, float _rad, int _numSmplPts, float[][] _worldBounds) {
+	
+	private static final String csvSphereTag = "SPHR,";
+	
+	/**
+	 * build a sphere object to render and use as a training example, 
+	 * @param _mapMgr : owning map manager
+	 * @param _animWin : owning display window of 
+	 * @param _exType : whether this is training/testing/validation etc.
+	 * @param _id : pre-defined string ID put in SOM_Example OID field
+	 * @param _srcSmpls : the points and owning objects that make up the minimally defining set of points for this object.  If src objects are null, then this object is a foundation/source object
+	 * @param _numSmplPts : # of sample points to build for this object TODO move to post-construction process
+	 * @param _worldBounds : bounds within which the points/samples of this object should remain constrained
+	 */
+	public Geom_SphereSOMExample(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds) {
 		super(_mapMgr, _animWin,  _exType, _id, _srcSmpls, _worldBounds,  SOM_GeomObjTypes.sphere);
-		setID(IDGen++);
-		
 		//with 4 srcPts, find center of sphere
 		//String res = "";
 		//for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
       	//msgObj.dispInfoMessage("SOM_Sphere", "ctor", "\nUsed Ctr : " + _ctr.toStrBrf() + " rad : "  + _rad +" | Find center and radius of sphere with pts : " + res);
       	ctrLoc = new myPointf();
-      	rad = findCenterAndRadFromPtsUsingDet(srcPts, ctrLoc);
+      	rad = findCenterAndRadFromPtsUsingDet(srcPts, ctrLoc);		
+      	sphrDet = (int)(Math.sqrt(rad) + 10);	
 		//ctrLoc = findCtrOfSphereFrom4Pts(srcPts);
-	
-		//radius is center to one of the points
-		//rad = ctrLoc._dist(srcPts[0]);
-      	float distFromGiven = ctrLoc._SqrDist(_ctr);
-		if(!(distFromGiven < 1.0f)) {
-			msgObj.dispErrorMessage("SOM_Sphere", "ctor", "Error : calculated center : " + ctrLoc.toStrBrf() +" != original center : " + _ctr.toStrBrf() + " | calced rad : " + rad + " | Given radius : " + _rad + " Dist : " + distFromGiven);
-		}
-						
-		sphrDet = (int)(Math.sqrt(rad) + 10);	
-		
 		super.buildLocClrInitObjAndSamples(ctrLoc, _numSmplPts);
 	}//ctor
+	
+	public Geom_SphereSOMExample(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _oid, String _csvDat, float[][] _worldBounds) {
+		super(_mapMgr, _animWin, _exType, _oid, _csvDat,  _worldBounds, SOM_GeomObjTypes.sphere);
+		ctrLoc = new myPointf();
+		
+		rad = buildCenterAndRadFromCSVStr(ctrLoc, _csvDat);
+     	sphrDet = (int)(Math.sqrt(rad) + 10);	
+		super.buildLocClrAndSamplesFromCSVStr(ctrLoc, _csvDat);
+	}
 	
 	public Geom_SphereSOMExample(Geom_SphereSOMExample _otr) {
 		super(_otr);
 		ctrLoc = _otr.ctrLoc;
 		rad = _otr.rad;
 		sphrDet = _otr.sphrDet;
+		worldBounds = _otr.worldBounds;
+	}//copy ctor
+
+	/**
+	 * initialize object's ID, and build SOM_GeomSamplePointf array from the source samples used to derive this object
+	 * @param _srcSmpls
+	 * @return
+	 */
+	@Override
+	protected SOM_GeomSamplePointf[] initAndBuildSamplePoints(Geom_SmplDataForSOMExample[] _srcSmpls) {
+		//set here since this is called from the base class constructor
+		setID(IDGen++);
+		SOM_GeomSamplePointf[] ptAra = new SOM_GeomSamplePointf[geomSrcSamples.length];
+		for(int i=0;i<geomSrcSamples.length;++i) {
+			if(geomSrcSamples[i].getObj() == null) {geomSrcSamples[i].setObj(this);}
+			ptAra[i]=new SOM_GeomSamplePointf(geomSrcSamples[i].getPoint(), objGeomType.toString()+"_"+getID()+"_SrcPt_"+i);
+		}
+		return ptAra;
 	}
-	 
+
+	/**
+	 * test whether center and radius derived from the 4 source points 
+	 * for this sphere are similar enough to the values used to derive 
+	 * those 4 source points, within the passed tolerance
+	 * @param _ctr center of sphere used to derive source points
+	 * @param _rad radius of sphere used to derive source points
+	 */
+	public final boolean testSphereConstruction(myPointf _ctr, float _rad, float tol) {
+      	float sqDistFromGiven = ctrLoc._SqrDist(_ctr);
+		if(!(sqDistFromGiven < tol)) {
+			msgObj.dispWarningMessage("SOM_Sphere", "testSphereConstruction", "Warning : calculated center : " + ctrLoc.toStrBrf() +" != original center : " + _ctr.toStrBrf() + " | calced rad : " + rad + " | Given radius : " + _rad + " Sq Dist : " + sqDistFromGiven);
+			return false;
+		}
+		return true;
+	}//testSphereConstruction
+	
     /**
      * build determinants of minors for circle calc, using method of Determinants - 
      * Thanks Again Paul Bourke!! http://paulbourke.net/geometry/circlesphere/
@@ -77,7 +127,8 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
     		ptsAsAra[i] = pts[i].asHAraPt(); 
     		ptSqMags[i] = 0.0f;
     		for(int j=0;j<ptsAsAra[i].length-1; ++j) {ptSqMags[i] += ptsAsAra[i][j]*ptsAsAra[i][j];}//don't add 1 from homogeneous eqs
-    	}//homogeneous 
+    	}//homogeneous     	
+    	
     	//row minor
     	double[][][] Minors = new double[5][][];
     	for(int i=0;i<Minors.length;++i) {					//copy all homogeneous point values into each minor
@@ -112,74 +163,43 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
     	
     	double[] dets = new double[5];
    
-    	for(int idx = 0; idx<dets.length; ++idx) { 		dets[idx]= MyMathUtils.detMat(Minors[idx]);}
+    	for(int idx = 0; idx<dets.length; ++idx) { 		dets[idx]= detMat(Minors[idx]);} 
     	
     	_ctr.set(.5f*(dets[1]/dets[0]), -.5f *(dets[2]/dets[0]), .5f*(dets[3]/dets[0]));
     	
     	float rad = (float) Math.sqrt(_ctr._SqrDist(myPointf.ZEROPT) -(dets[4]/dets[0]));
     	return rad;
     }//findCenterAndRadFromPtsUsingDet
-    
-//    /**
-//     * derive center point and planar norm of circle inscribed within 3 points (must be non-coplanar)
-//     * @param pts 3 points to find circle of
-//     * @param ctr center of circle - populated in here
-//     * @param cNorm planar norm of circle - populated in here
-//     */
-//    public void findCtrAndNormOfCircleFrom3Points(myPointf[] pts, myPointf ctr, myVectorf cNorm) {
-//    	myVectorf[] edgeDir = new myVectorf[pts.length];
-//    	myPointf[] midPoints = new myPointf[pts.length];
-//    	int stIdx, endIdx;
-//    	for(int i=0;i<edgeDir.length;++i) {
-//    		stIdx = i;
-//    		endIdx = (i+1) % edgeDir.length;
-//    		midPoints[stIdx] = myPointf._average(pts[stIdx], pts[endIdx]); 
-//    		edgeDir[stIdx] = new myVectorf(pts[stIdx], pts[endIdx]);   	
-//    		//msgObj.dispInfoMessage("SOM_Sphere", "findCtrAndNormOfCircleFrom3Points", "\t             Edge between " +pts[stIdx].toStrBrf()+" and " + pts[endIdx].toStrBrf()+ " = " +edgeDir[i].toStrBrf());
-//    		edgeDir[stIdx]._normalize();
-//    	}
-//    	//norm to plane
-//    	cNorm.set(edgeDir[0]._cross(edgeDir[1])._normalize());
-//  		//msgObj.dispInfoMessage("SOM_Sphere", "findCtrAndNormOfCircleFrom3Points", "\t             Normal to plane " +cNorm.toStrBrf());
-//  		    	
-//    	//bisectors are lines through midPoints ortho to edges
-//    	myVectorf[] biNorms = new myVectorf[3];
-//    	for(int i=0;i<biNorms.length;++i) {		biNorms[i]=cNorm._cross(edgeDir[i])._normalize();   	}
-//    	//now find intersection point of first 2 bisectors == mp[i] + t * bi[i]
-//    	ctr.set(intersectTwoLines(midPoints[0], biNorms[0],midPoints[1],biNorms[1]));
-//    }//
-//    
-//	
-//	/**
-//	 * Determine the point of intersection between two point-dir-form lines
-//	 * @param a origin point for first line
-//	 * @param aDir direction of first line
-//	 * @param b origin point for 2nd line
-//	 * @param bDir direction of 2nd line
-//	 * @return point of intersection for these two lines
-//	 */
-//	public myPointf intersectTwoLines(myPointf a, myVectorf aDir, myPointf b, myVectorf bDir) {
-//		
-//		float[] aPtAra = a.asArray(),aDirAra = aDir.asArray(), bPtAra = b.asArray(), bDirAra = bDir.asArray();
-//		int sIDX = -1, tIDX = -1;
-//		for(int i=0;i<aDirAra.length; ++i) {	if(aDirAra[i] != 0.0f) {sIDX = i; break;}}
-//		if(sIDX == -1) {//bad, means dir is 0; if constructed properly should never happen
-//			msgObj.dispErrorMessage("SOM_Sphere", "intersectTwoLines", "Somehow direction vector a has no non-zero elements");
-//		}
-//		for(int i=0;i<bDirAra.length; ++i) {	if((bDirAra[i] != 0.0f) && (i != sIDX)) {tIDX = i; break;}}		
-//		if(tIDX == -1) {//bad, means dir is 0; if constructed properly should never happen
-//			msgObj.dispErrorMessage("SOM_Sphere", "intersectTwoLines", "Somehow direction vector b has no non-zero elements");
-//		}
-//		float adS_bdT = (aDirAra[sIDX] * bDirAra[tIDX]);
-//		float d = 1.0f - ((aDirAra[tIDX] * bDirAra[sIDX])/adS_bdT);
-//		float t0 = (aPtAra[tIDX]-bPtAra[tIDX])/bDirAra[tIDX];
-//		float t1 = ((bPtAra[sIDX]-aPtAra[sIDX]) * (aDirAra[tIDX]))/adS_bdT;
-//		float t = (t0 + t1)/d;		
-//		myPointf res = myPointf._add(a, t, aDir);
-//		return res;
-//	}	
 
+	/**
+	 * calculates the determinant of a Matrix - moved from MyMathUtils for threading
+	 * @param M n x n matrix - don't over do it
+	 * @return
+	 */
+	private double detMat(double[][] M){ 
+		double sum=0, s;
+		if(M.length==1){	return(M[0][0]); }
+		for(int i=0;i < M.length;i++){ 														
+			double[][] minor= new double[M.length-1][M.length-1];
+			for(int b=0;b<M.length;++b){
+				if(b==i) {continue;}
+				int bIdx = (b<i)? b : b-1;
+				for(int a=1;a<M.length;++a){			minor[a-1][bIdx] = M[a][b];	}
+			}	
+			s = (i%2==0) ? 1.0f : -1.0f;
+			sum += s * M[0][i] * (detMat(minor)); 										
+		}
+		return(sum); //returns determinant value. once stack is finished, returns final determinant.
+	}//detMat
 	
+	private final float buildCenterAndRadFromCSVStr(myPointf _ctr, String _csvDat) {
+		String[] datAra = _csvDat.trim().split(csvSphereTag);
+		//idx 1 is sphere data
+		String[] ptsAsStr = datAra[1].trim().split(",");
+		_ctr.set(Float.parseFloat(ptsAsStr[1].trim()),Float.parseFloat(ptsAsStr[2].trim()),Float.parseFloat(ptsAsStr[3].trim()));
+		return Float.parseFloat(ptsAsStr[0].trim());
+	}
+    
 	/**
 	 * call from ctor of base class, but set statically for each instancing class type
 	 * @param _worldBounds
@@ -217,24 +237,39 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 
 	////////////////////////////
 	// feature functionality (inherited from SOM_Example
+	/**
+	 * object shape-specific feature building - ftrVecMag calced in base class
+	 */
 	@Override
-	protected void buildFeaturesMap() {
-		clearFtrMap(ftrMapTypeKey);//
-		
+	protected final void buildFeaturesMap_Indiv() {
+		//set sphere center and radius as features
+		ftrMaps[ftrMapTypeKey].put(0,ctrLoc.x);
+		ftrMaps[ftrMapTypeKey].put(1,ctrLoc.y);
+		ftrMaps[ftrMapTypeKey].put(2,ctrLoc.z);
+		ftrMaps[ftrMapTypeKey].put(3,rad);
 	}
-
+	
+	/**
+	 * Instance-class specific column names of rawDescrForCSV data
+	 * @return
+	 */
 	@Override
-	public String getPreProcDescrForCSV() {
+	protected String getRawDescColNamesForCSV_Indiv() {
 		// TODO Auto-generated method stub
-		return null;
+		return "TAG, radius, center x, center y, center z, TAG, ";
 	}
-
+	/**
+	 * Instance-class specific required info for this example to build feature data - use this so we don't have to reload and rebuilt from data every time
+	 * @return
+	 */
 	@Override
-	public String getRawDescColNamesForCSV() {
-		// TODO Auto-generated method stub
-		return null;
+	protected final String getPreProcDescrForCSV_Indiv() {
+		String res = csvSphereTag + String.format("%.8f", rad) + ", "+ctrLoc.toStrCSV("%.8f")+"," + csvSphereTag;
+		return res;
 	}
 
+
+	
 	@Override
 	public TreeMap<Integer, Integer> getTrainingLabels() {
 		// TODO Auto-generated method stub

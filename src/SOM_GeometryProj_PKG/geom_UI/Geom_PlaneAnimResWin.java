@@ -106,7 +106,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	/**
 	 * send all instance-specific values from UI to map manager
 	 */
-	protected final void initAllGeomObjs_Indiv() {};
+	protected final void setMapMgrGeomObjVals_Indiv() {};
 
 	
 	@Override
@@ -171,7 +171,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	protected final void drawMeLast_Indiv() {		
 		//pa.hint(pa.DISABLE_DEPTH_SORT);//slow
 		if(getPrivFlags(uiObjDataLoadedIDX)){
-			if(getPrivFlags(showOrthoFrameIDX)) {for(SOM_GeomObj s : sourceGeomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(pa);}}
+			if(getPrivFlags(showOrthoFrameIDX)) {((Geom_PlaneMapMgr)mapMgr).drawAllPlanesOrthoFrames(pa);}
 		}
 	}	
 	
@@ -180,12 +180,6 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	protected final void setCustMenuBtnNames() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	protected final void launchMenuBtnHndlr() {
 		// TODO Auto-generated method stub
 		
 	}

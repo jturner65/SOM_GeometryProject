@@ -33,11 +33,12 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	 * @param _winTxt
 	 * @param _canDrawTraj
 	 */	
+	private final float dispBrdr = 20.0f;
 	public Geom_LineAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
 		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, "Lines");
 		win2DMinsAndDiffs = new float[2][2];
-		win2DMinsAndDiffs[0]= new float[] {-.5f*rectDim[2] + 10, -.5f*rectDim[3] + 10};
-		win2DMinsAndDiffs[1] = new float[] {rectDim[2]-20, rectDim[3]-20};
+		win2DMinsAndDiffs[0]= new float[] {-.5f*rectDim[2] + dispBrdr, -.5f*rectDim[3] + dispBrdr};
+		win2DMinsAndDiffs[1] = new float[] {rectDim[2]-(2.0f*dispBrdr), rectDim[3]-(2.0f*dispBrdr)};
 		super.initThisWin(_canDrawTraj, true, false);
 	}
 
@@ -93,7 +94,7 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	/**
 	 * send all instance-specific values from UI to map manager
 	 */
-	protected final void initAllGeomObjs_Indiv() {};
+	protected final void setMapMgrGeomObjVals_Indiv() {};
 
 	
 	@Override
@@ -172,12 +173,6 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	protected final void setCustMenuBtnNames() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	protected final void launchMenuBtnHndlr() {
 		// TODO Auto-generated method stub
 		
 	}

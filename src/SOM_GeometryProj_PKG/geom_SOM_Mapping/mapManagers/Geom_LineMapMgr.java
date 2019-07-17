@@ -3,22 +3,21 @@ package SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
-import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_LineExManager;
 import SOM_GeometryProj_PKG.geom_Utils.runners.Geom_LineObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExample;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomFtrBndMon;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_MapNode;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_Utils_Objects.vectorObjs.Tuple;
+import base_Utils_Objects.vectorObjs.myPoint;
 
 public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	
@@ -35,22 +34,34 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	protected final SOM_GeomObjBldrRunner buildObjRunner() {
 		return new Geom_LineObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, worldBounds, SOM_GeomObjBldrTasks.buildBaseObj);		
 	}
+	/**
+	 * build the training data bounds manager
+	 */
+	protected final SOM_GeomFtrBndMon buildTrainDatFtrBndMgr() {
+		//use # of ftrs mapped 
+		return new SOM_GeomFtrBndMon(Geom_LineSOMExample._numFtrs);
+	};
 
 	@Override
 	protected SOM_GeomObj[] buildEmptyObjArray() {		return new Geom_LineSOMExample[numObjsToBuild];}
 	
 	/**
-	 * build the example data mapper specific to instancing class
+	 * build the example data mapper specific to instancing class for saving -training- data
 	 * @return
 	 */
 	@Override
-	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv() {return new Geom_LineExManager(this, "Lines", "Line Geometric Objects", useChiSqDist);}
+	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv() {return new Geom_LineExManager(this, "Lines", "Line Geometric Objects", SOM_ExDataType.Training, false);}
 	/**
-	 * send any instance-specific control/ui values to objRunners
+	 * send any instance-specific control/ui values to objRunners, based on task
 	 */
 	@Override
-	protected final void buildGeomExampleObjs_Indiv() {}
-
+	protected final void execObjRunner_Pre_Indiv(SOM_GeomObjBldrTasks _task) {
+		switch(_task) {
+			case buildBaseObj 			: { break;}
+			case regenSamplesBaseObj	: { break;}
+			default : {break;}
+		}
+	}
 
 	@Override
 	protected Integer[] getAllClassLabels() {
@@ -105,5 +116,35 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 		}
 	}
 
-
-}
+	////////////////////////
+	// mouse handling
+	/**
+	 * check mouse over/click in experiment; if btn == -1 then mouse over
+	 * @param msx
+	 * @param msy
+	 * @param mseClckInWorld
+	 * @param btn
+	 * @return
+	 */
+	public final boolean checkMouseClick(int msx, int msy, myPoint mseClckInWorld, int btn) {
+		return false;
+	}
+	/**
+	 * check mouse drag/move in experiment; if btn == -1 then mouse over
+	 * @param msx
+	 * @param msy
+	 * @param mseClckInWorld
+	 * @param btn
+	 * @return
+	 */
+	public final boolean checkMouseDragMove(int msx, int msy, myPoint mseClckInWorld, int btn){
+		return false;
+	}
+	/**
+	 * notify all exps that mouse has been released
+	 */
+	public final void setMouseRelease() {
+		
+	}
+	
+}//classGeom_LineMapMgr

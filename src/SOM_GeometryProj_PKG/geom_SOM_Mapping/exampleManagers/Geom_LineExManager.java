@@ -3,14 +3,17 @@ package SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers;
 import java.util.ArrayList;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
+import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import base_SOM_Objects.SOM_MapManager;
+import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_Example;
 
 public class Geom_LineExManager extends SOM_GeomExampleManager {
 
-	public Geom_LineExManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName,  boolean _shouldValidate) {
-		super(_mapMgr, _exName, _longExampleName,  _shouldValidate);
+	public Geom_LineExManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName,  SOM_ExDataType _curDataType, boolean _shouldValidate) {
+		super(_mapMgr, _exName, _longExampleName,  _curDataType,  _shouldValidate);
 	}
 
 	@Override
@@ -50,8 +53,7 @@ public class Geom_LineExManager extends SOM_GeomExampleManager {
 
 	@Override
 	protected SOM_Example buildSingleExample(String _oid, String _str) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Geom_LineSOMExample((SOM_GeomMapManager)mapMgr, animWin, curDataType, _oid, _str, ((SOM_GeomMapManager)mapMgr).getWorldBounds());
 	}
 
 }//class Geom_LineSOMExampleManager

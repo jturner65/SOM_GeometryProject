@@ -118,7 +118,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	/**
 	 * send all instance-specific values from UI to map manager
 	 */
-	protected final void initAllGeomObjs_Indiv() {
+	protected final void setMapMgrGeomObjVals_Indiv() {
 		((Geom_SphereMapMgr) mapMgr).setMinMaxRad(minSphRad, maxSphRad);
 		
 	};
@@ -135,13 +135,13 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 				if(val != minSphRad){
 					minSphRad = val;
 					if(minSphRad >= maxSphRad) { maxSphRad = minSphRad + 1;setWinToUIVals(gIDX_MaxRadius, maxSphRad);   }
-					initAllGeomObjs();}
+					rebuildSourceGeomObjs();}
 				break;}
 			case gIDX_MaxRadius	: {
 				if(val != maxSphRad){
 					maxSphRad = val;
 					if(minSphRad >= maxSphRad)  { minSphRad = maxSphRad - 1;setWinToUIVals(gIDX_MinRadius, minSphRad);   }				
-					initAllGeomObjs();}
+					rebuildSourceGeomObjs();}
 				break;}
 			default : {break;}
 		}	
@@ -193,12 +193,6 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	protected final void setCustMenuBtnNames() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	protected final void launchMenuBtnHndlr() {
 		// TODO Auto-generated method stub
 		
 	}
