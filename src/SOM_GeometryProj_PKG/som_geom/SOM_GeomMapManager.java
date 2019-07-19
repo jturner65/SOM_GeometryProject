@@ -10,8 +10,8 @@ import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomFtrBndMon;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_examples.SOM_ExampleManager;
@@ -52,7 +52,13 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	/**
 	 * mapper to manage the example training data built from the geometric objects
 	 */
-	protected SOM_GeomExampleManager trainDatExMapper;
+	protected SOM_GeomExampleManager geomSrcToTrainExDataManager;
+	
+	/**
+	 * mapper for -training- data
+	 */
+	protected SOM_GeomExampleManager trainExDataManager;
+
 	
 	/**
 	 * extended flags from base class
@@ -78,6 +84,10 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 * # of samples per object
 	 */
 	protected int numSamplesPerObj;
+	/**
+	 * total # of training examples to build
+	 */
+	protected int ttlNumTrainExamples;
 	
 	 /**
 	  * runnable object to manage various tasks
@@ -106,7 +116,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 			System.out.println(geomObjType + " World bounds set to value!");
 			worldBounds=_worldBounds;
 			objRunner = buildObjRunner();		
-			trainDatExMapper.setObjRunner(objRunner);
+			geomSrcToTrainExDataManager.setObjRunner(objRunner);
 		} else {
 			System.out.println(geomObjType + " World bound set to null!");
 			worldBounds = null;
@@ -147,8 +157,12 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	@Override
 	protected final void buildExampleDataMappers() {
 		SOM_ExampleManager ex = buildExampleDataMappers_Indiv(); // this manages TRAINING data
-		exampleDataMappers.put("trainExamples",  ex);
-		trainDatExMapper = (SOM_GeomExampleManager) exampleDataMappers.get("trainExamples");
+		exampleDataMappers.put("geomSrcExData",  ex);
+		SOM_ExampleManager exTrain = buildExampleDataMappers_Indiv(); // this manages TRAINING data
+		exampleDataMappers.put("trainingData",  exTrain);
+		
+		geomSrcToTrainExDataManager = (SOM_GeomExampleManager) exampleDataMappers.get("geomSrcExData");
+		trainExDataManager = (SOM_GeomExampleManager) exampleDataMappers.get("trainingData");
 	}
 	
 	/**
@@ -172,9 +186,10 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 * @param _numObjs
 	 * @param _numSamples
 	 */
-	public final void setNumObjsAndSamples(int _numObjs, int _numSamples) {
+	public final void setUIObjData(int _numObjs, int _numSamples, int _numTrainExamples) {
 		numObjsToBuild=_numObjs;
 		numSamplesPerObj=_numSamples;
+		ttlNumTrainExamples = _numTrainExamples;
 	}
 	
 	/**
@@ -203,21 +218,38 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 		getMsgObj().dispMessage("Geom_SOMMapManager","generateAllPreProcExamples","Start Processing all " + geomObjType + " Examples into SOM Training Examples", MsgCodes.info5);
 		//take existing geometry setup and generate training data from example data
 		if(!getFlag(srcGeomObjsAllBuiltIDX)) {getMsgObj().dispWarningMessage("Geom_SOMMapManager","generateAllPreProcExamples","No existing " + geomObjType + " Examples to process. Aborting."); return;}
-		
+		resetTrainDataObjs();
+		trainExDataManager.buildTrainingDataFromGeomObjs(geomSrcToTrainExDataManager, ttlNumTrainExamples);
+		trainDatGeomObjects = (SOM_GeomObj[]) trainExDataManager.buildExampleArray();
+		setFlag(trainDatObjsAllBuiltIDX,true);
+			//finalize and calc ftr vecs on geometry if we have loaded new data 
+		finishSOMExampleBuild(trainExDataManager,  ""+geomObjType +" Geom object-derived training example");
+
 		
 		getMsgObj().dispMessage("Geom_SOMMapManager","generateAllPreProcExamples","Finished Processing all Preproccessed " + geomObjType + " Examples.  ", MsgCodes.info5);
 	}//generateTrainingData
 	
+	public final void resetTrainDataObjs() {
+		trainExDataManager.reset();
+		trainDatGeomObjects = new SOM_GeomObj[0];
+		setFlag(trainDatObjsAllBuiltIDX,false);
+	}
+	
+	
 	/**
-	 * (re)build base examples
+	 * (re)build base examples setFlag(trainDatObjsAllBuiltIDX,true);
 	 */
 	public final void buildGeomExampleObjs() {
 		objRunner.setNumSamplesPerObj(numSamplesPerObj);	
 		setFlag(srcGeomObjsAllBuiltIDX, false);
+		resetTrainDataObjs();
+		
 		execObjRunnerTask(buildEmptyObjArray(), SOM_GeomObjBldrTasks.buildBaseObj, "buildGeomExampleObjs","building "+ numObjsToBuild+" geom example objects of type : " + this.geomObjType);
 		sourceGeomObjects = objRunner.getObjArray();
 		setFlag(srcGeomObjsAllBuiltIDX, true);
-		for(SOM_GeomObj obj : sourceGeomObjects) {	trainDatExMapper.addExampleToMap(obj);	}		
+			//data in example manager is out of synch
+		geomSrcToTrainExDataManager.reset();
+		for(SOM_GeomObj obj : sourceGeomObjects) {	geomSrcToTrainExDataManager.addExampleToMap(obj);	}		
 	}
 	
 	/**
@@ -240,29 +272,29 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	protected abstract SOM_GeomObj[] buildEmptyObjArray();
 	
 
-	/**
-	 * build an array of constituent SOM_GeomSmplForSOMExample objects, either from source points, or from randomly derived values, for array of geom objects passed
-	 * @param isRand whether points should be randomly generated from object or built from object constituent points
-	 * @return
-	 */
-	public SOM_GeomSmplDataForEx[] buildSrcObjDataAra(SOM_GeomObj[] objAra, int[] perObjIDX, boolean isRand) {
-		SOM_GeomSmplDataForEx[] srcSamples = new SOM_GeomSmplDataForEx[objAra.length];
-		if(isRand) {	for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new SOM_GeomSmplDataForEx(objAra[i], objAra[i].getRandPointOnObj());}} 
-		else {			for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new SOM_GeomSmplDataForEx(objAra[i], objAra[i].objSamples.getSamplePt(perObjIDX[i]));	}}
-		return srcSamples;
-	}	
-
-	/**
-	 * build an array of constituent SOM_GeomSmplForSOMExample objects, either from source points, or from randomly derived values, for array of geom objects passed
-	 * @param isRand whether points should be randomly generated from object or built from object constituent points
-	 * @return
-	 */
-	public SOM_GeomSmplDataForEx[] buildSrcObjDataAra(SOM_GeomObj obj, boolean isRand) {
-		SOM_GeomSmplDataForEx[] srcSamples = new SOM_GeomSmplDataForEx[obj.srcPts.length];
-		if(isRand) {	for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new SOM_GeomSmplDataForEx(obj, obj.getRandPointOnObj());}} 
-		else {			for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new SOM_GeomSmplDataForEx(obj, obj.srcPts[i]);	}}
-		return srcSamples;
-	}	
+//	/**
+//	 * build an array of constituent SOM_GeomSmplForSOMExample objects, either from source points, or from randomly derived values, for array of geom objects passed
+//	 * @param isRand whether points should be randomly generated from object or built from object constituent points
+//	 * @return
+//	 */
+//	public SOM_GeomSmplDataForEx[] buildSrcObjDataAra(SOM_GeomObj[] objAra, int[] perObjIDX, boolean isRand) {
+//		SOM_GeomSmplDataForEx[] srcSamples = new SOM_GeomSmplDataForEx[objAra.length];
+//		if(isRand) {	for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new SOM_GeomSmplDataForEx(objAra[i], objAra[i].getRandPointOnObj());}} 
+//		else {			for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new SOM_GeomSmplDataForEx(objAra[i], objAra[i].objSamples.getSamplePt(perObjIDX[i]));	}}
+//		return srcSamples;
+//	}	
+//
+//	/**
+//	 * build an array of constituent SOM_GeomSmplForSOMExample objects, either from source points, or from randomly derived values, for array of geom objects passed
+//	 * @param isRand whether points should be randomly generated from object or built from object constituent points
+//	 * @return
+//	 */
+//	public SOM_GeomSmplDataForEx[] buildSrcObjDataAra(SOM_GeomObj obj, boolean isRand) {
+//		SOM_GeomSmplDataForEx[] srcSamples = new SOM_GeomSmplDataForEx[obj.srcPts.length];
+//		if(isRand) {	for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new SOM_GeomSmplDataForEx(obj, obj.getRandPointOnObj());}} 
+//		else {			for(int i=0;i<srcSamples.length;++i) {		srcSamples[i] = new SOM_GeomSmplDataForEx(obj, obj.srcPts[i]);	}}
+//		return srcSamples;
+//	}	
 
 
 	@Override
@@ -270,7 +302,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 * this function will build the input data used by the SOM - this will be partitioned by some amount into test and train data (usually will use 100% train data, but may wish to test label mapping)
 	 */
 	protected final SOM_Example[] buildSOM_InputData() {
-		SOM_Example[] res = trainDatExMapper.buildExampleArray();	//cast to appropriate mapper when flag custOrdersAsTrainDataIDX is set
+		SOM_Example[] res = geomSrcToTrainExDataManager.buildExampleArray();	//cast to appropriate mapper when flag custOrdersAsTrainDataIDX is set
 		getMsgObj().dispMessage("Geom_SOMMapManager","buildSOM_InputData", "Size of input data : " + res.length,MsgCodes.info5);
 		return res;
 	}
@@ -281,15 +313,26 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	protected final void loadPreProcTrainData(String subDir, boolean forceLoad) {
 		getMsgObj().dispMessage("Geom_SOMMapManager","loadPreProcTrainData","Begin loading preprocced data from " + subDir +  "directory.", MsgCodes.info5);
 			//load geometry data
-		if(!trainDatExMapper.isDataPreProcced() || forceLoad) {			trainDatExMapper.loadAllPreProccedExampleData(subDir);}
-		else {getMsgObj().dispMessage("Geom_SOMMapManager","loadPreProcTrainData","Not loading preprocessed " + geomObjType +" geometric examples since they are already loaded.", MsgCodes.info1);}
+		if(!geomSrcToTrainExDataManager.isDataPreProcced() || forceLoad) {			
+				//first need to load UI info about preprocced data (settings used to generate data)
+			TreeMap<String,String> uiToBuildGeom = geomSrcToTrainExDataManager.loadGeomObjsUIVals(subDir);
+			if((null != uiToBuildGeom) && (uiToBuildGeom.size()!=0)) {		//loaded successfully
+				dispWin.setAllUIValsFromPreProcLoad(uiToBuildGeom);
+			} else {
+				getMsgObj().dispWarningMessage("Geom_SOMMapManager","loadPreProcTrainData","UI Values used to build Geom failed to load - UI may be out of sync with current Geometry objects.");
+			}
+				//now load actual object data
+			geomSrcToTrainExDataManager.loadAllPreProccedExampleData(subDir);
+		} else {
+			getMsgObj().dispMessage("Geom_SOMMapManager","loadPreProcTrainData","Not loading preprocessed " + geomObjType +" geometric examples since they are already loaded.", MsgCodes.info1);
+		}
+			//reset any synthesized training data
+		resetTrainDataObjs();
 			//copy mapper geom examples to example array
-		sourceGeomObjects = (SOM_GeomObj[]) trainDatExMapper.buildExampleArray();
+		sourceGeomObjects = (SOM_GeomObj[]) geomSrcToTrainExDataManager.buildExampleArray();
 		setFlag(srcGeomObjsAllBuiltIDX, true);
-			//now need to load UI info about preprocced data (settings used to generate data)
-		//aaaa
 			//finalize and calc ftr vecs on geometry if we have loaded new data 
-		finishSOMExampleBuild();
+		finishSOMExampleBuild(geomSrcToTrainExDataManager,  ""+geomObjType +" geometric example");
 			
 		getMsgObj().dispMessage("Geom_SOMMapManager","loadAllPreProccedData","Finished loading preprocced data from " + subDir +  "directory.", MsgCodes.info5);
 	}
@@ -300,15 +343,11 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	public void saveAllPreProcExamples() {
 		getMsgObj().dispMessage("Geom_SOMMapManager","saveAllPreProcExamples","Start Saving all Preproccessed " + geomObjType + " Examples.", MsgCodes.info5);
 			//save current data as preprocced data
-		boolean saveSuccess = trainDatExMapper.saveAllPreProccedExampleData();		
+		boolean saveSuccess = geomSrcToTrainExDataManager.saveAllPreProccedExampleData();		
 			//need to save current UI configuration used to generate geometric data
-	//bbbbb
-		getMsgObj().dispMessage("Geom_SOMMapManager","saveAllPreProcExamples","Finished Saving all Preproccessed " + geomObjType + " Examples. Success : " + saveSuccess, MsgCodes.info5);
-	}
-	
-	
-	
-	
+		boolean saveUISuccess = geomSrcToTrainExDataManager.saveGeomObjsUIVals(dispWin.getAllUIValsForPreProcSave());
+		getMsgObj().dispMessage("Geom_SOMMapManager","saveAllPreProcExamples","Finished Saving all Preproccessed " + geomObjType + " Examples. Data Success : " + saveSuccess + " | UI Vals Success : " + saveUISuccess, MsgCodes.info5);
+	}//saveAllPreProcExamples
 	
 	
 	//get mins/diffs for ftr vals per ftr jp and for all vals per all jps
@@ -325,7 +364,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	
 	
 	//finish building the prospect map - finalize each prospect example and then perform calculation to derive weight vector
-	protected void finishSOMExampleBuild() {
+	protected void finishSOMExampleBuild(SOM_GeomExampleManager dataManager, String exampleMapperDesc) {
 		getMsgObj().dispMessage("Geom_SOMMapManager","finishSOMExampleBuild","Begin finalize mappers, calculate feature data, diffs, mins, and calculate post-global-ftr-data calcs.", MsgCodes.info5);
 		//if((custPrspctExMapper.getNumMapExamples() != 0) || (prodExMapper.getNumMapExamples() != 0)) {
 				//current SOM map, if there is one, is now out of date, do not use
@@ -333,27 +372,27 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 			//finalize customer prospects and products (and true prospects if they exist) - customers are defined by having criteria that enable their behavior to be used as to train the SOM		
 		_finalizeAllMappersBeforeFtrCalc();
 			//feature vector only corresponds to actual -customers- since this is what is used to build the map - build feature vector for customer prospects				
-		boolean geomObjFtrBldSuccess = trainDatExMapper.buildFeatureVectors();	
-		if(!geomObjFtrBldSuccess) {getMsgObj().dispMessage("Geom_SOMMapManager","finishSOMExampleBuild","Building " + geomObjType +" geometric example Feature vectors failed due to above error (no data available).  Aborting - No features have been calculated for any examples!", MsgCodes.error1);	return;	}
+		boolean geomObjFtrBldSuccess = dataManager.buildFeatureVectors();	
+		if(!geomObjFtrBldSuccess) {getMsgObj().dispMessage("Geom_SOMMapManager","finishSOMExampleBuild","Building " + exampleMapperDesc +" Feature vectors failed due to above error (no data available).  Aborting - No features have been calculated for any examples!", MsgCodes.error1);	return;	}
 
 		getMsgObj().dispMessage("Geom_SOMMapManager","finishSOMExampleBuild","Finished buildFeatureVectors | Begin calculating diffs and mins", MsgCodes.info1);	
 			//now get mins and diffs from calc object
 		setMinsAndDiffs(getMinBndsAra(), getDiffsBndsAra());  
 		
-		getMsgObj().dispMessage("Geom_SOMMapManager","finishSOMExampleBuild","Finished calculating diffs and mins | Begin building post-feature calc structs for " + geomObjType +" geometric examples (i.e. std ftrs) dependent on diffs and mins", MsgCodes.info1);
+		getMsgObj().dispMessage("Geom_SOMMapManager","finishSOMExampleBuild","Finished calculating diffs and mins | Begin building post-feature calc structs for " + exampleMapperDesc +" s (i.e. std ftrs) dependent on diffs and mins", MsgCodes.info1);
 		
 			//now finalize post feature calc -this will do std features			
-		trainDatExMapper.buildAfterAllFtrVecsBuiltStructs();		
+		dataManager.buildAfterAllFtrVecsBuiltStructs();		
 		
 		getMsgObj().dispMessage("Geom_SOMMapManager","finishSOMExampleBuild","Finished finalize mappers, calculate feature data, diffs, mins, and calculate post-global-ftr-data calcs.", MsgCodes.info5);						
 		//} else {	getMsgObj().dispMessage("Geom_SOMMapManager","finishSOMExampleBuild","No prospects or products loaded to calculate/finalize.", MsgCodes.warning2);	}
 	}//finishSOMExampleBuild	
 
 	protected void _finalizeAllMappersBeforeFtrCalc() {
-		getMsgObj().dispInfoMessage("Geom_SOMMapManager","_finalizeProsProdJpJPGMon","Begin finalize of all example data, preparing each example for feature calculation.");
+		getMsgObj().dispInfoMessage("Geom_SOMMapManager","_finalizeAllMappersBeforeFtrCalc","Begin finalize of all example data, preparing each example for feature calculation.");
 		//finalize customers before feature calcs
-		trainDatExMapper.finalizeAllExamples();
-		getMsgObj().dispInfoMessage("Geom_SOMMapManager","_finalizeProsProdJpJPGMon","Finished setJPDataFromExampleData from all examples.");
+		geomSrcToTrainExDataManager.finalizeAllExamples();
+		getMsgObj().dispInfoMessage("Geom_SOMMapManager","_finalizeAllMappersBeforeFtrCalc","Finished finalizing examples before feature calc.");
 	}//_finalizeAllMappersBeforeFtrCalc
 
 	
@@ -474,6 +513,9 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	public final void setGeomObjsBuilt(boolean val) {setFlag(srcGeomObjsAllBuiltIDX, val);}
 	public final boolean getGeomObjsBuilt() {return getFlag(srcGeomObjsAllBuiltIDX);}	
 	
+	public final void setTrainDataObjsBuilt(boolean val) {setFlag(trainDatObjsAllBuiltIDX, val);}
+	public final boolean getTrainDataObjsBuilt() {return getFlag(trainDatObjsAllBuiltIDX);}	
+	
 	@Override
 	protected final int getNumFlags() {	return getNumGeomFlags_Indiv();}
 	protected abstract int getNumGeomFlags_Indiv();
@@ -495,43 +537,43 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	////////////////////////////
 	// draw functions
 	
-	/**
-	 * draw source objects in owning anim res window
-	 * @param pa
-	 * @param animTimeMod
-	 * @param curSelGeomObjIDX
-	 * @param showMapBasedLocs
-	 * @param showSelUIObj
-	 */
-	public final void drawSrcObjsInUIWindow(my_procApplet pa, float animTimeMod, int curSelGeomObjIDX, boolean showMapBasedLocs) {
-		if(getFlag(srcGeomObjsAllBuiltIDX)){
-			//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is true");
-			if(showMapBasedLocs){				//show map-based locations
-				dispWin._drawObjs_UseBMUs(pa, sourceGeomObjects, curSelGeomObjIDX, animTimeMod);
-			} else {										//show objects based on their own location/data, not map-derived quantities		
-				dispWin._drawObjs_UseActual(pa, sourceGeomObjects, curSelGeomObjIDX, animTimeMod);
-			}//use locs or map-locs
-		}
-	}//drawSrcObjsInUIWindow
-
-	/**
-	 * draw synthesized objects in owning anim res window
-	 * @param pa
-	 * @param animTimeMod
-	 * @param curSelGeomObjIDX
-	 * @param showMapBasedLocs
-	 * @param showSelUIObj
-	 */
-	public final void drawSynthObjsInUIWindow(my_procApplet pa, float animTimeMod, boolean showMapBasedLocs) {
-		if(getFlag(trainDatObjsAllBuiltIDX)){
-			//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is true");
-			if(showMapBasedLocs){				//show map-based locations
-				dispWin._drawObjs_UseBMUs(pa, trainDatGeomObjects, -1, animTimeMod);
-			} else {										//show objects based on their own location/data, not map-derived quantities		
-				dispWin._drawObjs_UseActual(pa, trainDatGeomObjects, -1, animTimeMod);
-			}//use locs or map-locs
-		}
-	}//drawSynthObjsInUIWindow
+//	/**
+//	 * draw source objects in owning anim res window
+//	 * @param pa
+//	 * @param animTimeMod
+//	 * @param curSelGeomObjIDX
+//	 * @param showMapBasedLocs
+//	 * @param showSelUIObj
+//	 */
+//	public final void drawSrcObjsInUIWindow(my_procApplet pa, float animTimeMod, int curSelGeomObjIDX, boolean showMapBasedLocs) {
+//		if(getFlag(srcGeomObjsAllBuiltIDX)){
+//			//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is true");
+//			if(showMapBasedLocs){				//show map-based locations
+//				dispWin._drawObjs_UseBMUs(pa, sourceGeomObjects, curSelGeomObjIDX, animTimeMod);
+//			} else {										//show objects based on their own location/data, not map-derived quantities		
+//				dispWin._drawObjs_UseActual(pa, sourceGeomObjects, curSelGeomObjIDX, animTimeMod);
+//			}//use locs or map-locs
+//		}
+//	}//drawSrcObjsInUIWindow
+//
+//	/**
+//	 * draw synthesized objects in owning anim res window
+//	 * @param pa
+//	 * @param animTimeMod
+//	 * @param curSelGeomObjIDX
+//	 * @param showMapBasedLocs
+//	 * @param showSelUIObj
+//	 */
+//	public final void drawSynthObjsInUIWindow(my_procApplet pa, float animTimeMod, boolean showMapBasedLocs) {
+//		if(getFlag(trainDatObjsAllBuiltIDX)){
+//			//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is true");
+//			if(showMapBasedLocs){				//show map-based locations
+//				dispWin._drawObjs_UseBMUs(pa, trainDatGeomObjects, -1, animTimeMod);
+//			} else {										//show objects based on their own location/data, not map-derived quantities		
+//				dispWin._drawObjs_UseActual(pa, trainDatGeomObjects, -1, animTimeMod);
+//			}//use locs or map-locs
+//		}
+//	}//drawSynthObjsInUIWindow
 
 	@Override
 	protected final float getPreBuiltMapInfoDetail(my_procApplet pa, String[] str, int i, float yOff, boolean isLoaded) {

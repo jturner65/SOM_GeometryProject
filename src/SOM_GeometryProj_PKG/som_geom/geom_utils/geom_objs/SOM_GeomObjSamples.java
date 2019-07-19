@@ -1,13 +1,9 @@
 package SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs;
 
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomSamplePointf;
-
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.myPointf;
-import processing.core.PConstants;
 import processing.core.PShape;
-import java.awt.Color;
 
 /**
  * this class will hold a number of samples representing the surface of some object
@@ -78,7 +74,9 @@ public class SOM_GeomObjSamples {
 		buildSamplePShapeObjs(pa);
 	}
 	
+	public int getNumSamples() {return objSamplePts.length;}
 	public SOM_GeomSamplePointf getSamplePt(int idx) {return objSamplePts[idx];}
+	public SOM_GeomSamplePointf[] getAllSamplePts() {return objSamplePts;}
 	
 	/**
 	 * build pshape to hold samples, to speed up rendering

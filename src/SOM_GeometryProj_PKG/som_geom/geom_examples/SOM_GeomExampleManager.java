@@ -3,19 +3,26 @@ package SOM_GeometryProj_PKG.som_geom.geom_examples;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
-import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_examples.SOM_ExampleManager;
+import base_Utils_Objects.io.MsgCodes;
 /**
  * example manager base class for Geometry-based SOM projects
  * @author john
  *
  */
 public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
+	/**
+	 * all the samples for the geometric objects this example manager will build training examples from
+	 * if this ex manager manages geometric data instead, this will be empty
+	 */
+	protected SOM_GeomSmplDataForEx[] allSamples;
 	 /**
 	  * runnable object to manage various tasks
 	  */
@@ -25,37 +32,61 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	 * set this to data type being managed by this example manager (training, validation, etc) 
 	 */
 	protected final SOM_ExDataType curDataType;
+	
 
 	public SOM_GeomExampleManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName, SOM_ExDataType _curDataType, boolean _shouldValidate) {
 		super(_mapMgr, _exName, _longExampleName, new boolean[] {_shouldValidate, true});	
 		curDataType = _curDataType;
 	}
 	
+	@Override
+	protected final void reset_Priv() {
+		allSamples = new SOM_GeomSmplDataForEx[0];		
+	}
+
+	
 	/**
 	 * set obj runner so that example manager can consume it
 	 * @param _objRunner
 	 */
 	public final void setObjRunner(SOM_GeomObjBldrRunner _objRunner) {objRunner=_objRunner;}
-	
-	@Override
-	protected final void reset_Priv() {
-		
-	}
 
 	@Override
 	protected final void buildFtrVec_Priv() {
-
 	}	
+
+	/**
+	 * this will build the training data in this example manager based on the geometric data passed in geomExMgr
+	 * @param geomExMgr
+	 */
+	public final void buildTrainingDataFromGeomObjs(SOM_GeomExampleManager geomExMgr, int ttlNumTrainEx) {
+		reset();
+		//all geomgetric objects from geometry example manager
+		SOM_GeomObj[] geomEx = (SOM_GeomObj[]) geomExMgr.buildExampleArray();
+		int numSamplesTTL = geomEx.length * geomEx[0].getNumSamples();
+		allSamples = new SOM_GeomSmplDataForEx[numSamplesTTL];
+		int idx = 0;
+		for(SOM_GeomObj ex : geomEx) {
+			SOM_GeomSamplePointf[] smpls = ex.getAllSamplePts();
+			for(int i=0;i<smpls.length;++i) {	allSamples[idx++]=new SOM_GeomSmplDataForEx(ex,smpls[i]);}			
+		}
+		//now need to build # of training examples - need to do this in multi-threaded environment
+		buildAllEx_MT(mapMgr.getNumUsableThreads(),ttlNumTrainEx);
+		
+		setAllDataLoaded();
+		setAllDataPreProcced();
+	}//	buildTrainingDataFromGeom
 	
 	/**
-	 * no need to validate examples for this kind of project
+	 * build all training examples 
 	 */
-	@Override
-	protected final void validateAndAddExToArray(ArrayList<SOM_Example> tmpList, SOM_Example ex) {tmpList.add(ex);	}
+	protected abstract void buildAllEx_MT(int numThdCallables, int ttlNumTrainEx);
 
+	
+	
 	@Override
 	/**
-	 * after example array has been built, and specific funcitonality for these types of examples, especially if validation should occur
+	 * after example array has been built, add specific funcitonality for these types of examples, especially if validation should occur
 	 */
 	protected final void buildExampleArrayEnd_Priv(boolean validate) {}
 	
@@ -81,20 +112,34 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	/**
 	 * save and load the UI values used to build the preprocessed anim data for this project
 	 * @param uiVals
-	 */
-	
-	public final void saveAnimUIVals(TreeMap<String,String> uiVals) {
+	 */	
+	public final boolean saveGeomObjsUIVals(TreeMap<String,String> uiVals) {
+		msgObj.dispMessage("SOM_GeomExampleManager::"+exampleName,"saveGeomObjsUIVals","Saving UI Values used to synthesize geometric data.", MsgCodes.info5);
+		String[] saveGeomUIDestFNamePrefixAra = projConfigData.buildPreProccedDataCSVFNames_Save(exampleName+"GeomSrcData_UIVals");
+		ArrayList<String> csvResTmp = new ArrayList<String>();		
+		String uiGeomConfigFileName = saveGeomUIDestFNamePrefixAra[0]+".csv";
+		for(String key : uiVals.keySet()) {	csvResTmp.add(key+","+uiVals.get(key));}
+		boolean success = fileIO.saveStrings(uiGeomConfigFileName, csvResTmp);
 		
-		
-		
+		msgObj.dispMessage("SOM_GeomExampleManager::"+exampleName,"saveGeomObjsUIVals","Finished saving UI Values used to synthesize geometric data : Success : " +success, MsgCodes.info5);
+		return success;
 	}
 	
-	public final TreeMap<String,String> loadAnimUIVals() {
+	public final TreeMap<String,String> loadGeomObjsUIVals(String subDir) {
+		msgObj.dispMessage("SOM_GeomExampleManager::"+exampleName,"loadGeomObjsUIVals","Loading UI Values used to synthesize geometric data from : " +subDir, MsgCodes.info5);				
+		String[] loadGeomUISrcFNamePrefixAra = projConfigData.buildPreProccedDataCSVFNames_Load(subDir, exampleName+ "GeomSrcData_UIVals");
+		String uiGeomConfigFileName = loadGeomUISrcFNamePrefixAra[0]+".csv";
+		String[] csvLoadRes = fileIO.loadFileIntoStringAra(uiGeomConfigFileName, "Geom Object UI Values file loaded.", "Geom Object UI Values file Failed to load");
 		TreeMap<String,String> res = new TreeMap<String,String>();
-		
-		
-		
-		
+		if(csvLoadRes.length == 0) {
+			msgObj.dispMessage("SOM_GeomExampleManager::"+exampleName,"loadGeomObjsUIVals","Failed to load UI Values used to synthesize geometric data from : "+ subDir, MsgCodes.info5);
+			return res;
+		}
+		for(String s : csvLoadRes) {
+			String[] vals = s.split(",");
+			res.put(vals[0].trim(), vals[1].trim());			
+		}		
+		msgObj.dispMessage("SOM_GeomExampleManager::"+exampleName,"loadGeomObjsUIVals","Finished loading " + res.size() +" UI Values used to synthesize geometric data.", MsgCodes.info5);
 		return res;		
 	}
 	

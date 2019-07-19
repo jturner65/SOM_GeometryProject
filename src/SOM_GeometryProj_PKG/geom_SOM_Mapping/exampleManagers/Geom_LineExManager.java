@@ -7,20 +7,26 @@ import java.util.concurrent.Future;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.procData_loaders.Geom_LineCSVDataLoader;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
+import SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables.Geom_LineTrainDatBuilder;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_fileIO.SOM_ExCSVDataLoader;
 
 public class Geom_LineExManager extends SOM_GeomExampleManager {
-
+	
 	public Geom_LineExManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName,  SOM_ExDataType _curDataType, boolean _shouldValidate) {
 		super(_mapMgr, _exName, _longExampleName,  _curDataType,  _shouldValidate);
 	}
-
 	
+
+	/**
+	 * no need to validate examples for this kind of project - shouldn't get called
+	 */
+	@Override
+	protected final void validateAndAddExToArray(ArrayList<SOM_Example> tmpList, SOM_Example ex) {tmpList.add(ex);	}
 	@Override
 	protected SOM_Example[] noValidateBuildExampleArray() {return (Geom_LineSOMExample[])(exampleMap.values().toArray(new Geom_LineSOMExample[0]));		}
 	@Override
@@ -28,8 +34,18 @@ public class Geom_LineExManager extends SOM_GeomExampleManager {
 
 	@Override
 	protected void buildAfterAllFtrVecsBuiltStructs_Priv() {
-		// TODO Auto-generated method stub
-
+	}
+	
+	@Override
+	protected void buildAllEx_MT(int numThdCallables, int ttlNumTrainEx) {
+		List<Future<Boolean>> trainDataBldFtrs = new ArrayList<Future<Boolean>>();
+		List<SOM_GeomTrainExBuilder> trainDataBldrs = new ArrayList<SOM_GeomTrainExBuilder>();
+		
+		//SOM_GeomMapManager _mapMgr, SOM_GeomExampleManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals
+		for (int i=0; i<numThdCallables;++i) {	trainDataBldrs.add(new Geom_LineTrainDatBuilder((Geom_LineMapMgr) mapMgr, this, allSamples, new int[] {0,allSamples.length,i, ttlNumTrainEx, numThdCallables}));}
+		
+		try {trainDataBldFtrs = th_exec.invokeAll(trainDataBldrs);for(Future<Boolean> f: trainDataBldFtrs) { 			f.get(); 		}} catch (Exception e) { e.printStackTrace(); }					
+		
 	}
 	
 	@Override

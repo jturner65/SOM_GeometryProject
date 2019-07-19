@@ -50,26 +50,29 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		
 		showSamplePntsIDX 		= 1,				//show/hide sample points
 		showFullSourceObjIDX	= 2,				//show/hide full source object(sources of sample points)
-		showUIObjLabelIDX		= 3,				//display the ui obj's ID as a text tag
-		showUIObjSmplsLabelIDX	= 4,				//display the ui object's samples' IDs as a text tag
-		showObjByWireFrmIDX		= 5,				//show object as wireframe, or as filled-in
-		showSelUIObjIDX			= 6,				//highlight the ui obj with the selected idx
-		showMapBasedLocsIDX 	= 7,				//show map-derived locations of training data instead of actual locations (or along with?)
+		
+		showFullTrainingObjIDX	= 3,				//show/hide training data full objects		
+		
+		showUIObjLabelIDX		= 4,				//display the ui obj's ID as a text tag
+		showUIObjSmplsLabelIDX	= 5,				//display the ui object's samples' IDs as a text tag
+		showObjByWireFrmIDX		= 6,				//show object as wireframe, or as filled-in
+		showSelUIObjIDX			= 7,				//highlight the ui obj with the selected idx
+		showMapBasedLocsIDX 	= 8,				//show map-derived locations of training data instead of actual locations (or along with?)
 		
 		//saveUIObjDataIDX 		= 8,				//save ui obj locations as training data on next draw cycle
-		useUIObjLocAsClrIDX		= 8,				//should use ui obj's location as both its and its samples' color
+		useUIObjLocAsClrIDX		= 9,				//should use ui obj's location as both its and its samples' color
 		
-		useSmplsForTrainIDX 	= 9,				//use surface samples, or ui obj centers, for training data
-		uiObjBMUsSetIDX			= 10,				//ui object's bmus have been set
-		mapBuiltToCurUIObjsIDX 	= 11,				//the current ui obj configuration has an underlying map built to it
-		regenUIObjsIDX 			= 12;				//regenerate ui objs with current specs
+		useSmplsForTrainIDX 	= 10,				//use surface samples, or ui obj centers, for training data
+		uiObjBMUsSetIDX			= 11,				//ui object's bmus have been set
+		mapBuiltToCurUIObjsIDX 	= 12,				//the current ui obj configuration has an underlying map built to it
+		regenUIObjsIDX 			= 13;				//regenerate ui objs with current specs
 	
-	protected static final int numBaseAnimWinPrivFlags = 13;
+	protected static final int numBaseAnimWinPrivFlags = 14;
 		
 	//initial values
 	public int numGeomObjs = 200, numSmplPointsPerObj = 200, numTrainingExamples = 40000, curSelGeomObjIDX = 0;
 	//fraction of max count of binomial coefficient to set as # of training examples to sample from objects + samples
-	public double fractOfBinomialForBaseNumTrainEx = .1;
+	public double fractOfBinomialForBaseNumTrainEx = .001;
 	
 	//object type the instancing window manages
 	public final String geomObjType;
@@ -114,14 +117,16 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	public final void initAllPrivBtns() {
 		
 		//add an entry for each button, in the order they are wished to be displayed	true tag, false tag, btn IDX	
-		ArrayList<Object[]> tmpBtnNamesArray = new ArrayList<Object[]>();
+		ArrayList<Object[]> tmpBtnNamesArray = new ArrayList<Object[]>(); 
 		tmpBtnNamesArray.add(new Object[]{"Debugging","Debug",debugAnimIDX});
 		tmpBtnNamesArray.add(new Object[]{"Regenerating " +geomObjType + " Objs","Regenerate " +geomObjType + " Objs",regenUIObjsIDX});		
-		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Objects", "Hiding " +geomObjType + " Objects", showFullSourceObjIDX});	
-		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Sample Points", "Hiding " +geomObjType + " Sample Points", showSamplePntsIDX});	
-		tmpBtnNamesArray.add(new Object[]{"Hide Labels", "Show Labels", showUIObjLabelIDX});    
-		tmpBtnNamesArray.add(new Object[]{"Hide Sample Labels", "Show Sample Labels", showUIObjSmplsLabelIDX});    
+		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Objects", "Show " +geomObjType + " Objects", showFullSourceObjIDX});	
+		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Sample Points", "Show " +geomObjType + " Sample Points", showSamplePntsIDX});	
+		tmpBtnNamesArray.add(new Object[]{"Showing Labels", "Show Labels", showUIObjLabelIDX});    
+		tmpBtnNamesArray.add(new Object[]{"Showing Sample Labels", "Show Sample Labels", showUIObjSmplsLabelIDX});    
 		tmpBtnNamesArray.add(new Object[]{"Showing Loc-based Color", "Showing Random Color", useUIObjLocAsClrIDX});		
+		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Training Exs", "Show " +geomObjType + " Training Exs", showFullTrainingObjIDX});	
+		
 		tmpBtnNamesArray.add(new Object[]{"Hi-Light Sel " +geomObjType + " ", "Enable " +geomObjType + " Hi-Light", showSelUIObjIDX});  		
 		tmpBtnNamesArray.add(new Object[]{"Train From " +geomObjType + " Samples", "Train From " +geomObjType + " Centers/Bases", useSmplsForTrainIDX});    
 		//tmpBtnNamesArray.add(new Object[]{"Save Data", "Save Data", saveUIObjDataIDX});        
@@ -179,7 +184,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	 * send all UI values to map manager before objrunner tasks are executed
 	 */
 	public final void setMapMgrGeomObjVals() {
-		((SOM_GeomMapManager) mapMgr).setNumObjsAndSamples(numGeomObjs, numSmplPointsPerObj);
+		((SOM_GeomMapManager) mapMgr).setUIObjData(numGeomObjs, numSmplPointsPerObj, numTrainingExamples);
 		setMapMgrGeomObjVals_Indiv();
 	}
 	
@@ -204,23 +209,24 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		int flIDX = idx/32, mask = 1<<(idx%32);
 		privFlags[flIDX] = (val ?  privFlags[flIDX] | mask : privFlags[flIDX] & ~mask);
 		switch (idx) {//special actions for each flag
-			case debugAnimIDX 			: {	break;}					
-			case showSamplePntsIDX 		: {	break;}		//show/hide object's sample points
-			case showFullSourceObjIDX			: { break;}		//show/hide full object
+			case debugAnimIDX 				: {	break;}					
+			case showSamplePntsIDX 			: {	break;}		//show/hide object's sample points
+			case showFullSourceObjIDX		: { break;}		//show/hide full object
+			case showFullTrainingObjIDX		: { break;}
 			//case saveUIObjDataIDX 		: { if(val){saveGeomObjInfo();addPrivBtnToClear(saveUIObjDataIDX);}break;}		//save all object data
 			case showUIObjLabelIDX  		: { break;}		//show labels for objects
 			case showUIObjSmplsLabelIDX		: { break;}
-			case useUIObjLocAsClrIDX 	: {
+			case useUIObjLocAsClrIDX 		: {
 				msgObj.dispInfoMessage("SOM_AnimWorldWin", "setPrivFlags :: useUIObjLocAsClrIDX", "Val :  "+ val);
 				break;}		//color of objects is location or is random
-			case showSelUIObjIDX 		: { break;}
-			case useSmplsForTrainIDX	: { break;}		//use surface samples for train and centers for test, or vice versa
-			case showMapBasedLocsIDX	: { break;}
-			case uiObjBMUsSetIDX		: { break;}
-			case mapBuiltToCurUIObjsIDX : { break;}     //whether map has been built and loaded for current config of spheres
-			case regenUIObjsIDX			: { if(val){rebuildSourceGeomObjs(); addPrivBtnToClear(regenUIObjsIDX);} break;}		//remake all objects, turn off flag
-			case showObjByWireFrmIDX	: { break;}
-			default						: { setPrivFlags_Indiv(idx,val);}
+			case showSelUIObjIDX 			: { break;}
+			case useSmplsForTrainIDX		: { break;}		//use surface samples for train and centers for test, or vice versa
+			case showMapBasedLocsIDX		: { break;}
+			case uiObjBMUsSetIDX			: { break;}
+			case mapBuiltToCurUIObjsIDX 	: { break;}     //whether map has been built and loaded for current config of spheres
+			case regenUIObjsIDX				: { if(val){rebuildSourceGeomObjs(); addPrivBtnToClear(regenUIObjsIDX);} break;}		//remake all objects, turn off flag
+			case showObjByWireFrmIDX		: { break;}
+			default							: { setPrivFlags_Indiv(idx,val);}
 		}
 	}//setPrivFlags
 	
@@ -250,7 +256,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		numSmplPointsPerObj = minNumSmplsPerObj;
 		tmpUIObjArray.add(new Object[] {new double[]{minNumSmplsPerObj,maxNumSmplsPerObj,diffNumSmplsPerObj}, (double)(numSmplPointsPerObj), "# of samples per Object", new boolean[]{true, false, true}});  				//gIDX_NumUISamplesPerObj 
 		//gIDX_FractNumTrainEx fractOfBinomialForBaseNumTrainEx
-		tmpUIObjArray.add(new Object[] {new double[]{0.001,1.000,0.001}, fractOfBinomialForBaseNumTrainEx,  "Fract of Binomial for Train Ex", new boolean[]{false, false, true}});  				//gIDX_FractNumTrainEx 
+		tmpUIObjArray.add(new Object[] {new double[]{0.00001,1.000,0.00001}, fractOfBinomialForBaseNumTrainEx,  "Fract of Binomial for Train Ex", new boolean[]{false, false, true}});  				//gIDX_FractNumTrainEx 
 		
 		//gIDX_NumTraingEx
 		long minNumTrainingExamples = getNumTrainingExamples(minNumObjs,minNumSmplsPerObj), maxNumTrainingExamples = getNumTrainingExamples(numGeomObjs,numSmplPointsPerObj), diffNumTrainingEx = (maxNumTrainingExamples - minNumTrainingExamples) > 1000 ? 1000 : 10;
@@ -349,6 +355,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 			break;}
 		case gIDX_NumTrainingEx :{
 			if(ival != numTrainingExamples){numTrainingExamples = ival;}
+			setMapMgrGeomObjVals();
 			break;}
 		case gIDX_SelDispUIObj :{
 			if(ival != curSelGeomObjIDX){curSelGeomObjIDX = pa.min(ival, numGeomObjs-1);}//don't select a sphere Higher than the # of spheres
@@ -390,11 +397,6 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	 */
 	public TreeMap<String, String> getAllUIValsForPreProcSave(){
 		TreeMap<String, String> res = new TreeMap<String, String>();
-//		gIDX_NumUIObjs 			= 0,
-//		gIDX_NumUISamplesPerObj = 1,	//per object # of training examples
-//		gIDX_FractNumTrainEx	= 2,	//fraction of span from min # to max # of training examples to set as value - to counter how difficult it can be to change the value
-//		gIDX_NumTrainingEx		= 3,	//total # of training examples to synthesize for training - will be a combinatorial factor of # of objs and # of samples per obj 
-//		gIDX_SelDispUIObj		= 4;	//ID of a ui obj to be selected and highlighted					
 		res.put("gIDX_NumUIObjs", String.format("%4d", (int)guiObjs[gIDX_NumUIObjs].getVal()));
 		res.put("gIDX_NumUISamplesPerObj", String.format("%4d", (int)guiObjs[gIDX_NumUISamplesPerObj].getVal()));
 		res.put("gIDX_FractNumTrainEx", String.format("%.4f", guiObjs[gIDX_FractNumTrainEx].getVal()));
@@ -415,9 +417,13 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	 * @return
 	 */
 	public void setAllUIValsFromPreProcLoad(TreeMap<String, String> uiVals) {
+		guiObjs[gIDX_FractNumTrainEx].setVal(Double.parseDouble(uiVals.get("gIDX_FractNumTrainEx")));
+		guiObjs[gIDX_NumUIObjs].setVal(Integer.parseInt(uiVals.get("gIDX_NumUIObjs")));
+		guiObjs[gIDX_NumUISamplesPerObj].setVal(Integer.parseInt(uiVals.get("gIDX_NumUISamplesPerObj")));
+		guiObjs[gIDX_NumTrainingEx].setVal(Integer.parseInt(uiVals.get("gIDX_NumTrainingEx")));
 		
 		setAllUIValsFromPreProcLoad_Indiv(uiVals);
-		
+		setAllUIWinVals();
 	}
 	/**
 	 * set ui instance-specific values used to build preproc data being loaded
@@ -441,71 +447,141 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		pa.pushMatrix();pa.pushStyle();//nested ifthen shenannigans to get rid of if checks in each individual draw
 		drawMeFirst_Indiv();
 			//check if geom objs are built in mapMgr
-		mapMgr.drawSrcObjsInUIWindow(pa, animTimeMod, curSelGeomObjIDX, getPrivFlags(showMapBasedLocsIDX));
+		//mapMgr.drawSrcObjsInUIWindow(pa, animTimeMod, curSelGeomObjIDX, getPrivFlags(showMapBasedLocsIDX));
+		if(mapMgr.getGeomObjsBuilt()) {
+			boolean wantDrawBMUs = getPrivFlags(showMapBasedLocsIDX);
+			boolean shouldDrawBMUs = (wantDrawBMUs && getPrivFlags(mapBuiltToCurUIObjsIDX));
+			if(!shouldDrawBMUs && wantDrawBMUs) {	setPrivFlags(showMapBasedLocsIDX,false);}
+			_drawObjs(mapMgr.sourceGeomObjects, curSelGeomObjIDX, animTimeMod, shouldDrawBMUs,
+											getPrivFlags(showSamplePntsIDX),getPrivFlags(showFullSourceObjIDX),getPrivFlags(useUIObjLocAsClrIDX),
+											getPrivFlags(showSelUIObjIDX),getPrivFlags(showObjByWireFrmIDX), getPrivFlags(showUIObjLabelIDX));
+		}
 			//check if train samples are built in map mgr
-		mapMgr.drawSynthObjsInUIWindow(pa, animTimeMod, getPrivFlags(showMapBasedLocsIDX));
+		if((mapMgr.getTrainDataObjsBuilt()) && (getPrivFlags(showFullTrainingObjIDX))){
+			//mapMgr.drawSynthObjsInUIWindow(pa, animTimeMod, getPrivFlags(showMapBasedLocsIDX));
+			_drawObjs(mapMgr.trainDatGeomObjects, -1, animTimeMod, false, false, true, getPrivFlags(useUIObjLocAsClrIDX), false, getPrivFlags(showObjByWireFrmIDX), getPrivFlags(showUIObjLabelIDX));
+		} else {
+			setPrivFlags(showFullTrainingObjIDX, false);
+		}
 		 //else {			msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is false");}
 		drawMeLast_Indiv();
 		pa.popStyle();pa.popMatrix();
 		
 	}//drawMe
-
-	public void _drawObjs_UseBMUs(my_procApplet pa, SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod) {
-		//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is true");
-		if (getPrivFlags(mapBuiltToCurUIObjsIDX)){//show all objs based on map-derived locations if selected and map is made (i.e. draw bmu's location for object, instead of object itself
-			//draw spheres/samples based on map info - use 1st 3 features of non-scaled ftr data from map's nodes as x-y-z 
-			if(getPrivFlags(showSamplePntsIDX)){			//sample points don't use wire frames
-				if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : objs){s.drawMeSmplsClrLoc_BMU(pa);}} //loc color
-				else {											for(SOM_GeomObj s : objs){s.drawMeSmplsClrRnd_BMU(pa);}}//rand color
-			} 
-			if(getPrivFlags(showFullSourceObjIDX)){										//draw objects
-				if(getPrivFlags(showObjByWireFrmIDX)) {			//draw objects with wire frames
-					if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_WF_BMU(pa);}} //loc color
-					else {										for(SOM_GeomObj s : objs){s.drawMeClrRnd_WF_BMU(pa);}}//rand color
-				} else {
-					if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_BMU(pa);}} //loc color
-					else {										for(SOM_GeomObj s : objs){s.drawMeClrRnd_BMU(pa);}}//rand color
-				}
-			}//if show sample points only, else
-			if(getPrivFlags(showUIObjLabelIDX)){			for(SOM_GeomObj s : objs){s.drawMeLabel_BMU(pa);}	}
-			if((curSelObjIDX != -1) && getPrivFlags(showSelUIObjIDX)) {	
-				if(getPrivFlags(useUIObjLocAsClrIDX)){	objs[curSelObjIDX].drawMeSelected_BMU_ClrLoc(pa,animTimeMod); }
-				else {									objs[curSelObjIDX].drawMeSelected_BMU_ClrRnd(pa,animTimeMod); }
-			}
-		} else {										setPrivFlags(showMapBasedLocsIDX, false);	}	//turn off flag if not possible to draw 
-		
-	}//_drawMe_UseBMUs
 	
-	public void _drawObjs_UseActual(my_procApplet pa, SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod) {
-		//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is false");
-		
-		if(getPrivFlags(showSamplePntsIDX)){			//sample points don't use wire frames
-			if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : objs){s.drawMeSmplsClrLoc(pa);}} //loc color
-			else {											for(SOM_GeomObj s : objs){s.drawMeSmplsClrRnd(pa);}}//rand color
-			if(getPrivFlags(showUIObjSmplsLabelIDX)){				for(SOM_GeomObj s : objs){s.drawMySmplsLabel(pa);}	}
-			if((curSelObjIDX != -1) && getPrivFlags(showSelUIObjIDX)) {				
-				if(getPrivFlags(useUIObjLocAsClrIDX)){	objs[curSelObjIDX].drawMeSelected_ClrLoc_Smpl(pa,animTimeMod); }
-				else {									objs[curSelObjIDX].drawMeSelected_ClrRnd_Smpl(pa,animTimeMod); }
-			}
+	private void _drawObjs(SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod, boolean mapBuiltAndUseMapLoc, boolean showSmpls, boolean showObjs, boolean useLocClr, boolean showSel,boolean showWireFrame, boolean showLabel) {
+		if(mapBuiltAndUseMapLoc) {
+			if(showSmpls) {		_drawObjSmpls_UseBMUs(objs,useLocClr);}
+			if(showObjs) {		_drawObjs_UseBMUs(objs,useLocClr, showWireFrame, showLabel);}			
 		} else {
-			if((curSelObjIDX != -1) && getPrivFlags(showSelUIObjIDX)) {				
-				if(getPrivFlags(useUIObjLocAsClrIDX)){	objs[curSelObjIDX].drawMeSelected_ClrLoc(pa,animTimeMod); }
+			if(showSmpls) {		_drawObjSmpls(objs,curSelObjIDX,animTimeMod,useLocClr,showSel,showLabel);}
+			if(showObjs) {		_drawObjs_UseActual(objs,curSelObjIDX,animTimeMod,useLocClr,showSmpls,showSel, showWireFrame, showLabel);	}
+		} 
+			
+	}//_drawObjs
+	
+	
+	private void _drawObjSmpls_UseBMUs(SOM_GeomObj[] objs, boolean useLocClr) {
+		if(useLocClr){			for(SOM_GeomObj s : objs){s.drawMeSmplsClrLoc_BMU(pa);}} //loc color
+		else {					for(SOM_GeomObj s : objs){s.drawMeSmplsClrRnd_BMU(pa);}}//rand color
+	}//_drawObjSmpls_UseBMUs
+	
+	private void _drawObjSmpls(SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod, boolean useLocClr, boolean showSel, boolean showLabel) {
+		if(useLocClr){			for(SOM_GeomObj s : objs){s.drawMeSmplsClrLoc(pa);}} //loc color
+		else {					for(SOM_GeomObj s : objs){s.drawMeSmplsClrRnd(pa);}}//rand color
+		if(showLabel){			for(SOM_GeomObj s : objs){s.drawMySmplsLabel(pa);}	}
+		if((curSelObjIDX != -1) && showSel) {				
+			if(useLocClr){	objs[curSelObjIDX].drawMeSelected_ClrLoc_Smpl(pa,animTimeMod); }
+			else {									objs[curSelObjIDX].drawMeSelected_ClrRnd_Smpl(pa,animTimeMod); }
+		}
+	}//_drawObjSmpls
+	
+	private void _drawObjs_UseBMUs(SOM_GeomObj[] objs, boolean useLocClr, boolean showWireFrame, boolean showLabel) {
+		if(showWireFrame) {			//draw objects with wire frames
+			if(useLocClr){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_WF_BMU(pa);}} //loc color
+			else {				for(SOM_GeomObj s : objs){s.drawMeClrRnd_WF_BMU(pa);}}//rand color
+		} else {
+			if(useLocClr){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_BMU(pa);}} //loc color
+			else {				for(SOM_GeomObj s : objs){s.drawMeClrRnd_BMU(pa);}}//rand color
+		}		
+		if(showLabel){			for(SOM_GeomObj s : objs){s.drawMeLabel_BMU(pa);}	}
+	}//_drawObjs_UseBMUs
+	
+	private void _drawObjs_UseActual(SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod, boolean useLocClr, boolean showSmpls, boolean showSel,boolean showWireFrame, boolean showLabel) {
+		if(!showSmpls){
+			if((curSelObjIDX != -1) && showSel) {				
+				if(useLocClr){	objs[curSelObjIDX].drawMeSelected_ClrLoc(pa,animTimeMod); }
 				else {									objs[curSelObjIDX].drawMeSelected_ClrRnd(pa,animTimeMod); }
 			}
-			
 		}
-		if(getPrivFlags(showFullSourceObjIDX)){										//draw objects
-			if(getPrivFlags(showObjByWireFrmIDX)) {			//draw objects with wire frames
-				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_WF(pa);}} //loc color
-				else {										for(SOM_GeomObj s : objs){s.drawMeClrRnd_WF(pa);}}//rand color
-			} else {
-				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : objs){s.drawMeClrLoc(pa);}} //loc color
-				else {										for(SOM_GeomObj s : objs){s.drawMeClrRnd(pa);}}//rand color
-			}
-			if(getPrivFlags(showUIObjLabelIDX)){				for(SOM_GeomObj s : objs){s.drawMyLabel(pa);}	}
-		}//if show sample points only, else
-
-	}//_drawMe_UseActual
+		if(showWireFrame) {			//draw objects with wire frames
+			if(useLocClr){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_WF(pa);}} //loc color
+			else {				for(SOM_GeomObj s : objs){s.drawMeClrRnd_WF(pa);}}//rand color
+		} else {
+			if(useLocClr){		for(SOM_GeomObj s : objs){s.drawMeClrLoc(pa);}} //loc color
+			else {				for(SOM_GeomObj s : objs){s.drawMeClrRnd(pa);}}//rand color
+		}
+		if(showLabel){			for(SOM_GeomObj s : objs){s.drawMyLabel(pa);}	}
+		
+		
+	}//_drawObjs_UseActual
+//
+//	public void _drawObjs_UseBMUsx(my_procApplet pa, SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod) {
+//		//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is true");
+//		if (getPrivFlags(mapBuiltToCurUIObjsIDX)){//show all objs based on map-derived locations if selected and map is made (i.e. draw bmu's location for object, instead of object itself
+//			//draw spheres/samples based on map info - use 1st 3 features of non-scaled ftr data from map's nodes as x-y-z 
+//			if(getPrivFlags(showSamplePntsIDX)){			//sample points don't use wire frames
+//				if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : objs){s.drawMeSmplsClrLoc_BMU(pa);}} //loc color
+//				else {											for(SOM_GeomObj s : objs){s.drawMeSmplsClrRnd_BMU(pa);}}//rand color
+//			} 
+//			if(getPrivFlags(showFullSourceObjIDX)){										//draw objects
+//				if(getPrivFlags(showObjByWireFrmIDX)) {			//draw objects with wire frames
+//					if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_WF_BMU(pa);}} //loc color
+//					else {										for(SOM_GeomObj s : objs){s.drawMeClrRnd_WF_BMU(pa);}}//rand color
+//				} else {
+//					if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_BMU(pa);}} //loc color
+//					else {										for(SOM_GeomObj s : objs){s.drawMeClrRnd_BMU(pa);}}//rand color
+//				}
+//			}//if show sample points only, else
+//			if(getPrivFlags(showUIObjLabelIDX)){			for(SOM_GeomObj s : objs){s.drawMeLabel_BMU(pa);}	}
+//			if((curSelObjIDX != -1) && getPrivFlags(showSelUIObjIDX)) {	
+//				if(getPrivFlags(useUIObjLocAsClrIDX)){	objs[curSelObjIDX].drawMeSelected_BMU_ClrLoc(pa,animTimeMod); }
+//				else {									objs[curSelObjIDX].drawMeSelected_BMU_ClrRnd(pa,animTimeMod); }
+//			}
+//		} else {										setPrivFlags(showMapBasedLocsIDX, false);	}	//turn off flag if not possible to draw 
+//		
+//	}//_drawMe_UseBMUs
+//	
+//	public void _drawObjs_UseActualx(my_procApplet pa, SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod) {
+//		//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is false");
+//		
+//		if(getPrivFlags(showSamplePntsIDX)){			//sample points don't use wire frames
+//			if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : objs){s.drawMeSmplsClrLoc(pa);}} //loc color
+//			else {											for(SOM_GeomObj s : objs){s.drawMeSmplsClrRnd(pa);}}//rand color
+//			if(getPrivFlags(showUIObjSmplsLabelIDX)){				for(SOM_GeomObj s : objs){s.drawMySmplsLabel(pa);}	}
+//			if((curSelObjIDX != -1) && getPrivFlags(showSelUIObjIDX)) {				
+//				if(getPrivFlags(useUIObjLocAsClrIDX)){	objs[curSelObjIDX].drawMeSelected_ClrLoc_Smpl(pa,animTimeMod); }
+//				else {									objs[curSelObjIDX].drawMeSelected_ClrRnd_Smpl(pa,animTimeMod); }
+//			}
+//		} else {
+//			if((curSelObjIDX != -1) && getPrivFlags(showSelUIObjIDX)) {				
+//				if(getPrivFlags(useUIObjLocAsClrIDX)){	objs[curSelObjIDX].drawMeSelected_ClrLoc(pa,animTimeMod); }
+//				else {									objs[curSelObjIDX].drawMeSelected_ClrRnd(pa,animTimeMod); }
+//			}
+//			
+//		}
+//		if(getPrivFlags(showFullSourceObjIDX)){										//draw objects
+//			if(getPrivFlags(showObjByWireFrmIDX)) {			//draw objects with wire frames
+//				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_WF(pa);}} //loc color
+//				else {										for(SOM_GeomObj s : objs){s.drawMeClrRnd_WF(pa);}}//rand color
+//			} else {
+//				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : objs){s.drawMeClrLoc(pa);}} //loc color
+//				else {										for(SOM_GeomObj s : objs){s.drawMeClrRnd(pa);}}//rand color
+//			}
+//			if(getPrivFlags(showUIObjLabelIDX)){				for(SOM_GeomObj s : objs){s.drawMyLabel(pa);}	}
+//		}//if show sample points only, else
+//
+//	}//_drawMe_UseActual
 	
 	
 	/**

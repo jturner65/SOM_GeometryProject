@@ -7,7 +7,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomSamplePointf;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_UI_Objects.my_procApplet;
@@ -634,6 +633,12 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	
 	protected final void setID(int _id) {GeomObj_ID=_id; dispLabel = objGeomType.name() + "_"+GeomObj_ID;}
 	public final int getID() {return GeomObj_ID;}
+	
+	
+	public int getNumSamples() {return objSamples.getNumSamples();}
+	public SOM_GeomSamplePointf getSamplePt(int idx) {return objSamples.getSamplePt(idx);}
+	public SOM_GeomSamplePointf[] getAllSamplePts() {return objSamples.getAllSamplePts();}
+
 	
 	/**
 	 * csv data for saving preprocessed sample data of a particular type
