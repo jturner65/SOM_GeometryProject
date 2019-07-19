@@ -1,7 +1,9 @@
 package SOM_GeometryProj_PKG.som_geom.geom_examples;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrRunner;
 import base_SOM_Objects.SOM_MapManager;
@@ -18,10 +20,7 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	  * runnable object to manage various tasks
 	  */
 	protected SOM_GeomObjBldrRunner objRunner;
-	/**
-	 * anim window the objects in this mapper will be rendered in
-	 */
-	protected SOM_AnimWorldWin animWin;
+
 	/**
 	 * set this to data type being managed by this example manager (training, validation, etc) 
 	 */
@@ -36,13 +35,17 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	 * set obj runner so that example manager can consume it
 	 * @param _objRunner
 	 */
-	public void setObjRunner(SOM_GeomObjBldrRunner _objRunner) {objRunner=_objRunner;}
+	public final void setObjRunner(SOM_GeomObjBldrRunner _objRunner) {objRunner=_objRunner;}
 	
-	/**
-	 * set anim world window that the examples managed by this object will be rendered within
-	 * @param the window 
-	 */
-	public void setAnimWorldWin(SOM_AnimWorldWin _win) {animWin = _win;}
+	@Override
+	protected final void reset_Priv() {
+		
+	}
+
+	@Override
+	protected final void buildFtrVec_Priv() {
+
+	}	
 	
 	/**
 	 * no need to validate examples for this kind of project
@@ -55,6 +58,46 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	 * after example array has been built, and specific funcitonality for these types of examples, especially if validation should occur
 	 */
 	protected final void buildExampleArrayEnd_Priv(boolean validate) {}
+	
+	/**
+	 * 
+	 */
+	@Override
+	protected final void buildSTLoader(String[] loadSrcFNamePrefixAra, int numPartitions) {
+		for (int i=numPartitions-1; i>=0;--i) {
+			String dataFile = loadSrcFNamePrefixAra[0]+"_"+i+".csv";
+			String[] csvLoadRes = fileIO.loadFileIntoStringAra(dataFile,  exampleName+ " Data file " + i +" of " +numPartitions +" loaded",  exampleName+ " Data File " + i +" of " +numPartitions +" Failed to load");
+			//ignore first entry - header
+			for (int j=1;j<csvLoadRes.length; ++j) {
+				String str = csvLoadRes[j];
+				int pos = str.indexOf(',');
+				String oid = str.substring(0, pos);
+				SOM_Example ex = buildSingleExample(oid, str);
+				exampleMap.put(oid, ex);			
+			}
+		}	
+	}//buildSTLoader
+	
+	/**
+	 * save and load the UI values used to build the preprocessed anim data for this project
+	 * @param uiVals
+	 */
+	
+	public final void saveAnimUIVals(TreeMap<String,String> uiVals) {
+		
+		
+		
+	}
+	
+	public final TreeMap<String,String> loadAnimUIVals() {
+		TreeMap<String,String> res = new TreeMap<String,String>();
+		
+		
+		
+		
+		return res;		
+	}
+	
 
 	/**
 	 * return array of examples to save their bmus

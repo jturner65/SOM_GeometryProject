@@ -64,9 +64,9 @@ public class SOM_GeomSamplePointf extends myPointf {
 	 */
 	public SOM_GeomSamplePointf(String[] _csvStrAra) {
 		super(Float.parseFloat(_csvStrAra[0].trim()),Float.parseFloat(_csvStrAra[1].trim()),Float.parseFloat(_csvStrAra[2].trim()) );
-		ID = Integer.parseInt(_csvStrAra[4].trim());
+		ID = Integer.parseInt(_csvStrAra[3].trim());
 		idIncr = ID +1;
-		name = _csvStrAra[5].trim();
+		name = _csvStrAra[4].trim();
 	}
 	
 	/**

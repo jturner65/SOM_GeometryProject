@@ -98,13 +98,13 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 
 	
 	@Override
-	protected final int getMinNumObjs() {	return 2;}
+	protected final int getMinNumObjs() {	return 1;}
 	@Override
 	protected final int getMaxNumObjs() {	return 50;}
 	@Override
-	protected final int getMinNumSmplsPerObj() {return 5;}
+	protected final int getMinNumSmplsPerObj() {return 10;}
 	@Override
-	protected final int getMaxNumSmplsPerObj() {return 50;}
+	protected final int getMaxNumSmplsPerObj() {return 100;}
 	/**
 	 * calculate the max # of examples for this type object - clique of object description degree 
 	 */
@@ -122,17 +122,17 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 		}
 	}
 
-	/**
-	 * call to save the data for all the objects in the scene
-	 */
 	@Override
-	protected final void saveGeomObjInfo() {
+	protected void getAllUIValsForPreProcSave_Indiv(TreeMap<String, String> vals) {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	
 
+	@Override
+	protected void setAllUIValsFromPreProcLoad_Indiv(TreeMap<String, String> uiVals) {
+		// TODO Auto-generated method stub
+		
+	}
 	//////////////////////////////
 	// instance-based draw handling
 	
@@ -222,5 +222,6 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	protected final myPoint getMsePtAs3DPt(myPoint mseLoc) {	return new myPoint(mseLoc.x, mseLoc.y, 0);}
+
 
 }//class Geom_LineSOMAnimResWin

@@ -22,7 +22,7 @@ import base_Utils_Objects.vectorObjs.myPoint;
 
 public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	
-	public static final int numFlags = numBaseFlags;	
+	public static final int numFlags = numGeomBaseFlags;	
 	
 
 	//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
@@ -115,9 +115,9 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	}
 
 	@Override
-	protected final int getNumFlags() {	return numFlags;}
+	protected final int getNumGeomFlags_Indiv() {	return numFlags;}
 	@Override
-	protected void setFlag_Indiv(int idx, boolean val) {
+	protected void setGeomFlag_Indiv(int idx, boolean val) {
 		switch (idx) {//special actions for each flag
 			default : {break;}
 		}
@@ -129,7 +129,9 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	 * @param pa
 	 */
 	public final void drawAllPlanesOrthoFrames(my_procApplet pa) {
-		{for(SOM_GeomObj s : sourceGeomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(pa);}}
+		if(getFlag(srcGeomObjsAllBuiltIDX)){
+			{for(SOM_GeomObj s : sourceGeomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(pa);}}
+		}
 	}
 	
 	////////////////////////

@@ -7,7 +7,6 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.SOM_GeometryMain;
-import SOM_GeometryProj_PKG.geom_UI.Geom_SideBarMenu;
 import base_SOM_Objects.SOM_MapManager;
 import base_UI_Objects.my_procApplet;
 import base_UI_Objects.drawnObjs.myDrawnSmplTraj;
@@ -32,10 +31,11 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	public static final int
 		gIDX_NumUIObjs 			= 0,
 		gIDX_NumUISamplesPerObj = 1,	//per object # of training examples
-		gIDX_NumTraingEx		= 2,	//total # of training examples to synthesize for training - will be a combinatorial factor of # of objs and # of samples per obj 
-		gIDX_SelDispUIObj		= 3;	//ID of a ui obj to be selected and highlighted					
+		gIDX_FractNumTrainEx	= 2,	//fraction of span from min # to max # of training examples to set as value - to counter how difficult it can be to change the value
+		gIDX_NumTrainingEx		= 3,	//total # of training examples to synthesize for training - will be a combinatorial factor of # of objs and # of samples per obj 
+		gIDX_SelDispUIObj		= 4;	//ID of a ui obj to be selected and highlighted					
 
-	protected static final int numBaseAnimWinUIObjs = 4;
+	protected static final int numBaseAnimWinUIObjs = 5;
 	//instancing class will specify numGUIObjs	
 	protected double[] uiVals;				
 	
@@ -47,24 +47,29 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 
 	public static final int 
 		debugAnimIDX 			= 0,				//debug
-		uiObjDataLoadedIDX 		= 1,				//all SOM ui objs have been loaded
-		showSamplePntsIDX 		= 2,				//show/hide sample points
-		showFullSourceObjIDX	= 3,				//show/hide full source object(sources of sample points)
-		saveUIObjDataIDX 		= 4,				//save ui obj locations as training data on next draw cycle
-		useUIObjLocAsClrIDX		= 5,				//should use ui obj's location as both its and its samples' color
-		showUIObjLabelIDX		= 6,				//display the ui obj's ID as a text tag
-		showSelUIObjIDX			= 7,				//highlight the ui obj with the selected idx
-		useSmplsForTrainIDX 	= 8,				//use surface samples, or ui obj centers, for training data
-		showMapBasedLocsIDX 	= 9,				//show map-derived locations of training data instead of actual locations (or along with?)
+		
+		showSamplePntsIDX 		= 1,				//show/hide sample points
+		showFullSourceObjIDX	= 2,				//show/hide full source object(sources of sample points)
+		showUIObjLabelIDX		= 3,				//display the ui obj's ID as a text tag
+		showUIObjSmplsLabelIDX	= 4,				//display the ui object's samples' IDs as a text tag
+		showObjByWireFrmIDX		= 5,				//show object as wireframe, or as filled-in
+		showSelUIObjIDX			= 6,				//highlight the ui obj with the selected idx
+		showMapBasedLocsIDX 	= 7,				//show map-derived locations of training data instead of actual locations (or along with?)
+		
+		//saveUIObjDataIDX 		= 8,				//save ui obj locations as training data on next draw cycle
+		useUIObjLocAsClrIDX		= 8,				//should use ui obj's location as both its and its samples' color
+		
+		useSmplsForTrainIDX 	= 9,				//use surface samples, or ui obj centers, for training data
 		uiObjBMUsSetIDX			= 10,				//ui object's bmus have been set
 		mapBuiltToCurUIObjsIDX 	= 11,				//the current ui obj configuration has an underlying map built to it
-		regenUIObjsIDX 			= 12,				//regenerate ui objs with current specs
-		showObjByWireFrmIDX		= 13;				//show object as wireframe, or as filled-in
+		regenUIObjsIDX 			= 12;				//regenerate ui objs with current specs
 	
-	protected static final int numBaseAnimWinPrivFlags = 14;
+	protected static final int numBaseAnimWinPrivFlags = 13;
 		
 	//initial values
 	public int numGeomObjs = 200, numSmplPointsPerObj = 200, numTrainingExamples = 40000, curSelGeomObjIDX = 0;
+	//fraction of max count of binomial coefficient to set as # of training examples to sample from objects + samples
+	public double fractOfBinomialForBaseNumTrainEx = .1;
 	
 	//object type the instancing window manages
 	public final String geomObjType;
@@ -74,8 +79,8 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 
 	public String[][] menuBtnNames = new String[][] {		//each must have literals for every button defined in side bar menu, or ignored
 		{},
-		{"Gen Training Data", "Save Training data","Load Training Data"},		//row 1
-		{"---","---","---","---"},	//row 2
+		{"Load Geometry Data", "Save Geometry data","Geom -> Train"},		//row 1
+		{"Build Map","---","---","---"},	//row 2 
 		{"---","---","---","---"},	//row 3
 		{"---","---","---","---"},
 		{"---","---","---","---","---"}	
@@ -112,13 +117,14 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		ArrayList<Object[]> tmpBtnNamesArray = new ArrayList<Object[]>();
 		tmpBtnNamesArray.add(new Object[]{"Debugging","Debug",debugAnimIDX});
 		tmpBtnNamesArray.add(new Object[]{"Regenerating " +geomObjType + " Objs","Regenerate " +geomObjType + " Objs",regenUIObjsIDX});		
-		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Sample Points", "Hiding " +geomObjType + " Sample Points", showSamplePntsIDX});	
 		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Objects", "Hiding " +geomObjType + " Objects", showFullSourceObjIDX});	
-		tmpBtnNamesArray.add(new Object[]{"Hide Labels", "Show Labels", showUIObjLabelIDX});    		
+		tmpBtnNamesArray.add(new Object[]{"Showing " +geomObjType + " Sample Points", "Hiding " +geomObjType + " Sample Points", showSamplePntsIDX});	
+		tmpBtnNamesArray.add(new Object[]{"Hide Labels", "Show Labels", showUIObjLabelIDX});    
+		tmpBtnNamesArray.add(new Object[]{"Hide Sample Labels", "Show Sample Labels", showUIObjSmplsLabelIDX});    
 		tmpBtnNamesArray.add(new Object[]{"Showing Loc-based Color", "Showing Random Color", useUIObjLocAsClrIDX});		
 		tmpBtnNamesArray.add(new Object[]{"Hi-Light Sel " +geomObjType + " ", "Enable " +geomObjType + " Hi-Light", showSelUIObjIDX});  		
 		tmpBtnNamesArray.add(new Object[]{"Train From " +geomObjType + " Samples", "Train From " +geomObjType + " Centers/Bases", useSmplsForTrainIDX});    
-		tmpBtnNamesArray.add(new Object[]{"Save Data", "Save Data", saveUIObjDataIDX});        
+		//tmpBtnNamesArray.add(new Object[]{"Save Data", "Save Data", saveUIObjDataIDX});        
 		tmpBtnNamesArray.add(new Object[]{"Showing BMU-derived Locs", "Showing Actual Locs", showMapBasedLocsIDX});  
 		
 		String[] showWFObjsTFLabels = getShowWireFrameBtnTFLabels();
@@ -163,12 +169,10 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	 * call to build or rebuild source geometric objects
 	 */
 	public final void rebuildSourceGeomObjs() {
-		msgObj.dispInfoMessage("SOM_AnimWorldWin", "initSourceGeomObjs", "Start (re)building all objects of type " + this.geomObjType);
+		msgObj.dispInfoMessage("SOM_AnimWorldWin", "rebuildSourceGeomObjs", "Start (re)building all objects of type " + this.geomObjType);
 		setMapMgrGeomObjVals();
-		setPrivFlags(uiObjDataLoadedIDX, false);
 		((SOM_GeomMapManager) mapMgr).buildGeomExampleObjs();
-		setPrivFlags(uiObjDataLoadedIDX, true);
-		msgObj.dispInfoMessage("SOM_AnimWorldWin", "initSourceGeomObjs", "Finished (re)building all objects of type " + this.geomObjType);
+		msgObj.dispInfoMessage("SOM_AnimWorldWin", "rebuildSourceGeomObjs", "Finished (re)building all objects of type " + this.geomObjType);
 	}
 	
 	/**
@@ -195,22 +199,17 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		msgObj.dispInfoMessage("SOM_AnimWorldWin", "regenBaseGeomObjSamples", "Finished regenerating " + numSmplPointsPerObj +" samples for all base objects of type " + this.geomObjType);
 	}	
 	
-	/**
-	 * call to save the data for all the objects in the scene
-	 */
-	protected abstract void saveGeomObjInfo();
-
 	@Override
 	public final void setPrivFlags(int idx, boolean val) {
 		int flIDX = idx/32, mask = 1<<(idx%32);
 		privFlags[flIDX] = (val ?  privFlags[flIDX] | mask : privFlags[flIDX] & ~mask);
 		switch (idx) {//special actions for each flag
-			case debugAnimIDX 			: {	break;}				
-			case uiObjDataLoadedIDX 	: {	break;}		//object data has been loaded				
+			case debugAnimIDX 			: {	break;}					
 			case showSamplePntsIDX 		: {	break;}		//show/hide object's sample points
 			case showFullSourceObjIDX			: { break;}		//show/hide full object
-			case saveUIObjDataIDX 		: { if(val){saveGeomObjInfo();addPrivBtnToClear(saveUIObjDataIDX);}break;}		//save all object data
+			//case saveUIObjDataIDX 		: { if(val){saveGeomObjInfo();addPrivBtnToClear(saveUIObjDataIDX);}break;}		//save all object data
 			case showUIObjLabelIDX  		: { break;}		//show labels for objects
+			case showUIObjSmplsLabelIDX		: { break;}
 			case useUIObjLocAsClrIDX 	: {
 				msgObj.dispInfoMessage("SOM_AnimWorldWin", "setPrivFlags :: useUIObjLocAsClrIDX", "Val :  "+ val);
 				break;}		//color of objects is location or is random
@@ -250,6 +249,8 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		int minNumSmplsPerObj = getMinNumSmplsPerObj(), maxNumSmplsPerObj = getMaxNumSmplsPerObj(), diffNumSmplsPerObj = (maxNumSmplsPerObj - minNumSmplsPerObj > 100 ? 10 : 1);
 		numSmplPointsPerObj = minNumSmplsPerObj;
 		tmpUIObjArray.add(new Object[] {new double[]{minNumSmplsPerObj,maxNumSmplsPerObj,diffNumSmplsPerObj}, (double)(numSmplPointsPerObj), "# of samples per Object", new boolean[]{true, false, true}});  				//gIDX_NumUISamplesPerObj 
+		//gIDX_FractNumTrainEx fractOfBinomialForBaseNumTrainEx
+		tmpUIObjArray.add(new Object[] {new double[]{0.001,1.000,0.001}, fractOfBinomialForBaseNumTrainEx,  "Fract of Binomial for Train Ex", new boolean[]{false, false, true}});  				//gIDX_FractNumTrainEx 
 		
 		//gIDX_NumTraingEx
 		long minNumTrainingExamples = getNumTrainingExamples(minNumObjs,minNumSmplsPerObj), maxNumTrainingExamples = getNumTrainingExamples(numGeomObjs,numSmplPointsPerObj), diffNumTrainingEx = (maxNumTrainingExamples - minNumTrainingExamples) > 1000 ? 1000 : 10;
@@ -311,11 +312,19 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	private void refreshNumTrainingExampleBounds() {
 		// binomial coefficient - n (total # of samples across all objects) choose k (dim of minimal defining set of each object)
 		long newMaxVal = getNumTrainingExamples(numGeomObjs,numSmplPointsPerObj); 
-		guiObjs[gIDX_NumTraingEx].setNewMax(newMaxVal);		
-		guiObjs[gIDX_NumTraingEx].setNewDispText("Ttl # of Train Ex ["+(int)guiObjs[gIDX_NumTraingEx].getMinVal()+", "+newMaxVal+"]");
+		guiObjs[gIDX_NumTrainingEx].setNewMax(newMaxVal);	
+		int minVal = (int) guiObjs[gIDX_NumTrainingEx].getMinVal();
+		guiObjs[gIDX_NumTrainingEx].setNewDispText("Ttl # of Train Ex ["+minVal+", "+newMaxVal+"]");
+		refreshNumTrainingExamples();
 	}//refreshNumTrainingExampleBounds
 	
-	
+	private void refreshNumTrainingExamples() {
+		long TtlNumExamples = getNumTrainingExamples(numGeomObjs, numSmplPointsPerObj);
+		double newVal = fractOfBinomialForBaseNumTrainEx * TtlNumExamples;
+		guiObjs[gIDX_NumTrainingEx].setVal(newVal);
+		setUIWinVals(gIDX_NumTrainingEx);
+	}
+		
 	@Override
 	protected  final void setUIWinVals(int UIidx) {
 		float val = (float)guiObjs[UIidx].getVal();
@@ -335,7 +344,10 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 				refreshNumTrainingExampleBounds();
 				regenBaseGeomObjSamples();}
 			break;}
-		case gIDX_NumTraingEx :{
+		case gIDX_FractNumTrainEx :{					//fraction of total # of possible samples in current configuration to use for training examples
+			if(val != fractOfBinomialForBaseNumTrainEx) { fractOfBinomialForBaseNumTrainEx = val; refreshNumTrainingExamples();}
+			break;}
+		case gIDX_NumTrainingEx :{
 			if(ival != numTrainingExamples){numTrainingExamples = ival;}
 			break;}
 		case gIDX_SelDispUIObj :{
@@ -372,6 +384,47 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	 */
 	protected abstract void initMe_Indiv();
 	
+	/**
+	 * get ui values used to build current geometry (for preproc save)
+	 * @return
+	 */
+	public TreeMap<String, String> getAllUIValsForPreProcSave(){
+		TreeMap<String, String> res = new TreeMap<String, String>();
+//		gIDX_NumUIObjs 			= 0,
+//		gIDX_NumUISamplesPerObj = 1,	//per object # of training examples
+//		gIDX_FractNumTrainEx	= 2,	//fraction of span from min # to max # of training examples to set as value - to counter how difficult it can be to change the value
+//		gIDX_NumTrainingEx		= 3,	//total # of training examples to synthesize for training - will be a combinatorial factor of # of objs and # of samples per obj 
+//		gIDX_SelDispUIObj		= 4;	//ID of a ui obj to be selected and highlighted					
+		res.put("gIDX_NumUIObjs", String.format("%4d", (int)guiObjs[gIDX_NumUIObjs].getVal()));
+		res.put("gIDX_NumUISamplesPerObj", String.format("%4d", (int)guiObjs[gIDX_NumUISamplesPerObj].getVal()));
+		res.put("gIDX_FractNumTrainEx", String.format("%.4f", guiObjs[gIDX_FractNumTrainEx].getVal()));
+		res.put("gIDX_NumTrainingEx", String.format("%4d", (int)guiObjs[gIDX_NumTrainingEx].getVal()));
+		
+		getAllUIValsForPreProcSave_Indiv(res);
+		return res;
+		
+	}
+	/**
+	 * get instance-class specific ui values used to build current geometry (for preproc save)
+	 * @return
+	 */
+	protected abstract void getAllUIValsForPreProcSave_Indiv(TreeMap<String, String> vals);
+	
+	/**
+	 * set ui values used to build preproc data being loaded
+	 * @return
+	 */
+	public void setAllUIValsFromPreProcLoad(TreeMap<String, String> uiVals) {
+		
+		setAllUIValsFromPreProcLoad_Indiv(uiVals);
+		
+	}
+	/**
+	 * set ui instance-specific values used to build preproc data being loaded
+	 * @return
+	 */
+	protected abstract void setAllUIValsFromPreProcLoad_Indiv(TreeMap<String, String> uiVals);
+	
 /////////////////////////////
 	// drawing routines
 	@Override
@@ -387,16 +440,17 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	protected final void drawMe(float animTimeMod) {
 		pa.pushMatrix();pa.pushStyle();//nested ifthen shenannigans to get rid of if checks in each individual draw
 		drawMeFirst_Indiv();
-		if(getPrivFlags(uiObjDataLoadedIDX)){ 	//cannot draw object unless data has been loaded
-			//drawSrcObjsInUIWindow(my_procApplet pa, float animTimeMod, int curSelGeomObjIDX, boolean showMapBasedLocs, boolean showSelUIObj)
-			mapMgr.drawSrcObjsInUIWindow(pa, animTimeMod, curSelGeomObjIDX, getPrivFlags(showMapBasedLocsIDX), getPrivFlags(showSelUIObjIDX));
-		} //else {			msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is false");}
+			//check if geom objs are built in mapMgr
+		mapMgr.drawSrcObjsInUIWindow(pa, animTimeMod, curSelGeomObjIDX, getPrivFlags(showMapBasedLocsIDX));
+			//check if train samples are built in map mgr
+		mapMgr.drawSynthObjsInUIWindow(pa, animTimeMod, getPrivFlags(showMapBasedLocsIDX));
+		 //else {			msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is false");}
 		drawMeLast_Indiv();
 		pa.popStyle();pa.popMatrix();
 		
 	}//drawMe
-	
-	public void _drawMe_UseBMUs(my_procApplet pa, SOM_GeomObj[] objs, float animTimeMod) {
+
+	public void _drawObjs_UseBMUs(my_procApplet pa, SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod) {
 		//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is true");
 		if (getPrivFlags(mapBuiltToCurUIObjsIDX)){//show all objs based on map-derived locations if selected and map is made (i.e. draw bmu's location for object, instead of object itself
 			//draw spheres/samples based on map info - use 1st 3 features of non-scaled ftr data from map's nodes as x-y-z 
@@ -414,18 +468,32 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 				}
 			}//if show sample points only, else
 			if(getPrivFlags(showUIObjLabelIDX)){			for(SOM_GeomObj s : objs){s.drawMeLabel_BMU(pa);}	}
+			if((curSelObjIDX != -1) && getPrivFlags(showSelUIObjIDX)) {	
+				if(getPrivFlags(useUIObjLocAsClrIDX)){	objs[curSelObjIDX].drawMeSelected_BMU_ClrLoc(pa,animTimeMod); }
+				else {									objs[curSelObjIDX].drawMeSelected_BMU_ClrRnd(pa,animTimeMod); }
+			}
 		} else {										setPrivFlags(showMapBasedLocsIDX, false);	}	//turn off flag if not possible to draw 
 		
 	}//_drawMe_UseBMUs
 	
-	public void _drawMe_UseActual(my_procApplet pa, SOM_GeomObj[] objs, float animTimeMod) {
+	public void _drawObjs_UseActual(my_procApplet pa, SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod) {
 		//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "showMapBasedLocsIDX is false");
 		
 		if(getPrivFlags(showSamplePntsIDX)){			//sample points don't use wire frames
 			if(getPrivFlags(useUIObjLocAsClrIDX)){			for(SOM_GeomObj s : objs){s.drawMeSmplsClrLoc(pa);}} //loc color
 			else {											for(SOM_GeomObj s : objs){s.drawMeSmplsClrRnd(pa);}}//rand color
-			if(getPrivFlags(showUIObjLabelIDX)){				for(SOM_GeomObj s : objs){s.drawMySmplsLabel(pa);}	}
-		} 
+			if(getPrivFlags(showUIObjSmplsLabelIDX)){				for(SOM_GeomObj s : objs){s.drawMySmplsLabel(pa);}	}
+			if((curSelObjIDX != -1) && getPrivFlags(showSelUIObjIDX)) {				
+				if(getPrivFlags(useUIObjLocAsClrIDX)){	objs[curSelObjIDX].drawMeSelected_ClrLoc_Smpl(pa,animTimeMod); }
+				else {									objs[curSelObjIDX].drawMeSelected_ClrRnd_Smpl(pa,animTimeMod); }
+			}
+		} else {
+			if((curSelObjIDX != -1) && getPrivFlags(showSelUIObjIDX)) {				
+				if(getPrivFlags(useUIObjLocAsClrIDX)){	objs[curSelObjIDX].drawMeSelected_ClrLoc(pa,animTimeMod); }
+				else {									objs[curSelObjIDX].drawMeSelected_ClrRnd(pa,animTimeMod); }
+			}
+			
+		}
 		if(getPrivFlags(showFullSourceObjIDX)){										//draw objects
 			if(getPrivFlags(showObjByWireFrmIDX)) {			//draw objects with wire frames
 				if(getPrivFlags(useUIObjLocAsClrIDX)){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_WF(pa);}} //loc color
@@ -436,6 +504,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 			}
 			if(getPrivFlags(showUIObjLabelIDX)){				for(SOM_GeomObj s : objs){s.drawMyLabel(pa);}	}
 		}//if show sample points only, else
+
 	}//_drawMe_UseActual
 	
 	
@@ -475,12 +544,13 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		msgObj.dispMessage("SOM_AnimWorldWin","launchMenuBtnHndlr","Begin requested action", MsgCodes.info4);
 		int btn = curCustBtn[curCustBtnType];
 		switch(curCustBtnType) {
-		case Geom_SideBarMenu.btnAuxFunc1Idx : {//row 1 of menu side bar buttons
+		case SOM_GeomSideBarMenu.btnAuxFunc1Idx : {//row 1 of menu side bar buttons
 			//{"Gen Training Data", "Save Training data","Load Training Data"},		//row 1
 			msgObj.dispMessage("SOM_AnimWorldWin","launchMenuBtnHndlr","Click Functions 1 in "+name+" : btn : " + btn, MsgCodes.info4);
 			switch(btn){
 				case 0 : {	
-					//mapMgr.generateTrainingData();
+					//build training data from geom examples
+					mapMgr.loadPreprocAndBuildTestTrainPartitions(mapMgr.projConfigData.getTrainTestPartition(), true);
 					resetButtonState();
 					break;}
 				case 1 : {	
@@ -488,7 +558,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 					resetButtonState();
 					break;}
 				case 2 : {	
-					mapMgr.loadPreprocAndBuildTestTrainPartitions(mapMgr.projConfigData.getTrainTestPartition(), true);
+					mapMgr.generateTrainingData();
 					resetButtonState();
 					break;}
 				default : {
@@ -497,12 +567,13 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 			}	
 			break;}//row 1 of menu side bar buttons
 	
-		case Geom_SideBarMenu.btnAuxFunc2Idx : {//row 2 of menu side bar buttons
+		case SOM_GeomSideBarMenu.btnAuxFunc2Idx : {//row 2 of menu side bar buttons
 			msgObj.dispMessage("SOM_AnimWorldWin","launchMenuBtnHndlr","Click Functions 2 in "+name+" : btn : " + btn, MsgCodes.info4);//{"Ld&Bld SOM Data", "Load SOM Config", "Ld & Make Map", "Ld Prebuilt Map"},	//row 2
 			//		{"Train Data","True Prspcts", "Prods", "SOM Cfg", "Func 14"},	//row 2
 
 			switch(btn){
 				case 0 : {	
+					mapMgr.loadTrainDataMapConfigAndBuildMap(false);
 					resetButtonState();
 					break;}
 				case 1 : {	
@@ -522,11 +593,10 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 					break;}	
 			}
 			break;}//row 2 of menu side bar buttons
-		case Geom_SideBarMenu.btnAuxFunc3Idx : {//row 3 of menu side bar buttons
+		case SOM_GeomSideBarMenu.btnAuxFunc3Idx : {//row 3 of menu side bar buttons
 			msgObj.dispMessage("SOM_AnimWorldWin","launchMenuBtnHndlr","Click Functions 3 in "+name+" : btn : " + btn, MsgCodes.info4);//{"Ld&Bld SOM Data", "Load SOM Config", "Ld & Make Map", "Ld Prebuilt Map"},	//row 2
 			switch(btn){
 				case 0 : {	
-					mapMgr.loadTrainDataMapConfigAndBuildMap(false);
 					resetButtonState();
 					break;}
 				case 1 : {	
@@ -544,7 +614,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 					break;}	
 			}
 			break;}//row 3 of menu side bar buttons
-		case Geom_SideBarMenu.btnAuxFunc4Idx : {//row 3 of menu side bar buttons
+		case SOM_GeomSideBarMenu.btnAuxFunc4Idx : {//row 3 of menu side bar buttons
 			msgObj.dispMessage("SOM_AnimWorldWin","launchMenuBtnHndlr","Click Functions 3 in "+name+" : btn : " + btn, MsgCodes.info4);//{"Ld&Bld SOM Data", "Load SOM Config", "Ld & Make Map", "Ld Prebuilt Map"},	//row 2
 			switch(btn){
 				case 0 :
@@ -560,7 +630,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 					break;}	
 			}
 			break;}//row 3 of menu side bar buttons
-		case Geom_SideBarMenu.btnDBGSelCmpIdx : {//row 4 of menu side bar buttons (debug)	
+		case SOM_GeomSideBarMenu.btnDBGSelCmpIdx : {//row 4 of menu side bar buttons (debug)	
 			msgObj.dispMessage("SOM_AnimWorldWin","launchMenuBtnHndlr","Click Debug in "+name+" : btn : " + btn, MsgCodes.info4);
 			//{"All->Bld Map","All Dat To Map", "Func 22", "Func 23", "Prblt Map"},	//row 3
 			switch(btn){

@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
-import SOM_GeometryProj_PKG.geom_UI.Geom_SideBarMenu;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
@@ -20,6 +20,10 @@ import base_Utils_Objects.vectorObjs.myVector;
  *
  */
 public class SOM_GeomMapUIWin extends SOM_MapUIWin {
+	/**
+	 * the current anim window, which will manage the mapMgr generation
+	 */
+	private SOM_AnimWorldWin curAnimWin;
 	
 	public static final int 
 		mapShowLocClrIDX 			= numSOMBasePrivFlags + 0;			//show img built of map with each pxl clr built from the 1st 3 features of the interpolated point at that pxl between the map nodes
@@ -56,10 +60,12 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 	 * build instance-specific map manager
 	 */
 	@Override
-	protected SOM_MapManager buildMapMgr(float[] SOM_mapDims) {
+	protected SOM_MapManager buildMapMgr(float[] SOM_mapDims) { 
+		msgObj.dispInfoMessage("SOM_GeomMapUIWin", "buildMapMgr", "Entering buildMapMgr : magMgr is currently :"+ (null==mapMgr ? " null" : " not null"));
+		if(this.mapMgr != null) {return mapMgr;}
 		//no need to set win here - this is set in SOM Win UI Base class
 		//this is just a place holder - windows will set proper map manager when this window is selected to be active
-		return new Geom_LineMapMgr(null, null, SOM_mapDims, null, argsMap);
+		return ((SOM_GeometryMain)pa).getLinesWindow().getMapMgr();
 	}
 	
 
@@ -165,8 +171,7 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 	}
 
 	@Override
-	protected void setUIWinValsIndiv(int UIidx) {}
-	
+	protected void setUIWinValsIndiv(int UIidx) {}	
 	
 	@Override
 	public void initDrwnTrajIndiv(){}
@@ -183,7 +188,7 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 	@Override
 	protected String[] getSaveFileDirNamesPriv() {
 		// TODO Auto-generated method stub
-		return null;
+		return new String[] {};
 	}
 
 	@Override
@@ -191,16 +196,9 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
-	public void hndlFileLoad(File file, String[] vals, int[] stIdx) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public ArrayList<String> hndlFileSave(File file) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
+	public void setCurAnimWin(SOM_AnimWorldWin _win) {curAnimWin=_win;}
+	public SOM_AnimWorldWin getCurAnimWin() {return curAnimWin;}
 
 	//handle mouseover 
 	@Override
@@ -285,5 +283,16 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 
 	@Override
 	protected final void launchMenuBtnHndlr() {	}
+	
+	@Override
+	public void hndlFileLoad(File file, String[] vals, int[] stIdx) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public ArrayList<String> hndlFileSave(File file) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }//myTrajEditWin

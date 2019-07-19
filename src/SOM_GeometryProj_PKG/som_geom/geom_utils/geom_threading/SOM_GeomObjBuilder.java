@@ -3,10 +3,10 @@ package SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadLocalRandom;
 
-import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_Utils_Objects.MyMathUtils;
 import base_Utils_Objects.io.MessageObject;
@@ -87,12 +87,12 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 	 * @param pts the array of points
 	 * @return
 	 */
-	protected Geom_SmplDataForSOMExample[] buildSrcGeomSmplAra(SOM_GeomObj[] objs, myPointf[] pts) {
-		Geom_SmplDataForSOMExample[] srcGeomData = new Geom_SmplDataForSOMExample[pts.length];
+	protected SOM_GeomSmplDataForEx[] buildSrcGeomSmplAra(SOM_GeomObj[] objs, myPointf[] pts) {
+		SOM_GeomSmplDataForEx[] srcGeomData = new SOM_GeomSmplDataForEx[pts.length];
 		if(null==objs) {//creation
-			for(int i=0;i<pts.length;++i) {	srcGeomData[i] = new Geom_SmplDataForSOMExample(null, pts[i]);}
+			for(int i=0;i<pts.length;++i) {	srcGeomData[i] = new SOM_GeomSmplDataForEx(null, pts[i]);}
 		} else {
-			for(int i=0;i<pts.length;++i) {	srcGeomData[i] = new Geom_SmplDataForSOMExample(objs[i], pts[i]);}
+			for(int i=0;i<pts.length;++i) {	srcGeomData[i] = new SOM_GeomSmplDataForEx(objs[i], pts[i]);}
 		}
 		return srcGeomData;
 	}
@@ -328,7 +328,6 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 		msgObj.dispInfoMessage("SOM_GeomObjBuilder", "_regenSampleBaseObj_Task::thdIDX=", "Start regenerating samples for " + (endIdx-stIdx) + " " +dataType +" base objects at idxs : ["+stIdx+", "+endIdx+"]");
 		for(int i=stIdx; i<endIdx;++i) {	objArray[i].buildSampleSetAndPShapes(numSmplsPerObj);}
 		msgObj.dispInfoMessage("SOM_GeomObjBuilder", "_regenSampleBaseObj_Task::thdIDX=", "Finished regenerating samples for  " + (endIdx-stIdx) + " " +dataType +" base objects at idxs : ["+stIdx+", "+endIdx+"]");
-		
 	}
 	
 	/**
@@ -342,8 +341,8 @@ public abstract class SOM_GeomObjBuilder implements Callable<Boolean> {
 	@Override
 	public final Boolean call() throws Exception {
 		switch (taskToDo) {
-			case buildBaseObj : { _buildBaseObj_Task(); break;}
-			case regenSamplesBaseObj : { _regenSampleBaseObj_Task(); break;}
+			case buildBaseObj 				: { _buildBaseObj_Task(); break;}
+			case regenSamplesBaseObj 		: { _regenSampleBaseObj_Task(); break;}
 			default :{
 				msgObj.dispErrorMessage("SOM_GeomObjBuilder", "call::thdIDX=", "Unsupported task chosen : " + taskToDo.toString() +".  Aborting");
 			}

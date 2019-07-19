@@ -3,11 +3,13 @@ package SOM_GeometryProj_PKG.geom_ObjExamples;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomSamplePointf;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.MyMathUtils;
@@ -50,8 +52,8 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * @param _numSmplPts : # of sample points to build for this object TODO move to post-construction process
 	 * @param _worldBounds : bounds within which the points/samples of this object should remain constrained
 	 */
-	public Geom_SphereSOMExample(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds) {
-		super(_mapMgr, _animWin,  _exType, _id, _srcSmpls, _worldBounds,  SOM_GeomObjTypes.sphere);
+	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
+		super(_mapMgr, _animWin,  _exType, _id, _srcSmpls,  SOM_GeomObjTypes.sphere);
 		//with 4 srcPts, find center of sphere
 		//String res = "";
 		//for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
@@ -63,8 +65,8 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		super.buildLocClrInitObjAndSamples(ctrLoc, _numSmplPts);
 	}//ctor
 	
-	public Geom_SphereSOMExample(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _oid, String _csvDat, float[][] _worldBounds) {
-		super(_mapMgr, _animWin, _exType, _oid, _csvDat,  _worldBounds, SOM_GeomObjTypes.sphere);
+	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
+		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.sphere);
 		ctrLoc = new myPointf();
 		
 		rad = buildCenterAndRadFromCSVStr(ctrLoc, _csvDat);
@@ -86,7 +88,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * @return
 	 */
 	@Override
-	protected SOM_GeomSamplePointf[] initAndBuildSamplePoints(Geom_SmplDataForSOMExample[] _srcSmpls) {
+	protected SOM_GeomSamplePointf[] initAndBuildSourcePoints(SOM_GeomSmplDataForEx[] _srcSmpls) {
 		//set here since this is called from the base class constructor
 		setID(IDGen++);
 		SOM_GeomSamplePointf[] ptAra = new SOM_GeomSamplePointf[geomSrcSamples.length];
@@ -269,18 +271,19 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	}
 
 
-	
+
 	@Override
-	public TreeMap<Integer, Integer> getTrainingLabels() {
+	public final TreeMap<Integer, Integer> getTrainingLabels() {
+		TreeMap<Integer, Integer> res = new TreeMap<Integer, Integer>();
 		// TODO Auto-generated method stub
-		return null;
+		return res;
 	}
 
 	
 	///////////////////////////
 	// draw functionality
 	@Override
-	protected void _drawMe_Geom(my_procApplet pa, GeomObjDrawType drawType) {
+	protected void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
 		pa.pushMatrix();pa.pushStyle();	
 		pa.sphereDetail(sphrDet);
 		pa.translate(ctrLoc.x,ctrLoc.y,ctrLoc.z); 
@@ -289,7 +292,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	}
 		
 	@Override
-	protected void _drawMe_Geom_BMU(my_procApplet pa, GeomObjDrawType drawType) {
+	protected void _drawMe_Geom_BMU(my_procApplet pa, SOM_GeomObjDrawType drawType) {
 //		pa.pushMatrix();pa.pushStyle();	
 //		pa.sphereDetail(sphrDet);
 //		pa.translate(baseObjBMUWorldLoc.x,baseObjBMUWorldLoc.y,baseObjBMUWorldLoc.z); 
@@ -301,7 +304,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	protected static float modCnt = 0;//counter that will determine when the color should switch
 	
 	@Override
-	public void drawMeSelected(my_procApplet pa,float animTmMod){//animTmMod is time since last frame
+	protected final void _drawMeSelected(my_procApplet pa,float animTmMod){//animTmMod is time since last frame
 		modCnt += animTmMod;
 		if(modCnt > 1.0){	modCnt = 0;	}//blink every ~second
 		pa.pushMatrix();pa.pushStyle();	
@@ -314,15 +317,15 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	
 	
 	@Override
-	public void drawMeSelected_BMU(my_procApplet pa,float animTmMod){//animTmMod is time since last frame
-//		modCnt += animTmMod;
-//		if(modCnt > 1.0){	modCnt = 0;	}//blink every ~second
-//		pa.pushMatrix();pa.pushStyle();		
+	protected final void _drawMeSelected_BMU(my_procApplet pa,float animTmMod){//animTmMod is time since last frame
+		modCnt += animTmMod;
+		if(modCnt > 1.0){	modCnt = 0;	}//blink every ~second
+		pa.pushMatrix();pa.pushStyle();		
 //		pa.noFill();
 //		pa.stroke(255*modCnt, 255);		
 //		pa.translate(baseObjBMUWorldLoc); 
 //		pa.sphere(rad*(modCnt + 1.0f)); 
-//		pa.popStyle();pa.popMatrix();
+		pa.popStyle();pa.popMatrix();
 	}	
 	
 	
@@ -337,26 +340,13 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		pa.text(""+getID(), .33f*rad,-.33f*rad,0); 
 		pa.popStyle();pa.popMatrix();
 	}
+	
 	/**
 	 * draw this object's samples, using the random color
 	 * @param pa
 	 */
 	@Override
-	public final void drawMySmplsLabel(my_procApplet pa){
-		pa.pushMatrix();pa.pushStyle();
-		pa.setFill(labelClrAra,255); 
-		pa.setStroke(labelClrAra,255);
-		for(int i=0;i<objSamplePts.length;++i){
-			myPointf pt = objSamplePts[i];
-			pa.pushMatrix(); pa.pushStyle();
-			pa.translate(pt); 
-			animWin.unSetCamOrient();
-			pa.text(""+getID() + "_"+i, .33f*rad,-.33f*rad,0); 
-			pa.popStyle();pa.popMatrix();
-		}
-		pa.popStyle();pa.popMatrix();
-	}//
-
+	public final void drawMySmplsLabel(my_procApplet pa){	objSamples.drawMySmplsLabel_3D(pa, animWin, rad);}//
 	
 ///////////////BMU / datapoint drawing
 	

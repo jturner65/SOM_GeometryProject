@@ -21,7 +21,7 @@ import base_Utils_Objects.vectorObjs.myPoint;
 
 public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	
-	public static final int numFlags = numBaseFlags;	
+	public static final int numFlags = numGeomBaseFlags;	
 
 	/**
 	 * min and max radius set from UI
@@ -123,13 +123,15 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	}
 
 	@Override
-	protected final int getNumFlags() {	return numFlags;}
+	protected final int getNumGeomFlags_Indiv() {	return numFlags;}
 	@Override
-	protected void setFlag_Indiv(int idx, boolean val) {
+	protected void setGeomFlag_Indiv(int idx, boolean val) {
 		switch (idx) {//special actions for each flag
 			default : {break;}
 		}
 	}
+	////////////////////////
+	// draw functions
 	
 
 	////////////////////////

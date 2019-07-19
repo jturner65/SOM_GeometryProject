@@ -114,9 +114,9 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final int getMaxNumObjs() {	return 20;}
 	@Override
-	protected final int getMinNumSmplsPerObj() {return 10;}
+	protected final int getMinNumSmplsPerObj() {return 20;}
 	@Override
-	protected final int getMaxNumSmplsPerObj() {return 500;}
+	protected final int getMaxNumSmplsPerObj() {return 1000;}
 	/**
 	 * calculate the max # of examples for this type object - clique of object description degree 
 	 */
@@ -134,14 +134,18 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 		}	
 	}
 
-	/**
-	 * call to save the data for all the objects in the scene
-	 */
 	@Override
-	protected final void saveGeomObjInfo() {		
+	protected void getAllUIValsForPreProcSave_Indiv(TreeMap<String, String> vals) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void setAllUIValsFromPreProcLoad_Indiv(TreeMap<String, String> uiVals) {
+		// TODO Auto-generated method stub
+		
 	}
 	
-
 	//////////////////////////////
 	// instance-based draw handling
 	
@@ -169,10 +173,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 * instance-specific drawing after objects are drawn but before info is saved
 	 */
 	protected final void drawMeLast_Indiv() {		
-		//pa.hint(pa.DISABLE_DEPTH_SORT);//slow
-		if(getPrivFlags(uiObjDataLoadedIDX)){
-			if(getPrivFlags(showOrthoFrameIDX)) {((Geom_PlaneMapMgr)mapMgr).drawAllPlanesOrthoFrames(pa);}
-		}
+		if(getPrivFlags(showOrthoFrameIDX)) {((Geom_PlaneMapMgr)mapMgr).drawAllPlanesOrthoFrames(pa);}
 	}	
 	
 	//////////////////////////////

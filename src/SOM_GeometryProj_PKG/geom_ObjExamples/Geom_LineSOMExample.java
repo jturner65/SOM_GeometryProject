@@ -3,11 +3,14 @@ package SOM_GeometryProj_PKG.geom_ObjExamples;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomSamplePointf;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.MyMathUtils;
@@ -35,14 +38,12 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 */
 	public final myPointf[] dispEndPts;
 	
-	
 	/**
 	 * coordinate bounds in world for line - static across all line objects
 	 * 		first idx : 0 is min; 1 is diff
 	 * 		2nd idx : 0 is x, 1 is y, 2 is z
 	 */
 	protected static float[][] worldBounds=null;
-
 	
 	/**
 	 * an object to restrict the bounds on this line - min,max, diff s,t value within which to sample plane
@@ -61,8 +62,8 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 * 		first idx 	: 0 is min; 1 is diff
 	 * 		2nd idx 	: 0 is x, 1 is y
 	 */
-	public Geom_LineSOMExample(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds) {
-		super(_mapMgr, _animWin,  _exType, _id, _srcSmpls, _worldBounds, SOM_GeomObjTypes.line);
+	public Geom_LineSOMExample(Geom_LineMapMgr _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
+		super(_mapMgr, _animWin,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.line);
 		srcPts[0].z = 0.0f;
 		srcPts[1].z = 0.0f;
 		//z is always 0 - making this in 2 d
@@ -78,8 +79,13 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		super.buildLocClrInitObjAndSamples(srcPts[0], _numSmplPts);
 		dispEndPts = new myPointf[2];
 		dispAra = new String[2];
+		float low_t = worldTBounds[0][0], hi_t = worldTBounds[0][0] + worldTBounds[1][0];
 		dispEndPts[0] = getPointOnLine(worldTBounds[0][0]);
 		dispEndPts[1] = getPointOnLine(worldTBounds[0][0] + worldTBounds[1][0]);
+		
+		float ctr_t = this.getTForPointOnLine(origin);
+		if(ctr_t < low_t) {			origin.set(dispEndPts[0]);}
+		else if (ctr_t > hi_t) {	origin.set(dispEndPts[1]);}
 		
 		dispAra[0] = "End pt 0 w/min t : " + worldTBounds[0][0] + " | "+dispEndPts[0].toStrBrf();
 		dispAra[1] = "End pt 1 w/max t : " + (worldTBounds[0][0]+worldTBounds[1][0])+ " | "+dispEndPts[1].toStrBrf();
@@ -87,8 +93,8 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
  
 	}//ctor		
 	
-	public Geom_LineSOMExample(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _oid, String _csvDat, float[][] _worldBounds) {
-		super(_mapMgr, _animWin, _exType, _oid, _csvDat, _worldBounds, SOM_GeomObjTypes.line);
+	public Geom_LineSOMExample(Geom_LineMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
+		super(_mapMgr, _exType, _oid, _csvDat, SOM_GeomObjTypes.line);
 		srcPts[0].z = 0.0f;
 		srcPts[1].z = 0.0f;
 		//z is always 0 - making this in 2 d
@@ -127,7 +133,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 * @return
 	 */
 	@Override
-	protected SOM_GeomSamplePointf[] initAndBuildSamplePoints(Geom_SmplDataForSOMExample[] _srcSmpls) {
+	protected SOM_GeomSamplePointf[] initAndBuildSourcePoints(SOM_GeomSmplDataForEx[] _srcSmpls) {
 		//set here since this is called from the base class constructor
 		setID(IDGen++);
 		SOM_GeomSamplePointf[] ptAra = new SOM_GeomSamplePointf[geomSrcSamples.length];
@@ -267,17 +273,17 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	protected String getRawDescColNamesForCSV_Indiv() {	return "";}
 	
 	
-	@Override
-	public TreeMap<Integer, Integer> getTrainingLabels() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	
+	@Override
+	public final TreeMap<Integer, Integer> getTrainingLabels() {
+		TreeMap<Integer, Integer> res = new TreeMap<Integer, Integer>();
+		// TODO Auto-generated method stub
+		return res;
+	}	
 	///////////////////////////
 	// draw functionality
 	@Override
-	protected final void _drawMe_Geom(my_procApplet pa, GeomObjDrawType drawType) {
+	protected final void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
 		pa.strokeWeight(2.0f);
 		pa.line(dispEndPts[0],dispEndPts[1]);
 		pa.show(dispEndPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
@@ -291,7 +297,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 * TODO we need to re-calculate drawing quantities based on bmu construction
 	 */
 	@Override
-	protected final void _drawMe_Geom_BMU(my_procApplet pa, GeomObjDrawType drawType) {
+	protected final void _drawMe_Geom_BMU(my_procApplet pa, SOM_GeomObjDrawType drawType) {
 		pa.strokeWeight(2.0f);
 		pa.line(dispEndPts[0],dispEndPts[1]);
 		pa.show(dispEndPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
@@ -316,22 +322,10 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 * @param pa
 	 */
 	@Override
-	public final void drawMySmplsLabel(my_procApplet pa){
-		pa.pushMatrix();pa.pushStyle();
-		pa.setFill(labelClrAra,255); 
-		pa.setStroke(labelClrAra,255);
-		for(int i=0;i<objSamplePts.length;++i){
-			myPointf pt = objSamplePts[i];
-			pa.pushMatrix(); pa.pushStyle();
-			pa.translate(pt); 
-			pa.text(""+getID() + "_"+i, .33f*rad,-.33f*rad,0); 
-			pa.popStyle();pa.popMatrix();
-		}
-		pa.popStyle();pa.popMatrix();
-	}//
+	public final void drawMySmplsLabel(my_procApplet pa){	objSamples.drawMySmplsLabel_2D(pa, rad);}//
 
 	@Override
-	public void drawMeSelected(my_procApplet pa, float animTmMod) {
+	protected final void _drawMeSelected(my_procApplet pa, float animTmMod) {
 		// TODO Auto-generated method stub
 
 	}
@@ -343,7 +337,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	}
 
 	@Override
-	public void drawMeSelected_BMU(my_procApplet pa, float animTmMod) {
+	protected final void _drawMeSelected_BMU(my_procApplet pa, float animTmMod) {
 		// TODO Auto-generated method stub
 
 	}

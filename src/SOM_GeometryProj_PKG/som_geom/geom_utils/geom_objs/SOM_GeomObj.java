@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import SOM_GeometryProj_PKG.geom_ObjExamples.GeomObjDrawType;
-import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomSamplePointf;
@@ -15,7 +13,6 @@ import base_SOM_Objects.som_examples.SOM_Example;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.myPointf;
 import base_Utils_Objects.vectorObjs.myVectorf;
-import processing.core.PConstants;
 import processing.core.PShape;
 
 /**
@@ -41,11 +38,6 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	protected String dispLabel;
 	
 	/**
-	 * # of sample points required to uniquely define an object of this type (i.e. # of examples used to build training example)
-	 */
-	public final int minNumSmplsForEachExample;
-	
-	/**
 	 * location-based and random color arrays, for display
 	 */
 	public int[] locClrAra;
@@ -60,14 +52,6 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 			debugIDX 						= 0,		//draw this sphere's sample points
 			is3dIDX							= 1;		//this object is in 3d or 2d
 	public static final int numgeomStFlags = 2;	
-	/**
-	 * radius of sample point to display
-	 */
-	public static final float ptRad = 3.0f;
-	/**
-	 * sphere detail of sample point to display
-	 */
-	public static final int ptDet = 2;	
 		
 	/**
 	 * type of object (geometric)
@@ -78,16 +62,16 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * list of original object point samples and their owning objects making up this example - 
 	 * these will be used to determine the classes for this object, to be passed to bmu map node for this example 
 	 */
-	protected final Geom_SmplDataForSOMExample[] geomSrcSamples;	
+	protected final SOM_GeomSmplDataForEx[] geomSrcSamples;	
 	/**
 	 * given source points that make up this object
 	 */
 	public final SOM_GeomSamplePointf[] srcPts;
-	/**
-	 * random sample points on this object, which will all share this object's constituent, uniquely identifying characteristics used as training data
-	 */
-	public SOM_GeomSamplePointf[] objSamplePts;
 
+	/**
+	 * construction managing sample points on the surface of this geom object
+	 */
+	public SOM_GeomObjSamples objSamples;
 
 	/**
 	 * all class ID's this object belongs to
@@ -123,7 +107,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * @param _worldBounds : bounds in world for valid values for this object
 	 * @param _GeoType : geometric object type
 	 */	
-	public SOM_GeomObj(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, float[][] _worldBounds, SOM_GeomObjTypes _GeoType) {
+	public SOM_GeomObj(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, SOM_GeomObjTypes _GeoType) {
 		super(_mapMgr, _exType,_id);
 		animWin = _animWin;
 		objGeomType=_GeoType;
@@ -132,13 +116,14 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		geomSrcSamples = _srcSmpls;
 		
 		initGeomFlags();
-		minNumSmplsForEachExample=objGeomType.getVal();
-		setGeomFlag(is3dIDX, minNumSmplsForEachExample>2);
+		setGeomFlag(is3dIDX, objGeomType.getVal()>2);
 		rndClrAra = getRandClr();	
 		labelClrAra = getGeomFlag(is3dIDX)? new int[] {0,0,0,255} : new int[] {255,255,255,255};
 		
-		srcPts = initAndBuildSamplePoints(geomSrcSamples);
-		setWorldBounds(_worldBounds);				
+		srcPts = initAndBuildSourcePoints(geomSrcSamples);
+		
+		objSamples = new SOM_GeomObjSamples(this);
+		setWorldBounds(_mapMgr.getWorldBounds());				
 	}//ctor
 	
 	/**
@@ -151,24 +136,25 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * @param _worldBounds
 	 * @param _GeoType
 	 */
-	public SOM_GeomObj(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _oid, String _csvDat, float[][] _worldBounds, SOM_GeomObjTypes _GeoType) {
+	public SOM_GeomObj(SOM_GeomMapManager _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat, SOM_GeomObjTypes _GeoType) {
 		super(_mapMgr, _exType, _oid);
-		animWin = _animWin;
+		animWin = _mapMgr.dispWin;
 		objGeomType = _GeoType;		
 		initGeomFlags();
-		minNumSmplsForEachExample = objGeomType.getVal();
-		setGeomFlag(is3dIDX, minNumSmplsForEachExample>2);
 		rndClrAra = getRandClr();		
+		int minNumSmplsForEachExample = objGeomType.getVal();
+		setGeomFlag(is3dIDX, minNumSmplsForEachExample>2);
 		labelClrAra = getGeomFlag(is3dIDX)? new int[] {0,0,0,255} : new int[] {255,255,255,255};
 		
 		//only data needed to be saved
 		srcPts = buildSrcPtsFromCSVString(minNumSmplsForEachExample, _csvDat);
 		
 		//build geomSrcSamples from srcPts
-		geomSrcSamples = new Geom_SmplDataForSOMExample[srcPts.length];
-		for(int i=0;i<geomSrcSamples.length;++i) {geomSrcSamples[i] = new Geom_SmplDataForSOMExample(this, srcPts[i]);}
+		geomSrcSamples = new SOM_GeomSmplDataForEx[srcPts.length];
+		for(int i=0;i<geomSrcSamples.length;++i) {geomSrcSamples[i] = new SOM_GeomSmplDataForEx(this, srcPts[i]);}
 		
-		setWorldBounds(_worldBounds);						
+		objSamples = new SOM_GeomObjSamples(this);
+		setWorldBounds(_mapMgr.getWorldBounds());						
 	}
 	
 	public SOM_GeomObj(SOM_GeomObj _otr) {
@@ -183,9 +169,9 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		srcPts = _otr.srcPts;
 		rndClrAra = _otr.rndClrAra;
 		locClrAra = _otr.locClrAra;
-		minNumSmplsForEachExample = _otr.minNumSmplsForEachExample;
+		//minNumSmplsForEachExample = _otr.minNumSmplsForEachExample;
 		labelClrAra = _otr.labelClrAra;
-		objSamplePts = _otr.objSamplePts;
+		objSamples = _otr.objSamples;
 		sampleObjPShapes = _otr.sampleObjPShapes;
 	}//copy ctor
 
@@ -194,7 +180,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * @param _srcSmpls
 	 * @return
 	 */
-	protected abstract SOM_GeomSamplePointf[] initAndBuildSamplePoints(Geom_SmplDataForSOMExample[] _srcSmpls);
+	protected abstract SOM_GeomSamplePointf[] initAndBuildSourcePoints(SOM_GeomSmplDataForEx[] _srcSmpls);
 	
 	/**
 	 * column names of rawDescrForCSV data (preprocessed data)
@@ -205,8 +191,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		String res = "OID,GeomObj_ID,TAG,";	
 		for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toCSVHeaderStr()+"TAG,";}
 		res +=getRawDescColNamesForCSV_Indiv();	
-		res +="Samples Start Tag,# Samples, TAG,";
-		for(int i=0; i<objSamplePts.length;++i) {res += objSamplePts[i].toCSVHeaderStr()+"TAG,";}
+		res += objSamples.getRawDescColNamesForCSV();
 		return res;
 	}
 	/**
@@ -224,13 +209,9 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		//first have example id, then have geom obj type id
 		String res = ""+OID+","+ GeomObj_ID+"," + srcPtTag;
 		//only need to save srcPts
-		for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toCSVStr() + srcPtTag;}	
-		
-		res += getRawDescColNamesForCSV_Indiv();
-		
-		res += "ST_"+samplPtTag+objSamplePts.length+","+samplPtTag;
-		for(int i=0; i<objSamplePts.length;++i) {res += objSamplePts[i].toCSVStr()+samplPtTag;}
-		res += "END_"+samplPtTag;
+		for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toCSVStr() + srcPtTag;}			
+		res += getPreProcDescrForCSV_Indiv();
+		res += objSamples.getPreProcDescrForCSV();
 		return res;
 	}
 	/**
@@ -245,7 +226,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 */
 	protected final void buildLocClrInitObjAndSamples(myPointf _locForClr, int _numSmplPts) {
 		locClrAra = getClrFromWorldLoc(_locForClr);		
-		buildSampleSetAndPShapes(_numSmplPts);
+		objSamples.buildSampleSetAndPShapes(mapMgr.win.pa,_numSmplPts);
 	}//buildLocClrInitObjAndSamples
 	
 	/**
@@ -271,19 +252,8 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * @param _csvStr
 	 */
 	protected final void buildLocClrAndSamplesFromCSVStr(myPointf _locForClr, String _csvStr) {
-		locClrAra = getClrFromWorldLoc(_locForClr);		
-		String[] tmpDatAra = _csvStr.split("ST_"+samplPtTag);
-		String[] onlySamplesAra = tmpDatAra[1].trim().split("END_"+samplPtTag);
-		String[] samplePtAra = onlySamplesAra[0].trim().split(samplPtTag);
-		//idx 0 is # of samples
-		int numSmplPts = Integer.parseInt(samplePtAra[0].trim());		
-		objSamplePts = new SOM_GeomSamplePointf[numSmplPts];
-		for(int i=0;i<objSamplePts.length;++i) {	
-			String[] ptDescAra = samplePtAra[i+1].trim().split(",");
-			objSamplePts[i] = new SOM_GeomSamplePointf(ptDescAra);				
-		}
-		
-		buildSamplePShapeObjs();
+		locClrAra = getClrFromWorldLoc(_locForClr);			
+		objSamples.buildSampleSetAndPShapesFromCSVStr(mapMgr.win.pa, _csvStr);
 	}
 	
 	/**
@@ -291,55 +261,10 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * @param _numSmplPts
 	 */
 	public final void buildSampleSetAndPShapes(int _numSmplPts) {
-		objSamplePts = buildSamplesOfThisObject(0,_numSmplPts);
-		buildSamplePShapeObjs();		
+		objSamples.buildSampleSetAndPShapes(mapMgr.win.pa,_numSmplPts);
 	}//buildSampleSet
 	
-	/**
-	 * build sample points array of points on this object - maintain offset with samples already built for this object
-	 * @param _numSmplPtsToBuild
-	 * @return
-	 */
-	public final SOM_GeomSamplePointf[] buildSamplesOfThisObject(int _numSmplPtsToBuild) { return buildSamplesOfThisObject(objSamplePts.length, _numSmplPtsToBuild);}
-	public final SOM_GeomSamplePointf[] buildSamplesOfThisObject(int _stSmpleIDX, int _numSmplPtsToBuild) {
-		SOM_GeomSamplePointf[] tmpSmplAra = new SOM_GeomSamplePointf[_numSmplPtsToBuild];
-		for(int i=0;i<tmpSmplAra.length;++i) {	
-			tmpSmplAra[i]=new SOM_GeomSamplePointf(getRandPointOnObj(), objGeomType.toString()+"_"+getID()+"_Smpl_"+String.format("%04d", (i+_stSmpleIDX))); 
-			//msgObj.dispInfoMessage("SOM_GeomObj::"+type.toString(), "buildLocClrInitObjAndSamples", "ID : " + ID + " | sample pt loc : " + objSamplePts[i].toStrBrf());
-		}		
-		return tmpSmplAra;
-	}
-	
-	
-	private void buildSamplePShapeObjs() {		
-		//create representation
-		sampleObjPShapes = new PShape[GeomObjDrawType.getNumVals()];
-		sampleObjPShapes[GeomObjDrawType.rndClr.getVal()] = buildSampleCloud(rndClrAra);
-		sampleObjPShapes[GeomObjDrawType.locClr.getVal()] = buildSampleCloud(locClrAra);
-		sampleObjPShapes[GeomObjDrawType.noFillRndClr.getVal()] = buildSampleCloud(rndClrAra);
-		sampleObjPShapes[GeomObjDrawType.noFillLocClr.getVal()] = buildSampleCloud(locClrAra);
-		sampleObjPShapes[GeomObjDrawType.selected.getVal()] = null;
-	}
-	
-	private PShape buildSampleCloud(int[] clr) {
-		PShape poly = mapMgr.win.pa.createShape(PConstants.GROUP); 
-		for(int i=0;i<objSamplePts.length;++i) {
-			myPointf pt = objSamplePts[i];
-			PShape tmp = mapMgr.win.pa.createShape(PConstants.GROUP);			
-			tmp.translate(pt.x,pt.y,pt.z);
-			PShape tmp2 = mapMgr.win.pa.createShape(PConstants.SPHERE, ptRad);
-			tmp2.beginShape();
-			tmp2.fill(clr[0], clr[1], clr[2],255);		
-			tmp2.stroke(clr[0], clr[1], clr[2],255);
-			tmp2.strokeWeight(3.0f);
-			tmp2.endShape();
-			tmp.addChild(tmp2);
-			poly.addChild(tmp);
-		}
 
-		return poly;
-	}//buildSampleCloud
-	
 	/**
 	 * build orthonormal basis from the passed normal (unit)
 	 * @param tmpNorm : normal 
@@ -501,7 +426,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		pa.pushMatrix();pa.pushStyle();		
 		pa.setFill(rndClrAra,255);
 		pa.setStroke(rndClrAra,255);
-		_drawMe_Geom(pa,GeomObjDrawType.rndClr);
+		_drawMe_Geom(pa,SOM_GeomObjDrawType.rndClr);
 		pa.popStyle();pa.popMatrix();	
 	}	
 	
@@ -510,7 +435,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		pa.pushMatrix();pa.pushStyle();		
 		pa.setFill(locClrAra,255);
 		pa.setStroke(locClrAra,255);
-		_drawMe_Geom(pa,GeomObjDrawType.locClr);
+		_drawMe_Geom(pa,SOM_GeomObjDrawType.locClr);
 		pa.popStyle();pa.popMatrix();	
 	}
 	
@@ -522,7 +447,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		pa.pushMatrix();pa.pushStyle();		
 		pa.noFill();
 		pa.setStroke(rndClrAra,255);
-		_drawMe_Geom(pa,GeomObjDrawType.noFillRndClr);
+		_drawMe_Geom(pa,SOM_GeomObjDrawType.noFillRndClr);
 		pa.popStyle();pa.popMatrix();	
 	}	
 	
@@ -530,7 +455,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		pa.pushMatrix();pa.pushStyle();		
 		pa.noFill();
 		pa.setStroke(locClrAra,255);
-		_drawMe_Geom(pa,GeomObjDrawType.noFillLocClr);
+		_drawMe_Geom(pa,SOM_GeomObjDrawType.noFillLocClr);
 		pa.popStyle();pa.popMatrix();	
 	}
 	
@@ -542,7 +467,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		pa.pushMatrix();pa.pushStyle();		
 		pa.setFill(rndClrAra,255);
 		pa.setStroke(rndClrAra,255);
-		_drawMe_Geom_BMU(pa,  GeomObjDrawType.rndClr);
+		_drawMe_Geom_BMU(pa,  SOM_GeomObjDrawType.rndClr);
 		pa.popStyle();pa.popMatrix();	
 	}	
 	
@@ -551,7 +476,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		pa.pushMatrix();pa.pushStyle();		
 		pa.setFill(locClrAra,255);
 		pa.setStroke(locClrAra,255);
-		_drawMe_Geom_BMU(pa, GeomObjDrawType.locClr );
+		_drawMe_Geom_BMU(pa, SOM_GeomObjDrawType.locClr );
 		pa.popStyle();pa.popMatrix();	
 	}
 	
@@ -563,7 +488,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		pa.pushMatrix();pa.pushStyle();		
 		pa.noFill();
 		pa.setStroke(rndClrAra,255);
-		_drawMe_Geom_BMU(pa, GeomObjDrawType.noFillRndClr);
+		_drawMe_Geom_BMU(pa, SOM_GeomObjDrawType.noFillRndClr);
 		pa.popStyle();pa.popMatrix();	
 	}	
 	
@@ -572,7 +497,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		pa.pushMatrix();pa.pushStyle();		
 		pa.noFill();
 		pa.setStroke(locClrAra,255);
-		_drawMe_Geom_BMU(pa, GeomObjDrawType.noFillLocClr);
+		_drawMe_Geom_BMU(pa, SOM_GeomObjDrawType.noFillLocClr);
 		pa.popStyle();pa.popMatrix();	
 	}
 		
@@ -586,21 +511,45 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * draw this object
 	 * @param pa
 	 */
-	protected abstract void _drawMe_Geom(my_procApplet pa, GeomObjDrawType drawType);
+	protected abstract void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType);
 	
 	/**
 	 * draw this object at location dictated by bmu
 	 * @param pa
 	 * @param animTmMod
 	 */	
-	protected abstract void _drawMe_Geom_BMU(my_procApplet pa, GeomObjDrawType drawType);
+	protected abstract void _drawMe_Geom_BMU(my_procApplet pa, SOM_GeomObjDrawType drawType);
 	
 	/**
 	 * draw this object with appropriate selected highlight/cue
 	 * @param pa
 	 * @param animTmMod
 	 */
-	public abstract void drawMeSelected(my_procApplet pa, float animTmMod);
+	public void drawMeSelected_ClrLoc(my_procApplet pa, float animTmMod) {
+		drawMeClrLoc(pa);
+		_drawMeSelected(pa,animTmMod);
+	
+	};
+	public void drawMeSelected_ClrLoc_Smpl(my_procApplet pa, float animTmMod) {
+		drawMeSelected_ClrLoc(pa,animTmMod);
+		objSamples.drawMeSmplsSelected(pa);
+	}
+	/**
+	 * draw this object with appropriate selected highlight/cue
+	 * @param pa
+	 * @param animTmMod
+	 */
+	public void drawMeSelected_ClrRnd(my_procApplet pa, float animTmMod) {
+		drawMeClrRnd(pa);
+		_drawMeSelected(pa,animTmMod);
+	};
+	public void drawMeSelected_ClrRnd_Smpl(my_procApplet pa, float animTmMod) {
+		drawMeSelected_ClrRnd(pa,animTmMod);
+		objSamples.drawMeSmplsSelected(pa);
+	}
+	protected abstract void _drawMeSelected(my_procApplet pa, float animTmMod);
+	
+	
 	/**
 	 * draw this object's samples, using the random color
 	 * @param pa
@@ -611,36 +560,15 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * draw this object's samples, using the random color
 	 * @param pa
 	 */
-	public final void drawMeSmplsClrRnd(my_procApplet pa){
-		pa.pushMatrix();pa.pushStyle();
-		pa.setFill(rndClrAra,255); 
-		pa.setStroke(rndClrAra,255);
-		_drawAllSamples(pa);
-		pa.popStyle();pa.popMatrix();
-	}//
+	public final void drawMeSmplsClrRnd(my_procApplet pa){	objSamples.drawMeSmplsClrRnd(pa);}//
 	
 	/**
 	 * draw this object's samples, using the location-based color
 	 * @param pa
 	 */
-	public final void drawMeSmplsClrLoc(my_procApplet pa){
-		pa.pushMatrix();pa.pushStyle();		
-		pa.setFill(locClrAra,255);
-		pa.setStroke(locClrAra,255);
-		_drawAllSamples(pa);
-		pa.popStyle();pa.popMatrix();
-	}//	
+	public final void drawMeSmplsClrLoc(my_procApplet pa){	objSamples.drawMeSmplsClrLoc(pa);}//
 	
-	private final void _drawAllSamples(my_procApplet pa){
-		pa.sphereDetail(ptDet);
-		for(myPointf pt : objSamplePts){
-			pa.pushMatrix(); 
-			pa.translate(pt); 
-			pa.sphere(ptRad); 
-			pa.popMatrix();
-		}
-	}
-	
+
 
 	//////////////////////////////
 	// bmu drawing
@@ -649,56 +577,48 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * @param pa
 	 */
 	public abstract void drawMeLabel_BMU(my_procApplet pa);
-	public abstract void drawMeSelected_BMU(my_procApplet pa,float animTmMod);
+	public void drawMeSelected_BMU_ClrLoc(my_procApplet pa,float animTmMod) {
+		drawMeClrLoc_BMU(pa);
+		_drawMeSelected_BMU(pa, animTmMod);
+	}
+	public void drawMeSelected_BMU_ClrRnd(my_procApplet pa,float animTmMod) { 
+		drawMeClrRnd_BMU(pa);
+		_drawMeSelected_BMU(pa, animTmMod);
+	}
+	protected abstract void _drawMeSelected_BMU(my_procApplet pa, float animTmMod);
+	
 	
 	public final void drawMeSmplsClrRnd_BMU(my_procApplet pa){
-		pa.pushMatrix();pa.pushStyle();
+//		pa.pushMatrix();pa.pushStyle();
 //		pa.setFill(rndClrAra,255); 
 //		pa.setStroke(rndClrAra,255);
 //		pa.sphereDetail(ptDet);
-		for(myPointf pt : objSamplePts){
-			//pt.drawMeObjRandClr_BMU(pa);
+//		for(myPointf pt : objSamplePts){
+//			//pt.drawMeObjRandClr_BMU(pa);
 //			pa.pushMatrix(); 
 //			pa.translate(((Geom_SOMMapNode)(pt.getBmu())).mapLoc); 
 //			pa.sphere(ptRad); 
 //			pa.popMatrix();
-		}
-		pa.popStyle();pa.popMatrix();
+//		}
+//		pa.popStyle();pa.popMatrix();
 	}//
 	
 	public final void drawMeSmplsClrLoc_BMU(my_procApplet pa){
-		pa.pushMatrix();pa.pushStyle();		
+//		pa.pushMatrix();pa.pushStyle();		
 //		pa.setFill(locClrAra,255);
 //		pa.setStroke(locClrAra,255);
 //		pa.sphereDetail(ptDet);
-		for(myPointf pt : objSamplePts){
-			//pt.drawMeObjLocClr_BMU(pa);
+//		for(myPointf pt : objSamplePts){
+//			//pt.drawMeObjLocClr_BMU(pa);
 //			pa.pushMatrix(); 
 //			pa.translate(((Geom_SOMMapNode)(pt.getBmu())).worldLoc); 
 //			pa.sphere(ptRad); 
 //			pa.popMatrix();
-		}
-		pa.popStyle();pa.popMatrix();
+//		}
+//		pa.popStyle();pa.popMatrix();
 	}//	
 
-	public void drawMeSmplsClrSmplLoc_BMU(my_procApplet pa){
-		pa.pushMatrix();pa.pushStyle();		
-		//pa.noStroke();
-		//pa.sphereDetail(ptDet);
-		for(myPointf pt : objSamplePts){
-			//pt.drawMeMyLocClr_BMU(pa);
-			
-//			pa.pushMatrix(); pa.pushStyle();
-//			pa.fill(pt.locClrs[0],pt.locClrs[1],pt.locClrs[2], pt.locClrs[3]);
-//			pa.stroke(pt.locClrs[0],pt.locClrs[1],pt.locClrs[2], pt.locClrs[3]);
-//			
-//			pa.translate(((Geom_SOMMapNode)(pt.getBmu())).worldLoc); 
-//			pa.sphere(ptRad); 
-//			pa.popStyle();pa.popMatrix();
-		}
-		pa.popStyle();pa.popMatrix();
-	}
-	
+
 	////////////////////////
 	// end draw functions
 

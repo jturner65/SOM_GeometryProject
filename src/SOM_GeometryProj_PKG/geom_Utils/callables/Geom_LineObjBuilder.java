@@ -1,10 +1,11 @@
 package SOM_GeometryProj_PKG.geom_Utils.callables;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
-import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBuilder;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
@@ -32,10 +33,10 @@ public class Geom_LineObjBuilder extends SOM_GeomObjBuilder {
 //		public SOM_Line(SOM_GeomMapManager _mapMgr, myPointf _a, myPointf _b, int _numSmplPts, float[][] _worldBounds) {
 		myPointf[] pts = new myPointf[] {getRandPointInBounds_2D(),getRandPointInBounds_2D()};
 		String ID = "Line_"+String.format("%05d", idx);
-		Geom_SmplDataForSOMExample[] _srcSmpls = buildSrcGeomSmplAra(null, pts);
+		SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, pts);
 		
 		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds)
-		Geom_LineSOMExample line = new Geom_LineSOMExample(mapMgr, animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj, worldBounds);
+		Geom_LineSOMExample line = new Geom_LineSOMExample(((Geom_LineMapMgr)mapMgr), animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj);
 		return line;
 	}
 

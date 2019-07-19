@@ -21,7 +21,7 @@ import base_Utils_Objects.vectorObjs.myPoint;
 
 public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	
-	public static final int numFlags = numBaseFlags;	
+	public static final int numFlags = numGeomBaseFlags;	
 	//SOM_GeomMapManager(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap, String _geomObjType)
 	public Geom_LineMapMgr(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
 		super(_win, _dispWin, _dims, _worldBounds, _argsMap, "Lines");
@@ -107,15 +107,18 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
-	protected final int getNumFlags() {	return numFlags;}
+	protected final int getNumGeomFlags_Indiv() {	return numFlags;}
 	@Override
-	protected void setFlag_Indiv(int idx, boolean val) {
+	protected void setGeomFlag_Indiv(int idx, boolean val) {
 		switch (idx) {//special actions for each flag
 			default : {break;}
 		}
 	}
-
+	////////////////////////
+	// draw functions
+	
 	////////////////////////
 	// mouse handling
 	/**

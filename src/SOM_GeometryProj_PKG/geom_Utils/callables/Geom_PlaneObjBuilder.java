@@ -2,9 +2,10 @@ package SOM_GeometryProj_PKG.geom_Utils.callables;
 
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
-import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBuilder;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
@@ -30,11 +31,11 @@ public class Geom_PlaneObjBuilder extends SOM_GeomObjBuilder {
 		//points must not be colinear
 		myPointf[] planePts = getRandPlanePoints();
 		String ID = "Plane_"+String.format("%05d", idx);
-		Geom_SmplDataForSOMExample[] _srcSmpls = buildSrcGeomSmplAra(null, planePts);
+		SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, planePts);
 		
 		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds)
 		//animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj, worldBounds);
-		return new Geom_PlaneSOMExample(mapMgr, animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj, worldBounds);
+		return new Geom_PlaneSOMExample(((Geom_PlaneMapMgr)mapMgr), animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj);
 	}
 
 }

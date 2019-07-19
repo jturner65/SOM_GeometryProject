@@ -99,7 +99,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	}
 	
 	@Override
-	protected final int getMinNumObjs() {	return 2;}
+	protected final int getMinNumObjs() {	return 1;}
 	@Override
 	protected final int getMaxNumObjs() {	return 50;}
 	@Override
@@ -147,16 +147,19 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 		}	
 	}
 	
-	/**
-	 * call to save the data for all the objects in the scene
-	 */
+
 	@Override
-	protected final void saveGeomObjInfo() {
-		
+	protected void getAllUIValsForPreProcSave_Indiv(TreeMap<String, String> vals) {
+		vals.put("gIDX_MinRadius", String.format("%4d", (int)guiObjs[gIDX_MinRadius].getVal()));
+		vals.put("gIDX_MaxRadius", String.format("%4d", (int)guiObjs[gIDX_MaxRadius].getVal()));
 		
 	}
-	
-	
+
+	@Override
+	protected void setAllUIValsFromPreProcLoad_Indiv(TreeMap<String, String> uiVals) {
+		guiObjs[gIDX_MinRadius].setVal(Double.parseDouble(uiVals.get("gIDX_MinRadius")));
+		guiObjs[gIDX_MaxRadius].setVal(Double.parseDouble(uiVals.get("gIDX_MaxRadius")));
+	}
 
 	//////////////////////////////
 	// instance-based draw handling

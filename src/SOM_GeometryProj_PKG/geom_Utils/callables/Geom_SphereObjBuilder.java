@@ -2,10 +2,11 @@ package SOM_GeometryProj_PKG.geom_Utils.callables;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SmplDataForSOMExample;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBldrTasks;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.SOM_GeomObjBuilder;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
@@ -33,10 +34,10 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 		//now get 4 points to determine this sphere - make sure they are ortho		
 		myPointf[] spherePts = getRandSpherePoints(rad,ctr);		
 		String ID = "Sphere_"+String.format("%05d", idx);
-		Geom_SmplDataForSOMExample[] _srcSmpls = buildSrcGeomSmplAra(null, spherePts);
+		SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, spherePts);
 		
 		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, myPointf _ctr, float _rad, int _numSmplPts, float[][] _worldBounds)
-		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(mapMgr,animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj, worldBounds);
+		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr),animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj);
 		boolean passed = obj.testSphereConstruction(ctr, rad, 1.0f);
 		return obj;
 	}
