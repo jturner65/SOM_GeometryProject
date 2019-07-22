@@ -3,9 +3,9 @@ package SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_SphereExManager;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
@@ -16,7 +16,7 @@ import base_Utils_Objects.vectorObjs.myVectorf;
 
 public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
 
-	public Geom_SphereTrainDatBuilder(SOM_GeomMapManager _mapMgr, SOM_GeomExampleManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals) {
+	public Geom_SphereTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_SphereExManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals) {
 		super(_mapMgr, _exMgr, _allExs, _intVals, "Spheres", SOM_GeomObjTypes.sphere.getVal());
 	}
 	

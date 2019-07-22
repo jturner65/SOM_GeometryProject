@@ -54,7 +54,7 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	 * @return
 	 */
 	@Override
-	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv() {return new Geom_PlaneExManager(this, "Planes", "Planar Geometric Objects",  SOM_ExDataType.Training, false);}
+	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv(String _exMgrName) {return new Geom_PlaneExManager(this, "Planes", "Planar Geometric Objects",  SOM_ExDataType.Training, false, _exMgrName);}
 
 	/**
 	 * send any instance-specific control/ui values to objRunners, based on task

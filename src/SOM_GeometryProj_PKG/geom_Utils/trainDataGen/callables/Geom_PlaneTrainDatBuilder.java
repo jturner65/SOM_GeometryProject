@@ -1,12 +1,11 @@
 package SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables;
 
-import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_PlaneExManager;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
@@ -17,7 +16,7 @@ import base_Utils_Objects.vectorObjs.myVectorf;
 
 public class Geom_PlaneTrainDatBuilder extends SOM_GeomTrainExBuilder {
 
-	public Geom_PlaneTrainDatBuilder(SOM_GeomMapManager _mapMgr, SOM_GeomExampleManager _exMgr,	SOM_GeomSmplDataForEx[] _allExs, int[] _intVals) {
+	public Geom_PlaneTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_PlaneExManager _exMgr,	SOM_GeomSmplDataForEx[] _allExs, int[] _intVals) {
 		super(_mapMgr, _exMgr, _allExs, _intVals, "Planes", SOM_GeomObjTypes.plane.getVal());
 	}
 	

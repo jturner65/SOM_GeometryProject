@@ -82,8 +82,8 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 
 	public String[][] menuBtnNames = new String[][] {		//each must have literals for every button defined in side bar menu, or ignored
 		{},
-		{"Load Geometry Data", "Save Geometry data","Geom -> Train"},		//row 1
-		{"Build Map","---","---","---"},	//row 2 
+		{"Load Geometry Data", "Save Geometry Data","Build Training Data"},		//row 1
+		{"Build Map","Save Train Data","---","---"},	//row 2 
 		{"---","---","---","---"},	//row 3
 		{"---","---","---","---"},
 		{"---","---","---","---","---"}	
@@ -454,12 +454,12 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 			if(!shouldDrawBMUs && wantDrawBMUs) {	setPrivFlags(showMapBasedLocsIDX,false);}
 			_drawObjs(mapMgr.sourceGeomObjects, curSelGeomObjIDX, animTimeMod, shouldDrawBMUs,
 											getPrivFlags(showSamplePntsIDX),getPrivFlags(showFullSourceObjIDX),getPrivFlags(useUIObjLocAsClrIDX),
-											getPrivFlags(showSelUIObjIDX),getPrivFlags(showObjByWireFrmIDX), getPrivFlags(showUIObjLabelIDX));
+											getPrivFlags(showSelUIObjIDX),getPrivFlags(showObjByWireFrmIDX), getPrivFlags(showUIObjSmplsLabelIDX), getPrivFlags(showUIObjLabelIDX));
 		}
 			//check if train samples are built in map mgr
 		if((mapMgr.getTrainDataObjsBuilt()) && (getPrivFlags(showFullTrainingObjIDX))){
 			//mapMgr.drawSynthObjsInUIWindow(pa, animTimeMod, getPrivFlags(showMapBasedLocsIDX));
-			_drawObjs(mapMgr.trainDatGeomObjects, -1, animTimeMod, false, false, true, getPrivFlags(useUIObjLocAsClrIDX), false, getPrivFlags(showObjByWireFrmIDX), getPrivFlags(showUIObjLabelIDX));
+			_drawObjs(mapMgr.trainDatGeomObjects, -1, animTimeMod, false, false, true, getPrivFlags(useUIObjLocAsClrIDX), false, getPrivFlags(showObjByWireFrmIDX), getPrivFlags(showUIObjSmplsLabelIDX), getPrivFlags(showUIObjLabelIDX));
 		} else {
 			setPrivFlags(showFullTrainingObjIDX, false);
 		}
@@ -469,12 +469,12 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		
 	}//drawMe
 	
-	private void _drawObjs(SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod, boolean mapBuiltAndUseMapLoc, boolean showSmpls, boolean showObjs, boolean useLocClr, boolean showSel,boolean showWireFrame, boolean showLabel) {
+	private void _drawObjs(SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod, boolean mapBuiltAndUseMapLoc, boolean showSmpls, boolean showObjs, boolean useLocClr, boolean showSel,boolean showWireFrame, boolean showSmplsLabel, boolean showLabel) {
 		if(mapBuiltAndUseMapLoc) {
 			if(showSmpls) {		_drawObjSmpls_UseBMUs(objs,useLocClr);}
 			if(showObjs) {		_drawObjs_UseBMUs(objs,useLocClr, showWireFrame, showLabel);}			
 		} else {
-			if(showSmpls) {		_drawObjSmpls(objs,curSelObjIDX,animTimeMod,useLocClr,showSel,showLabel);}
+			if(showSmpls) {		_drawObjSmpls(objs,curSelObjIDX,animTimeMod,useLocClr,showSel,showSmplsLabel);}
 			if(showObjs) {		_drawObjs_UseActual(objs,curSelObjIDX,animTimeMod,useLocClr,showSmpls,showSel, showWireFrame, showLabel);	}
 		} 
 			
@@ -486,10 +486,10 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 		else {					for(SOM_GeomObj s : objs){s.drawMeSmplsClrRnd_BMU(pa);}}//rand color
 	}//_drawObjSmpls_UseBMUs
 	
-	private void _drawObjSmpls(SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod, boolean useLocClr, boolean showSel, boolean showLabel) {
+	private void _drawObjSmpls(SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod, boolean useLocClr, boolean showSel, boolean showSmplsLabel) {
 		if(useLocClr){			for(SOM_GeomObj s : objs){s.drawMeSmplsClrLoc(pa);}} //loc color
 		else {					for(SOM_GeomObj s : objs){s.drawMeSmplsClrRnd(pa);}}//rand color
-		if(showLabel){			for(SOM_GeomObj s : objs){s.drawMySmplsLabel(pa);}	}
+		if(showSmplsLabel){			for(SOM_GeomObj s : objs){s.drawMySmplsLabel(pa);}	}
 		if((curSelObjIDX != -1) && showSel) {				
 			if(useLocClr){	objs[curSelObjIDX].drawMeSelected_ClrLoc_Smpl(pa,animTimeMod); }
 			else {									objs[curSelObjIDX].drawMeSelected_ClrRnd_Smpl(pa,animTimeMod); }
@@ -653,6 +653,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 					resetButtonState();
 					break;}
 				case 1 : {	
+					mapMgr.saveCurrentTrainData();
 					resetButtonState();
 					break;}
 				case 2 : {	

@@ -12,7 +12,7 @@ mapStRad,25
 mapRows,50
 mapEndRad,1
 mapEpochs,50
-mapKType,2
+mapKType,0
 # mapFloats descriptors
 mapStLrnRate,1.000000
 mapEndLrnRate,0.010000

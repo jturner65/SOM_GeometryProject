@@ -11,6 +11,7 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.procData_loaders.Geom_SphereCSVData
 import SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables.Geom_SphereTrainDatBuilder;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
@@ -19,8 +20,8 @@ import base_SOM_Objects.som_fileIO.SOM_ExCSVDataLoader;
 
 public class Geom_SphereExManager extends SOM_GeomExampleManager {
 
-	public Geom_SphereExManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName, SOM_ExDataType _curDataType, boolean _shouldValidate) {
-		super(_mapMgr, _exName, _longExampleName, _curDataType, _shouldValidate);
+	public Geom_SphereExManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName, SOM_ExDataType _curDataType, boolean _shouldValidate, String _exMgrName) {
+		super(_mapMgr, _exName, _longExampleName, _curDataType, _shouldValidate, _exMgrName);
 	}
 	
 	/**
@@ -41,7 +42,7 @@ public class Geom_SphereExManager extends SOM_GeomExampleManager {
 	
 
 	@Override
-	protected void buildAllEx_MT(int numThdCallables, int numTtlToBuild) {
+	protected void buildAllEx_MT(SOM_GeomSmplDataForEx[] allSamples, int numThdCallables, int numTtlToBuild) {
 		List<Future<Boolean>> trainDataBldFtrs = new ArrayList<Future<Boolean>>();
 		List<SOM_GeomTrainExBuilder> trainDataBldrs = new ArrayList<SOM_GeomTrainExBuilder>();
 		

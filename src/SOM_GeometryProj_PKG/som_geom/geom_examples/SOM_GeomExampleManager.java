@@ -19,11 +19,6 @@ import base_Utils_Objects.io.MsgCodes;
  */
 public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	/**
-	 * all the samples for the geometric objects this example manager will build training examples from
-	 * if this ex manager manages geometric data instead, this will be empty
-	 */
-	protected SOM_GeomSmplDataForEx[] allSamples;
-	 /**
 	  * runnable object to manage various tasks
 	  */
 	protected SOM_GeomObjBldrRunner objRunner;
@@ -33,15 +28,16 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	 */
 	protected final SOM_ExDataType curDataType;
 	
+	protected final String exMgrName;
 
-	public SOM_GeomExampleManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName, SOM_ExDataType _curDataType, boolean _shouldValidate) {
+	public SOM_GeomExampleManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName, SOM_ExDataType _curDataType, boolean _shouldValidate, String _exMgrName) {
 		super(_mapMgr, _exName, _longExampleName, new boolean[] {_shouldValidate, true});	
-		curDataType = _curDataType;
+		curDataType = _curDataType;exMgrName=_exMgrName;
 	}
 	
 	@Override
 	protected final void reset_Priv() {
-		allSamples = new SOM_GeomSmplDataForEx[0];		
+		this.msgObj.dispInfoMessage("SOM_GeomExampleManager", "reset_Priv", "Example manager : " + exMgrName + " reset called.");
 	}
 
 	
@@ -53,6 +49,8 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 
 	@Override
 	protected final void buildFtrVec_Priv() {
+		//call to buildFeatureVector for all examples
+		mapMgr._ftrVecBuild(exampleMap.values(),0,exampleName, true);	
 	}	
 
 	/**
@@ -64,14 +62,14 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 		//all geomgetric objects from geometry example manager
 		SOM_GeomObj[] geomEx = (SOM_GeomObj[]) geomExMgr.buildExampleArray();
 		int numSamplesTTL = geomEx.length * geomEx[0].getNumSamples();
-		allSamples = new SOM_GeomSmplDataForEx[numSamplesTTL];
+		SOM_GeomSmplDataForEx[] allSamples = new SOM_GeomSmplDataForEx[numSamplesTTL];
 		int idx = 0;
 		for(SOM_GeomObj ex : geomEx) {
 			SOM_GeomSamplePointf[] smpls = ex.getAllSamplePts();
 			for(int i=0;i<smpls.length;++i) {	allSamples[idx++]=new SOM_GeomSmplDataForEx(ex,smpls[i]);}			
 		}
 		//now need to build # of training examples - need to do this in multi-threaded environment
-		buildAllEx_MT(mapMgr.getNumUsableThreads(),ttlNumTrainEx);
+		buildAllEx_MT(allSamples, mapMgr.getNumUsableThreads(),ttlNumTrainEx);
 		
 		setAllDataLoaded();
 		setAllDataPreProcced();
@@ -80,7 +78,7 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	/**
 	 * build all training examples 
 	 */
-	protected abstract void buildAllEx_MT(int numThdCallables, int ttlNumTrainEx);
+	protected abstract void buildAllEx_MT(SOM_GeomSmplDataForEx[] allSamples, int numThdCallables, int ttlNumTrainEx);
 
 	
 	

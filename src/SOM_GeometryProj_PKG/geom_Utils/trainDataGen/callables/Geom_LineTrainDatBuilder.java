@@ -3,20 +3,18 @@ package SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_LineExManager;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
-import base_Utils_Objects.vectorObjs.myPointf;
 
 public class Geom_LineTrainDatBuilder extends SOM_GeomTrainExBuilder {
 
-	public Geom_LineTrainDatBuilder(SOM_GeomMapManager _mapMgr, SOM_GeomExampleManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals) {
+	public Geom_LineTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_LineExManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals) {
 		super(_mapMgr, _exMgr, _allExs, _intVals, "Lines", SOM_GeomObjTypes.line.getVal());
 	}
 

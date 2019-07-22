@@ -28,7 +28,7 @@ public class SOM_GeomSideBarMenu extends BaseBarMenu {
 	 */
 	@Override
 	protected void initSideBarMenuBtns_Priv() {
-		guiBtnRowNames = new String[]{"Display Window","Generate/Load/Save Training Data","Functions 2","Functions 3","Functions 4","DEBUG"};//,"File"};
+		guiBtnRowNames = new String[]{"Display Window","Load/Save Geometry Data","Functions 2","Functions 3","Functions 4","DEBUG"};//,"File"};
 		String[] titleArray = new String[pa.winTitles.length-1];
 		for(int i=0;i<titleArray.length;++i) {titleArray[i] = pa.winTitles[i+1];}
 		//names for each row of buttons - idx 1 is name of row
