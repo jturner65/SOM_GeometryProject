@@ -32,10 +32,6 @@ public class Geom_LineExManager extends SOM_GeomExampleManager {
 	protected SOM_Example[] noValidateBuildExampleArray() {return (Geom_LineSOMExample[])(exampleMap.values().toArray(new Geom_LineSOMExample[0]));		}
 	@Override
 	protected SOM_Example[] castArray(ArrayList<SOM_Example> tmpList) {return (Geom_LineSOMExample[])(tmpList.toArray(new Geom_LineSOMExample[0]));		}
-
-	@Override
-	protected void buildAfterAllFtrVecsBuiltStructs_Priv() {
-	}
 	
 	@Override
 	protected void buildAllEx_MT(SOM_GeomSmplDataForEx[] allSamples, int numThdCallables, int ttlNumTrainEx) {

@@ -24,7 +24,7 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	public static final int numFlags = numGeomBaseFlags;	
 	//SOM_GeomMapManager(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap, String _geomObjType)
 	public Geom_LineMapMgr(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
-		super(_win, _dispWin, _dims, _worldBounds, _argsMap, "Lines");
+		super(_win, _dispWin, _dims, _worldBounds, _argsMap, "Lines", Geom_LineSOMExample._numFtrs);
 	}
 
 	/**
@@ -34,13 +34,6 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	protected final SOM_GeomObjBldrRunner buildObjRunner() {
 		return new Geom_LineObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, SOM_GeomObjBldrTasks.buildBaseObj);		
 	}
-	/**
-	 * build the training data bounds manager
-	 */
-	protected final SOM_GeomFtrBndMon buildTrainDatFtrBndMgr() {
-		//use # of ftrs mapped 
-		return new SOM_GeomFtrBndMon(Geom_LineSOMExample._numFtrs);
-	};
 
 	@Override
 	protected SOM_GeomObj[] buildEmptyObjArray() {		return new Geom_LineSOMExample[numObjsToBuild];}

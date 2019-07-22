@@ -29,7 +29,7 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	protected float minRad, maxRad;
 
 	public Geom_SphereMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
-		super(_win, _dispWin, _dims, _worldBounds, _argsMap, "Spheres");
+		super(_win, _dispWin, _dims, _worldBounds, _argsMap, "Spheres", Geom_SphereSOMExample._numFtrs);
 	}
 
 	/**
@@ -41,14 +41,7 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	protected final SOM_GeomObjBldrRunner buildObjRunner() {
 		return new Geom_SphereObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, SOM_GeomObjBldrTasks.buildBaseObj);		
 	}
-	/**
-	 * build the training data bounds manager
-	 */
-	@Override
-	protected final SOM_GeomFtrBndMon buildTrainDatFtrBndMgr() {
-		//use # of ftrs mapped 
-		return new SOM_GeomFtrBndMon(Geom_SphereSOMExample._numFtrs);
-	};
+
 	@Override
 	protected final SOM_GeomObj[] buildEmptyObjArray() {		return new Geom_SphereSOMExample[numObjsToBuild];}
 	

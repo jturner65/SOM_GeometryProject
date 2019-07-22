@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
+import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.SOM_MapManager;
 import base_UI_Objects.*;
@@ -37,7 +38,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 * return appropriate map manager for this window
 	 */
 	@Override
-	public final SOM_MapManager buildMapManager() {
+	public final SOM_GeomMapManager buildMapManager() {
 		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(null, this, SOMMapDims, pa.cubeBnds, ((SOM_GeometryMain)pa).argsMap);
 		return _mgr;
 	}

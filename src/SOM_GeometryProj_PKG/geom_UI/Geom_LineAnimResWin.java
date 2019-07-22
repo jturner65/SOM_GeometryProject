@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
+import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
@@ -46,7 +47,7 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	 * return appropriate map manager for this window
 	 */
 	@Override
-	public SOM_MapManager buildMapManager() {
+	public SOM_GeomMapManager buildMapManager() {
 		//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
 		Geom_LineMapMgr _mgr = new Geom_LineMapMgr(null, this, SOMMapDims, win2DMinsAndDiffs, ((SOM_GeometryMain)pa).argsMap);
 		return _mgr;

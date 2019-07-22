@@ -20,10 +20,6 @@ import base_Utils_Objects.vectorObjs.myVector;
  *
  */
 public class SOM_GeomMapUIWin extends SOM_MapUIWin {
-	/**
-	 * the current anim window, which will manage the mapMgr generation
-	 */
-	private SOM_AnimWorldWin curAnimWin;
 	
 	public static final int 
 		mapShowLocClrIDX 			= numSOMBasePrivFlags + 0;			//show img built of map with each pxl clr built from the 1st 3 features of the interpolated point at that pxl between the map nodes
@@ -196,9 +192,6 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	public void setCurAnimWin(SOM_AnimWorldWin _win) {curAnimWin=_win;}
-	public SOM_AnimWorldWin getCurAnimWin() {return curAnimWin;}
 
 	//handle mouseover 
 	@Override

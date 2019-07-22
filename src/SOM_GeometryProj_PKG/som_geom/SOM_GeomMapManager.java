@@ -9,7 +9,6 @@ import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomFtrBndMon;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.SOM_MapManager;
@@ -107,8 +106,10 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 */
 	protected final float[][] worldBounds;
 		
-	public SOM_GeomMapManager(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap, String _geomObjType) {
+	public SOM_GeomMapManager(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap, String _geomObjType, int _numFtrs) {
 		super(_win, _dims, _argsMap);
+			//# of training features determined by type of object
+		this.setNumTrainFtrs(_numFtrs);
 		//worldBounds=_worldBounds;
 		geomObjType=_geomObjType;
 		projConfigData.setSOMProjName(geomObjType);	
@@ -134,7 +135,10 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	/**
 	 * build the training data bounds manager
 	 */
-	protected abstract SOM_GeomFtrBndMon buildTrainDatFtrBndMgr();
+	protected final SOM_GeomFtrBndMon buildTrainDatFtrBndMgr() {
+		//use # of ftrs mapped 
+		return new SOM_GeomFtrBndMon(getNumTrainFtrs());
+	};
 	/**
 	 * build instance-specific project file configuration 
 	 */
@@ -211,23 +215,6 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 		objRunner.runMe();
 		getMsgObj().dispMessage("SOM_GeomMapManager","execObjRunnerTask::"+_callingMethod, "Finished " + _taskDescr,MsgCodes.info1);
 	}//execObjRunnerTask	
-	
-	/**
-	 * synthesize training data from currently specified geometric data 
-	 */
-	public void generateTrainingData() {
-		getMsgObj().dispMessage("SOM_GeomMapManager","generateAllPreProcExamples","Start Processing all " + geomObjType + " Examples into SOM Training Examples", MsgCodes.info5);
-		//take existing geometry setup and generate training data from example data
-		if(!getFlag(srcGeomObjsAllBuiltIDX)) {getMsgObj().dispWarningMessage("SOM_GeomMapManager","generateAllPreProcExamples","No existing " + geomObjType + " Graphical Examples to process. Aborting."); return;}
-		resetTrainDataObjs();
-		trainExDataManager.buildTrainingDataFromGeomObjs(geomSrcToTrainExDataManager, ttlNumTrainExamples);
-		trainDatGeomObjects = (SOM_GeomObj[]) trainExDataManager.buildExampleArray();
-		setFlag(trainDatObjsAllBuiltIDX,true);
-			//finalize and calc ftr vecs on geometry if we have loaded new data 
-		finishSOMExampleBuild(trainExDataManager,  ""+geomObjType +" Geom object-derived training example");
-		
-		getMsgObj().dispMessage("SOM_GeomMapManager","generateAllPreProcExamples","Finished Processing all Preproccessed " + geomObjType + " Examples.  ", MsgCodes.info5);
-	}//generateTrainingData
 	
 	public final void resetTrainDataObjs() {
 		trainExDataManager.reset();
@@ -310,7 +297,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 * load some previously saved geometric object information
 	 */
 	@Override
-	protected final void loadPreProcTrainData(String subDir, boolean forceLoad) {
+	public final void loadPreProcTrainData(String subDir, boolean forceLoad) {
 		getMsgObj().dispMessage("SOM_GeomMapManager","loadPreProcTrainData","Begin loading preprocced data from " + subDir +  "directory.", MsgCodes.info5);
 			//load geometry data
 		if(!geomSrcToTrainExDataManager.isDataPreProcced() || forceLoad) {			
@@ -331,9 +318,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 		setFlag(srcGeomObjsAllBuiltIDX, true);
 			//finalize and calc ftr vecs on geometry if we have loaded new data 
 		finishSOMExampleBuild(geomSrcToTrainExDataManager,  ""+geomObjType +" geometric (graphical source) example");
-			//synthesize training data using current configuration from UI with loaded data
-		generateTrainingData();
-			
+
 		getMsgObj().dispMessage("SOM_GeomMapManager","loadAllPreProccedData","Finished loading preprocced data from " + subDir +  " directory.", MsgCodes.info5);
 	}
 	
@@ -392,8 +377,15 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 		getMsgObj().dispMessage("SOM_GeomMapManager","finishSOMExampleBuild","Finished buildFeatureVectors | Begin calculating diffs and mins", MsgCodes.info1);	
 			//now get mins and diffs from calc object
 		setMinsAndDiffs(getMinBndsAra(), getDiffsBndsAra());  
-		
-		getMsgObj().dispMessage("SOM_GeomMapManager","finishSOMExampleBuild","Finished calculating diffs and mins | Begin building post-feature calc structs for " + exampleMapperDesc +" s (i.e. std ftrs) dependent on diffs and mins", MsgCodes.info1);
+//		Float[] tmpTrnMins = getTrainFtrMins(), tmpTrnDiffs = getTrainFtrDiffs() ;
+//		if(tmpTrnMins.length == 0 ) {
+//			getMsgObj().dispInfoMessage("SOM_GeomMapManager","finishSOMExampleBuild", "No training mins/diffs set for " + exampleMapperDesc +"s features");
+//		} else {
+//			for(int i=0;i<tmpTrnMins.length;++i) {
+//				getMsgObj().dispInfoMessage("SOM_GeomMapManager","finishSOMExampleBuild","			set min : " + tmpTrnMins[i] + " and diff : " + tmpTrnDiffs[i] + " for " + exampleMapperDesc +"s features");
+//			}
+//		}
+		getMsgObj().dispMessage("SOM_GeomMapManager","finishSOMExampleBuild","Finished calculating diffs and mins | Begin building post-feature calc structs for " + exampleMapperDesc +"s (i.e. std ftrs) dependent on diffs and mins", MsgCodes.info1);
 		
 			//now finalize post feature calc -this will do std features			
 		dataManager.buildAfterAllFtrVecsBuiltStructs();		
@@ -402,12 +394,37 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 		//} else {	getMsgObj().dispMessage("SOM_GeomMapManager","finishSOMExampleBuild","No prospects or products loaded to calculate/finalize.", MsgCodes.warning2);	}
 	}//finishSOMExampleBuild	
 
-	@Override
-	//using the passed map information, build the testing and training data partitions and save them to files
-	protected void buildTrainTestFromPartition(float trainTestPartition) {
-		getMsgObj().dispMessage("SOM_GeomMapManager::"+geomObjType,"buildTestTrainFromInput","Starting Building Input, Test, Train data arrays.", MsgCodes.info5);
+	/**
+	 * synthesize training data from currently specified geometric data 
+	 */
+	public void generateTrainingData() {
+		float trainTestPartition = this.projConfigData.getTrainTestPartition();
+		getMsgObj().dispMessage("SOM_GeomMapManager","generateAllPreProcExamples","Start Processing all " + geomObjType + " Examples into SOM Training/Testing Examples with " + String.format("%1.2f", (trainTestPartition*100.0f)) +"% Training Data.", MsgCodes.info5);
+		buildTrainTestFromPartition(trainTestPartition);
+		getMsgObj().dispMessage("SOM_GeomMapManager","generateAllPreProcExamples","Finished Processing all Preproccessed " + geomObjType + " Examples.  ", MsgCodes.info5);
+	}//generateTrainingData
+	
 
+	/**
+	 * using the passed partition information, build the testing and training data partitions
+	 */
+	@Override
+	protected void buildTrainTestFromPartition(float trainTestPartition) {
+		getMsgObj().dispMessage("SOM_GeomMapManager::"+geomObjType,"buildTestTrainFromInput","Starting Building Input, Test, Train data arrays.", MsgCodes.info5);		
+		if(!getFlag(srcGeomObjsAllBuiltIDX)) {
+			getMsgObj().dispWarningMessage("SOM_GeomMapManager::"+geomObjType,"buildTestTrainFromInput","Failed Building Input, Test, Train data arrays due to no Geometric data loaded to build training data from.  Aborting");return;
+		} else {
+			resetTrainDataObjs();
+				//synthesize training data using current configuration from UI with loaded data
+			trainExDataManager.buildTrainingDataFromGeomObjs(geomSrcToTrainExDataManager, ttlNumTrainExamples);
+			trainDatGeomObjects = (SOM_GeomObj[]) trainExDataManager.buildExampleArray();
+			setFlag(trainDatObjsAllBuiltIDX,true);
+				//finalize and calc ftr vecs on geometry if we have loaded new data 
+			finishSOMExampleBuild(trainExDataManager,  ""+geomObjType +" Geom object-derived training example");
+		}
+				
 		//set input data, shuffle it and set test and train partitions
+		//only build test and train partitions if training data has been synthesized from geometric examples
 		setInputTrainTestShuffleDataAras(trainTestPartition);
 		
 		getMsgObj().dispMessage("SOM_GeomMapManager::"+geomObjType,"buildTestTrainFromInput","Finished Building Input, Test, Train, data arrays.", MsgCodes.info5);

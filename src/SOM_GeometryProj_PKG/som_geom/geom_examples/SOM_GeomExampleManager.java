@@ -50,7 +50,9 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	@Override
 	protected final void buildFtrVec_Priv() {
 		//call to buildFeatureVector for all examples
-		mapMgr._ftrVecBuild(exampleMap.values(),0,exampleName, true);	
+		mapMgr._ftrVecBuild(exampleMap.values(),0,exampleName, true);
+		
+		
 	}	
 
 	/**
@@ -80,7 +82,15 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	 */
 	protected abstract void buildAllEx_MT(SOM_GeomSmplDataForEx[] allSamples, int numThdCallables, int ttlNumTrainEx);
 
-	
+	/**
+	 * code to execute after examples have had ftrs calculated - this will calculate std features and any alternate ftr mappings if used
+	 */
+	@Override
+	protected void buildAfterAllFtrVecsBuiltStructs_Priv() {
+		//call to buildFeatureVector for all examples to perform -finalization- after all feature vectors of this type have been built
+		mapMgr._ftrVecBuild(exampleMap.values(),2,exampleName, true);	
+	}
+
 	
 	@Override
 	/**

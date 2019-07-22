@@ -105,7 +105,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	 * instancing window will build the map manager that this anim world will use
 	 * @return
 	 */
-	public abstract SOM_MapManager buildMapManager();
+	public abstract SOM_GeomMapManager buildMapManager();
 	/**
 	 * return appropriate SOM Map Manager for this window
 	 * @return
@@ -372,7 +372,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	@Override
 	protected final void initMe() {
 		//build map manager
-		mapMgr = (SOM_GeomMapManager) buildMapManager();
+		mapMgr = buildMapManager();
 		
 		//capable of using right side menu
 		setFlags(drawRightSideMenu, true);	
@@ -625,8 +625,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 			msgObj.dispMessage("SOM_AnimWorldWin","launchMenuBtnHndlr","Click Functions 1 in "+name+" : btn : " + btn, MsgCodes.info4);
 			switch(btn){
 				case 0 : {	
-					//build training data from geom examples
-					mapMgr.loadPreprocAndBuildTestTrainPartitions(mapMgr.projConfigData.getTrainTestPartition(), true);
+					mapMgr.loadPreProcTrainData(mapMgr.projConfigData.getPreProcDataDesiredSubDirName(), true);
 					resetButtonState();
 					break;}
 				case 1 : {	

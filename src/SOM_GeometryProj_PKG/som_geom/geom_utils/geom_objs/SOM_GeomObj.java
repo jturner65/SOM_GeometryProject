@@ -283,7 +283,6 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		basisVecs[2]._normalize();		
 		return basisVecs;
 	}
-
 	
 	/**
 	 * return a random point on this object
@@ -295,13 +294,14 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		clearFtrMap(ftrMapTypeKey);//
 		buildFeaturesMap_Indiv();
 		ftrVecMag = 0;
+		Float ftrSqrMag = 0.0f;
 		int ftrSize = ftrMaps[ftrMapTypeKey].size();
 		for(int i=0;i<ftrSize;++i) {
 			Float val = ftrMaps[ftrMapTypeKey].get(i);
-			ftrVecMag += val;
+			ftrSqrMag += val * val;
 			((SOM_GeomMapManager)mapMgr).trainDatObjBnds.checkValInBnds(i, val);			
 		}
-		ftrVecMag /= 1.0f*ftrSize;
+		ftrVecMag = (float)Math.sqrt(ftrSqrMag);
 
 	}//buildFeaturesMap
 	
@@ -325,7 +325,8 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	
 	@Override
 	protected final void buildStdFtrsMap() {	//build standardized features
-		calcStdFtrVector(ftrMaps[ftrMapTypeKey], ftrMaps[stdFtrMapTypeKey], mapMgr.getTrainFtrMins(),mapMgr.getTrainFtrDiffs());
+		calcStdFtrVector(ftrMaps[ftrMapTypeKey], ftrMaps[stdFtrMapTypeKey], mapMgr.getTrainFtrMins(),mapMgr.getTrainFtrDiffs(), -1.0f, 2.0f);
+		setFlag(stdFtrsBuiltIDX, true);
 	}	
 	
 	@Override
@@ -334,7 +335,6 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		//all idxs should be considered "non-zero", even those with zero value, since these examples are dense
 		for(int i=0;i<numFtrs;++i) {allNonZeroFtrIDXs.add(i);}		
 	}
-
 
 	@Override
 	// any processing that must occur once all constituent data records are added to
@@ -352,6 +352,16 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	protected final void setIsTrainingDataIDX_Priv() {
 		exampleDataType = isTrainingData ? SOM_ExDataType.Training : SOM_ExDataType.Testing;
 		nodeClrs = mapMgr.getClrFillStrkTxtAra(exampleDataType);
+	}
+	
+	/**
+	 * return the appropriate string value for the dense training data - should be numeric key value to save in lrn or csv dense file
+	 * Strafford will always use sparse data so this doesn't matter
+	 * @return
+	 */
+	@Override
+	protected String getDenseTrainDataKey() {
+		return String.format("%09d", testTrainDataIDX);
 	}
 
 	/**

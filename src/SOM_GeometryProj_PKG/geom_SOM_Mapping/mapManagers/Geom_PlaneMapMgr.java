@@ -27,7 +27,7 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 
 	//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
 	public Geom_PlaneMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
-		super(_win, _dispWin, _dims,  _worldBounds,  _argsMap, "Planes");
+		super(_win, _dispWin, _dims,  _worldBounds,  _argsMap, "Planes", Geom_PlaneSOMExample._numFtrs);
 	}
 
 	/**
@@ -38,14 +38,7 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	protected final SOM_GeomObjBldrRunner buildObjRunner() {
 		return new Geom_PlaneObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, SOM_GeomObjBldrTasks.buildBaseObj);		
 	}
-	/**
-	 * build the training data bounds manager
-	 */
-	@Override
-	protected final SOM_GeomFtrBndMon buildTrainDatFtrBndMgr() {
-		//use # of ftrs mapped 
-		return new SOM_GeomFtrBndMon(Geom_PlaneSOMExample._numFtrs);
-	};
+
 	@Override
 	protected final SOM_GeomObj[] buildEmptyObjArray() {		return new Geom_PlaneSOMExample[numObjsToBuild];}
 	

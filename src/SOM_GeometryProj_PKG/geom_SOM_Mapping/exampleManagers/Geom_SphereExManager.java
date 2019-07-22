@@ -37,11 +37,6 @@ public class Geom_SphereExManager extends SOM_GeomExampleManager {
 	protected SOM_Example[] castArray(ArrayList<SOM_Example> tmpList) {return (Geom_SphereSOMExample[])(tmpList.toArray(new Geom_SphereSOMExample[0]));		}
 
 	@Override
-	protected void buildAfterAllFtrVecsBuiltStructs_Priv() {
-	}
-	
-
-	@Override
 	protected void buildAllEx_MT(SOM_GeomSmplDataForEx[] allSamples, int numThdCallables, int numTtlToBuild) {
 		List<Future<Boolean>> trainDataBldFtrs = new ArrayList<Future<Boolean>>();
 		List<SOM_GeomTrainExBuilder> trainDataBldrs = new ArrayList<SOM_GeomTrainExBuilder>();

@@ -35,10 +35,6 @@ public class Geom_PlaneExManager extends SOM_GeomExampleManager {
 	protected SOM_Example[] noValidateBuildExampleArray() {return (Geom_PlaneSOMExample[])(exampleMap.values().toArray(new Geom_PlaneSOMExample[0]));		}
 	@Override
 	protected SOM_Example[] castArray(ArrayList<SOM_Example> tmpList) {return (Geom_PlaneSOMExample[])(tmpList.toArray(new Geom_PlaneSOMExample[0]));		}
-
-	@Override
-	protected void buildAfterAllFtrVecsBuiltStructs_Priv() {
-	}
 	
 	@Override
 	protected void buildAllEx_MT(SOM_GeomSmplDataForEx[] allSamples, int numThdCallables, int numTtlToBuild) {
