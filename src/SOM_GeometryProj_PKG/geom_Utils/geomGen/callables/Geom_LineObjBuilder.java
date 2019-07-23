@@ -35,7 +35,7 @@ public class Geom_LineObjBuilder extends SOM_GeomObjBuilder {
 		SOM_GeomSamplePointf[] pts = new SOM_GeomSamplePointf[] {new SOM_GeomSamplePointf(a, ID+"_gen_pt_0" ),new SOM_GeomSamplePointf(b, ID+"_gen_pt_1")};
 		SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, pts);
 		
-		Geom_LineSOMExample line = new Geom_LineSOMExample(((Geom_LineMapMgr)mapMgr), animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj);
+		Geom_LineSOMExample line = new Geom_LineSOMExample(((Geom_LineMapMgr)mapMgr), _exDataType, ID, _srcSmpls, numSmplsPerObj);
 		return line;
 	}
 

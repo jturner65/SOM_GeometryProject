@@ -32,7 +32,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	public final myPointf ctrLoc;
 	
 	public final int sphrDet;
-	public final float rad;
+	public final float radius;
 	/**
 	 * coordinate bounds in world for sphere - static across all sphere objects
 	 * 		first idx : 0 is min; 1 is diff
@@ -52,15 +52,15 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * @param _numSmplPts : # of sample points to build for this object TODO move to post-construction process
 	 * @param _worldBounds : bounds within which the points/samples of this object should remain constrained
 	 */
-	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
-		super(_mapMgr, _animWin,  _exType, _id, _srcSmpls,  SOM_GeomObjTypes.sphere);
+	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
+		super(_mapMgr, _exType, _id, _srcSmpls,  SOM_GeomObjTypes.sphere);
 		//with 4 srcPts, find center of sphere
 		//String res = "";
 		//for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
-      	//msgObj.dispInfoMessage("SOM_Sphere", "ctor", "\nUsed Ctr : " + _ctr.toStrBrf() + " rad : "  + _rad +" | Find center and radius of sphere with pts : " + res);
+      	//msgObj.dispInfoMessage("SOM_Sphere", "ctor", "\nUsed Ctr : " + _ctr.toStrBrf() + " radius : "  + _rad +" | Find center and radius of sphere with pts : " + res);
       	ctrLoc = new myPointf();
-      	rad = findCenterAndRadFromPtsUsingDet(srcPts, ctrLoc);		
-      	sphrDet = (int)(Math.sqrt(rad) + 10);	
+      	radius = findCenterAndRadFromPtsUsingDet(srcPts, ctrLoc);		
+      	sphrDet = (int)(Math.sqrt(radius) + 10);	
 		//ctrLoc = findCtrOfSphereFrom4Pts(srcPts);
 		super.buildLocClrInitObjAndSamples(ctrLoc, _numSmplPts);
 	}//ctor
@@ -69,22 +69,22 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.sphere);
 		ctrLoc = new myPointf();
 		
-		rad = buildCenterAndRadFromCSVStr(ctrLoc, _csvDat);
-     	sphrDet = (int)(Math.sqrt(rad) + 10);	
+		radius = buildCenterAndRadFromCSVStr(ctrLoc, _csvDat);
+     	sphrDet = (int)(Math.sqrt(radius) + 10);	
 		super.buildLocClrAndSamplesFromCSVStr(ctrLoc, _csvDat);
 	}
 	
 	public Geom_SphereSOMExample(Geom_SphereSOMExample _otr) {
 		super(_otr);
 		ctrLoc = _otr.ctrLoc;
-		rad = _otr.rad;
+		radius = _otr.radius;
 		sphrDet = _otr.sphrDet;
 		worldBounds = _otr.worldBounds;
 	}//copy ctor
 
 	/**
 	 * initialize object's ID, and build SOM_GeomSamplePointf array from the source samples used to derive this object
-	 * @param _srcSmpls
+	 * @param _srcSmpls  
 	 * @return
 	 */
 	@Override
@@ -109,7 +109,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	public final boolean testSphereConstruction(myPointf _ctr, float _rad, float tol) {
       	float sqDistFromGiven = ctrLoc._SqrDist(_ctr);
 		if(!(sqDistFromGiven < tol)) {
-			msgObj.dispWarningMessage("SOM_Sphere", "testSphereConstruction", "Warning : calculated center : " + ctrLoc.toStrBrf() +" != original center : " + _ctr.toStrBrf() + " | calced rad : " + rad + " | Given radius : " + _rad + " Sq Dist : " + sqDistFromGiven);
+			msgObj.dispWarningMessage("SOM_Sphere", "testSphereConstruction", "Warning : calculated center : " + ctrLoc.toStrBrf() +" != original center : " + _ctr.toStrBrf() + " | calced rad : " + radius + " | Given radius : " + _rad + " Sq Dist : " + sqDistFromGiven);
 			return false;
 		}
 		return true;
@@ -235,7 +235,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * return a random point on this object
 	 */
 	@Override
-	public final myPointf getRandPointOnObj() {return getRandPosOnSphere(rad,ctrLoc);}
+	public final myPointf getRandPointOnObj() {return getRandPosOnSphere(radius,ctrLoc);}
 
 	////////////////////////////
 	// feature functionality (inherited from SOM_Example
@@ -248,7 +248,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		ftrMaps[ftrMapTypeKey].put(0,ctrLoc.x);
 		ftrMaps[ftrMapTypeKey].put(1,ctrLoc.y);
 		ftrMaps[ftrMapTypeKey].put(2,ctrLoc.z);
-		ftrMaps[ftrMapTypeKey].put(3,rad);
+		ftrMaps[ftrMapTypeKey].put(3,radius);
 	}
 	
 	/**
@@ -266,11 +266,9 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 */
 	@Override
 	protected final String getPreProcDescrForCSV_Indiv() {
-		String res = csvSphereTag + String.format("%.8f", rad) + ", "+ctrLoc.toStrCSV("%.8f")+"," + csvSphereTag;
+		String res = csvSphereTag + String.format("%.8f", radius) + ", "+ctrLoc.toStrCSV("%.8f")+"," + csvSphereTag;
 		return res;
 	}
-
-
 
 	@Override
 	public final TreeMap<Integer, Integer> getTrainingLabels() {
@@ -287,17 +285,17 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		pa.pushMatrix();pa.pushStyle();	
 		pa.sphereDetail(sphrDet);
 		pa.translate(ctrLoc.x,ctrLoc.y,ctrLoc.z); 
-		pa.sphere(rad); 
+		pa.sphere(radius); 
 		pa.popStyle();pa.popMatrix();	
 	}
 		
 	@Override
 	protected void _drawMe_Geom_BMU(my_procApplet pa, SOM_GeomObjDrawType drawType) {
-//		pa.pushMatrix();pa.pushStyle();	
-//		pa.sphereDetail(sphrDet);
+		pa.pushMatrix();pa.pushStyle();	
+		pa.sphereDetail(sphrDet);
 //		pa.translate(baseObjBMUWorldLoc.x,baseObjBMUWorldLoc.y,baseObjBMUWorldLoc.z); 
-//		pa.sphere(rad); 
-//		pa.popStyle();pa.popMatrix();	
+//		pa.sphere(radius); 
+		pa.popStyle();pa.popMatrix();	
 	}
 
 
@@ -311,7 +309,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		pa.noFill();//fill(255*modCnt,255);			
 		pa.stroke(255*modCnt, 255);		
 		pa.translate(ctrLoc); 
-		pa.sphere(rad*(modCnt + 1.0f)); 
+		pa.sphere(radius*(modCnt + 1.0f)); 
 		pa.popStyle();pa.popMatrix();
 	}
 	
@@ -330,14 +328,14 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	
 	
 	@Override
-	public void drawMyLabel(my_procApplet pa){
+	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin){
 		pa.pushMatrix();pa.pushStyle();		
 		pa.setColorValFill(0,255); 
 		pa.setColorValStroke(0,255);		
 		pa.translate(ctrLoc); 
 		animWin.unSetCamOrient();
 		pa.scale(1.75f);
-		pa.text(""+getID(), .33f*rad,-.33f*rad,0); 
+		pa.text(""+getID(), .33f*radius,-.33f*lblDist,0); 
 		pa.popStyle();pa.popMatrix();
 	}
 	
@@ -346,12 +344,12 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * @param pa
 	 */
 	@Override
-	public final void drawMySmplsLabel(my_procApplet pa){	objSamples.drawMySmplsLabel_3D(pa, animWin, rad);}//
+	public final void drawMySmplsLabel(my_procApplet pa, SOM_AnimWorldWin animWin){	objSamples.drawMySmplsLabel_3D(pa, animWin);}//
 	
 ///////////////BMU / datapoint drawing
 	
 	@Override
-	public void drawMeLabel_BMU(my_procApplet pa){
+	public void drawMyLabel_BMU(my_procApplet pa){
 //		pa.pushMatrix();pa.pushStyle();		
 //		pa.setColorValFill(0,255); 
 //		pa.setColorValStroke(0,255);		

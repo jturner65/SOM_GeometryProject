@@ -32,7 +32,7 @@ public class Geom_LineTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	@Override
 	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSmplDataForEx[] exAra, int idx) {
 		String ID = "Line_Train_"+getObjID(idx);
-		Geom_LineSOMExample line = new Geom_LineSOMExample(((Geom_LineMapMgr)mapMgr), animWin, _exDataType, ID, exAra, numExPerObj);
+		Geom_LineSOMExample line = new Geom_LineSOMExample(((Geom_LineMapMgr)mapMgr),_exDataType, ID, exAra, numExPerObj);
 		return line;
 		
 	}

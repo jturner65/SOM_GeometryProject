@@ -83,9 +83,9 @@ public abstract class SOM_GeomTrainExBuilder extends SOM_GeomCallable {
 	
 	@Override
 	public Boolean call() throws Exception {
-		msgObj.dispInfoMessage("SOM_GeomTrainExBuilder", "SOM_GeomTrainExBuilder::thdIDX=", "Start building " + numExToBuildPerThd + " " +dataType +" training example objects from geom obj samples.");
+		msgObj.dispInfoMessage("SOM_GeomTrainExBuilder", "call::thdIDX=", "Start building " + numExToBuildPerThd + " " +dataType +" training example objects from geom obj samples.");
 		buildTrainExData();
-		msgObj.dispInfoMessage("SOM_GeomTrainExBuilder", "SOM_GeomTrainExBuilder::thdIDX=", "Finished building " + numExToBuildPerThd + " " +dataType +" training example objects from geom obj samples.");
+		msgObj.dispInfoMessage("SOM_GeomTrainExBuilder", "call::thdIDX=", "Finished building " + numExToBuildPerThd + " " +dataType +" training example objects from geom obj samples.");
 		
 		return true;
 	}

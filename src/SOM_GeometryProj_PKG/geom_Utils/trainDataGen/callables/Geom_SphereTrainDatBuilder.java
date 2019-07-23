@@ -61,7 +61,7 @@ public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	@Override
 	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSmplDataForEx[] exAra, int idx) {
 		String ID = "Sphere_Train_"+getObjID(idx);
-		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr),animWin, _exDataType, ID, exAra, numExPerObj);
+		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, exAra, numExPerObj);
 		//boolean passed = obj.testSphereConstruction(ctr, rad, 1.0f);
 		return obj;
 	}

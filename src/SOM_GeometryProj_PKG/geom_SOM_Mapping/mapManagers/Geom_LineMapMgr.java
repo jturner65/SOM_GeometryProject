@@ -57,30 +57,6 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	}
 
 	@Override
-	protected Integer[] getAllClassLabels() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected String getClassSegMappingDescrStr() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Integer[] getAllCategoryLabels() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected String getCategorySegMappingDescrStr() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	protected void buildValidationDataAra() {
 		// TODO Auto-generated method stub
 

@@ -9,6 +9,8 @@ package SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs;
  * @author john
  */
 public class SOM_GeomSmplDataForEx {
+	public final int ID;
+	private static int idGen = 0;
 	/**
 	 * point for this sample
 	 */
@@ -19,6 +21,7 @@ public class SOM_GeomSmplDataForEx {
 	protected SOM_GeomObj obj;
 	
 	public SOM_GeomSmplDataForEx(SOM_GeomObj _obj, SOM_GeomSamplePointf _pt) {
+		ID = idGen++;
 		obj = _obj;
 		pt = _pt;
 	}
@@ -27,9 +30,5 @@ public class SOM_GeomSmplDataForEx {
 	public void setPoint(SOM_GeomSamplePointf _pt) {pt=_pt;}
 	public SOM_GeomObj getObj() {return obj;}
 	public void setObj(SOM_GeomObj _obj){obj=_obj;}
-	
-//	public String toCSVStr_Header() {	return "smpl pt x, smpl pt y, smpl pt z, "+ obj.toCSVStr_Header();}
-//	
-//	public String toCSVStr() {			return  pt.x + ", " + pt.y + ", " + pt.z + ", " + obj.toCSVStr();}
 
 }//class SOM_GeomSample

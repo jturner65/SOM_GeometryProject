@@ -33,7 +33,10 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 		myPointf ctr = this.getRandPointInBounds_3D(rad);
 			
 		//now get 4 points to determine this sphere - make sure they are ortho		
-		myPointf[] spherePts = getRandSpherePoints(rad,ctr);		
+		myPointf[] spherePts = getRandSpherePoints(rad,ctr);	
+		for(myPointf p : spherePts) {
+			msgObj.dispInfoMessage("Geom_SphereObjBuilder", "_buildSingleObject", "pt : " + p.toStrBrf());
+		}
 		String ID = "Sphere_"+String.format("%05d", idx);
 		SOM_GeomSamplePointf[] pts = new SOM_GeomSamplePointf[spherePts.length];
 		for(int i=0;i<pts.length; ++i) {pts[i] = new SOM_GeomSamplePointf(spherePts[i],ID+"_gen_pt_"+i);}
@@ -41,7 +44,7 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 		SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, pts);
 		
 		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, myPointf _ctr, float _rad, int _numSmplPts, float[][] _worldBounds)
-		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr),animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj);
+		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, _srcSmpls, numSmplsPerObj);
 		boolean passed = obj.testSphereConstruction(ctr, rad, 1.0f);
 		return obj;
 	}

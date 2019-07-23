@@ -20,11 +20,6 @@ public abstract class SOM_GeomCallable implements Callable<Boolean> {
 	 * owning map manager
 	 */
 	protected final SOM_GeomMapManager mapMgr;
-	/**
-	 * anim window geometric objs are displayed in
-	 */
-	protected final SOM_AnimWorldWin animWin;
-
 
 	protected final String dataType;
 
@@ -54,7 +49,6 @@ public abstract class SOM_GeomCallable implements Callable<Boolean> {
 	public SOM_GeomCallable(SOM_GeomMapManager _mapMgr, int _stIdx, int _endIdx, int _thdIdx, String _dataType) {
 		mapMgr=_mapMgr;
 		dataType=_dataType;
-		animWin = mapMgr.dispWin; 
 		msgObj = mapMgr.buildMsgObj();
 		worldBounds = mapMgr.getWorldBounds();		
 		

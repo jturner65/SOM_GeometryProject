@@ -62,8 +62,8 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 * 		first idx 	: 0 is min; 1 is diff
 	 * 		2nd idx 	: 0 is x, 1 is y
 	 */
-	public Geom_LineSOMExample(Geom_LineMapMgr _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
-		super(_mapMgr, _animWin,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.line);
+	public Geom_LineSOMExample(Geom_LineMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
+		super(_mapMgr, _exType, _id, _srcSmpls, SOM_GeomObjTypes.line);
 		srcPts[0].z = 0.0f;
 		srcPts[1].z = 0.0f;
 		//z is always 0 - making this in 2 d
@@ -308,7 +308,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	}
 
 	@Override
-	public void drawMyLabel(my_procApplet pa) {		
+	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin) {		
 		//(myPointf P, float r, String s, myVectorf D, int clr, boolean flat)
 		pa.show(dispEndPts[0], 5.0f, "ID " + getID()+dispAra[0], myVectorf.ZEROVEC, -1, true);
 		pa.show(dispEndPts[1], 5.0f, "ID " + getID()+dispAra[1], myVectorf.ZEROVEC, -1, true);
@@ -322,7 +322,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 * @param pa
 	 */
 	@Override
-	public final void drawMySmplsLabel(my_procApplet pa){	objSamples.drawMySmplsLabel_2D(pa, rad);}//
+	public final void drawMySmplsLabel(my_procApplet pa, SOM_AnimWorldWin animWin){	objSamples.drawMySmplsLabel_2D(pa);}//
 
 	@Override
 	protected final void _drawMeSelected(my_procApplet pa, float animTmMod) {
@@ -331,7 +331,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	}
 
 	@Override
-	public void drawMeLabel_BMU(my_procApplet pa) {
+	public void drawMyLabel_BMU(my_procApplet pa) {
 		// TODO Auto-generated method stub
 
 	}

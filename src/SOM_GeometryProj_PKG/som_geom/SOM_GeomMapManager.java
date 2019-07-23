@@ -452,10 +452,11 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	@Override
 	protected final void saveAllSegment_BMUReports_Indiv() {}
 
-	@Override
+	
 	/**
 	 * products are zone/segment descriptors corresponding to certain feature, class or category configurations that are descriptive of training data
 	 */
+	@Override
 	protected final void setProductBMUs() {
 		// TODO Auto-generated method stub
 
@@ -467,9 +468,35 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 */
 	protected final void initMapNodesPriv() {
 		// TODO Auto-generated method stub
-
 	}
 
+
+	@Override
+	protected final Integer[] getAllClassLabels() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected final String getClassSegMappingDescrStr() {
+		// TODO Auto-generated method stub
+		return "Sample Point Membership";
+	}
+
+	@Override
+	protected final Integer[] getAllCategoryLabels() {
+		// TODO Auto-generated method stub
+		return new Integer[0];
+	}
+
+	@Override
+	protected final String getCategorySegMappingDescrStr() {
+		// TODO Auto-generated method stub
+		return "";
+	}
+
+	
+	
 	@Override
 	//return appropriately pathed file name for map image of specified ftr idx
 	public String getSOMLocClrImgForFtrFName(int ftrIDX) {		return projConfigData.getSOMLocClrImgForFtrFName(ftrIDX);	}
@@ -513,12 +540,13 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	 */
 	public void setAllBMUsFromMap() {
 		//make sure class and category segments are built 
-		//build class segments from mapped training examples
+		//build class segments from mapped training examples - these are the sample points
 		buildClassSegmentsOnMap();
 		//build category segments from mapped training examples
-		buildCategorySegmentsOnMap();
+		//buildCategorySegmentsOnMap();
 		//set "product" bmus (any examples that don't directly relate to training data but rather provide descriptions of training data)
-		setProductBMUs();
+		//perhaps set these to be geometric source data?
+		//setProductBMUs();
 
 	}//setAllBMUsFromMap
 	

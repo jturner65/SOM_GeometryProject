@@ -22,6 +22,10 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	  * runnable object to manage various tasks
 	  */
 	protected SOM_GeomObjBldrRunner objRunner;
+	/**
+	 * all the constituent samples from the geometric objects this example manager manages
+	 */
+	protected SOM_GeomSmplDataForEx[] allSamples;
 
 	/**
 	 * set this to data type being managed by this example manager (training, validation, etc) 
@@ -37,7 +41,8 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	
 	@Override
 	protected final void reset_Priv() {
-		this.msgObj.dispInfoMessage("SOM_GeomExampleManager", "reset_Priv", "Example manager : " + exMgrName + " reset called.");
+		msgObj.dispInfoMessage("SOM_GeomExampleManager::"+exampleName, "reset_Priv", "Example manager : " + exMgrName + " reset called.");
+		allSamples = new SOM_GeomSmplDataForEx[0];
 	}
 
 	
@@ -50,9 +55,8 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	@Override
 	protected final void buildFtrVec_Priv() {
 		//call to buildFeatureVector for all examples
-		mapMgr._ftrVecBuild(exampleMap.values(),0,exampleName, true);
-		
-		
+		msgObj.dispInfoMessage("SOM_GeomExampleManager::"+exampleName, "buildFtrVec_Priv", "Example manager : " + exMgrName + " buildFtrVec_Priv called : " + exampleMap.size()+ " examples present.");
+		mapMgr._ftrVecBuild(exampleMap.values(),0,exampleName, true);		
 	}	
 
 	/**
@@ -60,11 +64,12 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 	 * @param geomExMgr
 	 */
 	public final void buildTrainingDataFromGeomObjs(SOM_GeomExampleManager geomExMgr, int ttlNumTrainEx) {
+		msgObj.dispInfoMessage("SOM_GeomExampleManager::"+exampleName, "buildTrainingDataFromGeomObjs", "Start building example data in " + exampleName +"'s "+exMgrName + " ex mgr using geometric data from " + geomExMgr.exampleName +"'s " + geomExMgr.exMgrName+ " examples present.");
 		reset();
 		//all geomgetric objects from geometry example manager
 		SOM_GeomObj[] geomEx = (SOM_GeomObj[]) geomExMgr.buildExampleArray();
 		int numSamplesTTL = geomEx.length * geomEx[0].getNumSamples();
-		SOM_GeomSmplDataForEx[] allSamples = new SOM_GeomSmplDataForEx[numSamplesTTL];
+		allSamples = new SOM_GeomSmplDataForEx[numSamplesTTL];
 		int idx = 0;
 		for(SOM_GeomObj ex : geomEx) {
 			SOM_GeomSamplePointf[] smpls = ex.getAllSamplePts();
@@ -75,6 +80,7 @@ public abstract class SOM_GeomExampleManager extends SOM_ExampleManager {
 		
 		setAllDataLoaded();
 		setAllDataPreProcced();
+		msgObj.dispInfoMessage("SOM_GeomExampleManager::"+exampleName, "buildTrainingDataFromGeomObjs", "Finished building example data in " + exampleName +"'s "+exMgrName + " ex mgr using geometric data from " + geomExMgr.exampleName +"'s " + geomExMgr.exMgrName+ " examples present.");
 	}//	buildTrainingDataFromGeom
 	
 	/**

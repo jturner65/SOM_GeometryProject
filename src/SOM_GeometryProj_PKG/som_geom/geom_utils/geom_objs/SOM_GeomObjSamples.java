@@ -45,14 +45,14 @@ public class SOM_GeomObjSamples {
 	 */
 	private static final String samplPtTag = "SMPLPT,";
 	
-	public SOM_GeomObjSamples(SOM_GeomObj _ownr) {
+	public SOM_GeomObjSamples(SOM_GeomObj _ownr, SOM_GeomObjTypes _objGeomType, int[] _rndClrAra, int[] _lblClrAra) {
 		ownr = _ownr;
-		ptRad = ownr.objGeomType.getVal();
-		objTypeStrAndID = ownr.objGeomType.toString() + "_"+ownr.getID();
-		rndClrAra = new int[ownr.rndClrAra.length];
-		System.arraycopy(ownr.rndClrAra, 0, rndClrAra, 0, ownr.rndClrAra.length);
-		labelClrAra = new int[ownr.labelClrAra.length];
-		System.arraycopy(ownr.labelClrAra, 0, labelClrAra, 0, ownr.labelClrAra.length);		
+		ptRad = (float)Math.pow(_objGeomType.getVal(), 1.4);
+		objTypeStrAndID = _objGeomType.toString() + "_"+ownr.getID();
+		rndClrAra = new int[_rndClrAra.length];
+		System.arraycopy(_rndClrAra, 0, rndClrAra, 0, _rndClrAra.length);
+		labelClrAra = new int[_lblClrAra.length];
+		System.arraycopy(_lblClrAra, 0, labelClrAra, 0, _lblClrAra.length);		
 	}
 	
 	/**
@@ -178,7 +178,7 @@ public class SOM_GeomObjSamples {
 	 * draw this object's samples, using the random color
 	 * @param pa
 	 */
-	public final void drawMySmplsLabel_2D(my_procApplet pa, float rad){
+	public final void drawMySmplsLabel_2D(my_procApplet pa){
 		pa.pushMatrix();pa.pushStyle();
 		pa.setFill(labelClrAra,255); 
 		pa.setStroke(labelClrAra,255);
@@ -186,7 +186,7 @@ public class SOM_GeomObjSamples {
 			SOM_GeomSamplePointf pt = objSamplePts[i];
 			pa.pushMatrix(); pa.pushStyle();
 			pa.translate(pt); 
-			pa.text(""+pt.name, .33f*rad,-.33f*rad,0); 
+			pa.text(""+pt.name, ownr.lblDist,-ownr.lblDist,0); 
 			pa.popStyle();pa.popMatrix();
 		}
 		pa.popStyle();pa.popMatrix();
@@ -196,7 +196,7 @@ public class SOM_GeomObjSamples {
 	 * draw this object's samples, using the random color
 	 * @param pa
 	 */
-	public final void drawMySmplsLabel_3D(my_procApplet pa,SOM_AnimWorldWin animWin, float rad){
+	public final void drawMySmplsLabel_3D(my_procApplet pa,SOM_AnimWorldWin animWin){
 		pa.pushMatrix();pa.pushStyle();
 		pa.setFill(labelClrAra,255); 
 		pa.setStroke(labelClrAra,255);
@@ -205,7 +205,7 @@ public class SOM_GeomObjSamples {
 			pa.pushMatrix(); pa.pushStyle();
 			pa.translate(pt); 
 			animWin.unSetCamOrient();
-			pa.text(""+pt.name, .33f*rad,-.33f*rad,0); 
+			pa.text(""+pt.name, ownr.lblDist,-ownr.lblDist,0); 
 			pa.popStyle();pa.popMatrix();
 		}
 		pa.popStyle();pa.popMatrix();

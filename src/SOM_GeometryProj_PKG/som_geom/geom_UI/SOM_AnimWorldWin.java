@@ -489,7 +489,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	private void _drawObjSmpls(SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod, boolean useLocClr, boolean showSel, boolean showSmplsLabel) {
 		if(useLocClr){			for(SOM_GeomObj s : objs){s.drawMeSmplsClrLoc(pa);}} //loc color
 		else {					for(SOM_GeomObj s : objs){s.drawMeSmplsClrRnd(pa);}}//rand color
-		if(showSmplsLabel){			for(SOM_GeomObj s : objs){s.drawMySmplsLabel(pa);}	}
+		if(showSmplsLabel){			for(SOM_GeomObj s : objs){s.drawMySmplsLabel(pa, this);}	}
 		if((curSelObjIDX != -1) && showSel) {				
 			if(useLocClr){	objs[curSelObjIDX].drawMeSelected_ClrLoc_Smpl(pa,animTimeMod); }
 			else {									objs[curSelObjIDX].drawMeSelected_ClrRnd_Smpl(pa,animTimeMod); }
@@ -504,7 +504,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 			if(useLocClr){		for(SOM_GeomObj s : objs){s.drawMeClrLoc_BMU(pa);}} //loc color
 			else {				for(SOM_GeomObj s : objs){s.drawMeClrRnd_BMU(pa);}}//rand color
 		}		
-		if(showLabel){			for(SOM_GeomObj s : objs){s.drawMeLabel_BMU(pa);}	}
+		if(showLabel){			for(SOM_GeomObj s : objs){s.drawMyLabel_BMU(pa);}	}
 	}//_drawObjs_UseBMUs
 	
 	private void _drawObjs_UseActual(SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod, boolean useLocClr, boolean showSmpls, boolean showSel,boolean showWireFrame, boolean showLabel) {
@@ -521,7 +521,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 			if(useLocClr){		for(SOM_GeomObj s : objs){s.drawMeClrLoc(pa);}} //loc color
 			else {				for(SOM_GeomObj s : objs){s.drawMeClrRnd(pa);}}//rand color
 		}
-		if(showLabel){			for(SOM_GeomObj s : objs){s.drawMyLabel(pa);}	}
+		if(showLabel){			for(SOM_GeomObj s : objs){s.drawMyLabel(pa, this);}	}
 		
 		
 	}//_drawObjs_UseActual

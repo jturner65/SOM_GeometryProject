@@ -3,23 +3,22 @@ package SOM_GeometryProj_PKG.som_geom.geom_examples;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_examples.SOM_MapNode;
 import base_Utils_Objects.vectorObjs.Tuple;
-import base_Utils_Objects.vectorObjs.myVectorf;
 
 public class SOM_GeomMapNode extends SOM_MapNode {
 	/**
-	 * location in the 3d world of the sample;  
-	 * this corresponds to the feature vector for this example, 
-	 * but should only be used for display purposes
+	 * a visual representation of the data in this map node
 	 */
-	public myVectorf worldLoc;	
+	protected SOM_GeomObj visObj;
+	
 
-	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, float[] _ftrs) {super(_map, _mapNodeLoc, _ftrs);   worldLoc = new myVectorf(_ftrs[0],_ftrs[1],_ftrs[2]);}
+	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, float[] _ftrs) {super(_map, _mapNodeLoc, _ftrs);  }
 
-	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, String[] _strftrs) {super(_map, _mapNodeLoc, _strftrs);float[] _ftrs = this.getFtrs();worldLoc = new myVectorf(_ftrs[0],_ftrs[1],_ftrs[2]);}
+	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, String[] _strftrs) {super(_map, _mapNodeLoc, _strftrs);float[] _ftrs = this.getFtrs();}
 
 	@Override
 	protected void _initDataFtrMappings() {
@@ -73,7 +72,8 @@ public class SOM_GeomMapNode extends SOM_MapNode {
 //			Float numOrders = 1.0f*trainExOrderCounts.get(jpgJp);	
 //			Float newCount = getClassSegManager().addSegDataFromTrainingEx(new Integer[] {jp}, numOrders, "_JPCount_JP_", "JP Orders present for jp :");
 //			//newcount includes existing counts in this node, so needs to be used to map to category as well
-//			Float dummy = getCategorySegManager().addSegDataFromTrainingEx(new Integer[] {jpg,jp}, newCount, "_JPGroupCount_JPG_", "JPGroup Orders present for jpg :");
+			//no category yet for geometric objects
+//			//Float dummy = getCategorySegManager().addSegDataFromTrainingEx(new Integer[] {jpg,jp}, newCount, "_JPGroupCount_JPG_", "JPGroup Orders present for jpg :");
 //	
 //		}
 	}

@@ -59,7 +59,7 @@ public abstract class SOM_GeomObjBuilder extends SOM_GeomCallable {
 	 */
 	protected void _regenSampleBaseObj_Task() {
 		msgObj.dispInfoMessage("SOM_GeomObjBuilder", "_regenSampleBaseObj_Task::thdIDX=", "Start regenerating samples for " + (endIdx-stIdx) + " " +dataType +" base objects at idxs : ["+stIdx+", "+endIdx+"]");
-		for(int i=stIdx; i<endIdx;++i) {	objArray[i].buildSampleSetAndPShapes(numSmplsPerObj);}//incrProgress(i);}
+		for(int i=stIdx; i<endIdx;++i) {	objArray[i].buildSmplSetAndSmplPShapes(numSmplsPerObj);}//incrProgress(i);}
 		msgObj.dispInfoMessage("SOM_GeomObjBuilder", "_regenSampleBaseObj_Task::thdIDX=", "Finished regenerating samples for  " + (endIdx-stIdx) + " " +dataType +" base objects at idxs : ["+stIdx+", "+endIdx+"]");
 	}
 	

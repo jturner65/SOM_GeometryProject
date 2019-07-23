@@ -83,8 +83,8 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param _worldBnds 4 points that bound the plane for display purposes
 	 */	
 	//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds) {
-	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
-		super(_mapMgr, _animWin,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane);	
+	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
+		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane);	
 		//planeOrigin = _ctr;	
 		//norm is idx 0
 		//plane norm
@@ -523,7 +523,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 */
 
 	@Override
-	public void drawMyLabel(my_procApplet pa) {
+	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin) {
 		pa.pushMatrix();pa.pushStyle();	
 		pa.stroke(100,100,100,255);
 		pa.fill(0,0,0,255);
@@ -532,7 +532,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 			pa.pushMatrix();pa.pushStyle();	
 			pa.line(planeOrigin, dispBoundPts[i]);
 			pa.translate(dispBoundPts[i]); 
-			this.animWin.unSetCamOrient();
+			animWin.unSetCamOrient();
 			pa.scale(1.75f);
 			pa.text(""+i, 3.0f,-3.0f,0); 
 			pa.popStyle();pa.popMatrix();
@@ -546,7 +546,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param pa
 	 */
 	@Override
-	public final void drawMySmplsLabel(my_procApplet pa){	objSamples.drawMySmplsLabel_3D(pa, animWin, rad);}//
+	public final void drawMySmplsLabel(my_procApplet pa, SOM_AnimWorldWin animWin){	objSamples.drawMySmplsLabel_3D(pa, animWin);}//
 
 	@Override
 	protected void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
@@ -613,7 +613,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	}
 	
 	@Override
-	public void drawMeLabel_BMU(my_procApplet pa) {
+	public void drawMyLabel_BMU(my_procApplet pa) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_UI_Objects.my_procApplet;
@@ -25,11 +26,6 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * Integer object ID specific to instancing class objects
 	 */
 	private int GeomObj_ID;
-	
-	/**
-	 * owning display window for this object
-	 */
-	protected final SOM_AnimWorldWin animWin;
 
 	/**
 	 * label to display, based on ID and object type
@@ -55,7 +51,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	/**
 	 * type of object (geometric)
 	 */
-	public final SOM_GeomObjTypes objGeomType;
+	protected final SOM_GeomObjTypes objGeomType;
 		
 	/**
 	 * list of original object point samples and their owning objects making up this example - 
@@ -65,15 +61,15 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	/**
 	 * given source points that make up this object
 	 */
-	public final SOM_GeomSamplePointf[] srcPts;
+	protected final SOM_GeomSamplePointf[] srcPts;
 
 	/**
 	 * construction managing sample points on the surface of this geom object
 	 */
-	public SOM_GeomObjSamples objSamples;
+	protected SOM_GeomObjSamples objSamples;
 
 	/**
-	 * all class ID's this object belongs to
+	 * all class ID's this object belongs to - in this case, the IDs of the geomSrcSamples samples making up this object
 	 */
 	protected HashSet<Integer> classIDs;
 	
@@ -96,6 +92,11 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * tag to denote the beginning/end of a sample point record in csv file
 	 */
 	private static final String samplPtTag = "SMPLPT,";
+	/**
+	 * distance to draw point label from point
+	 */
+	public static final float lblDist = 2.0f;
+
 	
 	/**
 	 * build a geometry-based training/validation example for the SOM
@@ -106,9 +107,9 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * @param _worldBounds : bounds in world for valid values for this object
 	 * @param _GeoType : geometric object type
 	 */	
-	public SOM_GeomObj(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, SOM_GeomObjTypes _GeoType) {
+	public SOM_GeomObj(SOM_GeomMapManager _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, SOM_GeomObjTypes _GeoType) {
 		super(_mapMgr, _exType,_id);
-		animWin = _animWin;
+		//animWin =  _mapMgr.dispWin;// _animWin;
 		objGeomType=_GeoType;
 		classIDs = new HashSet<Integer>();
 		categoryIDs = new HashSet<Integer>();
@@ -121,7 +122,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		
 		srcPts = initAndBuildSourcePoints(geomSrcSamples);
 		
-		objSamples = new SOM_GeomObjSamples(this);
+		objSamples = new SOM_GeomObjSamples(this, objGeomType, rndClrAra, labelClrAra);
 		setWorldBounds(_mapMgr.getWorldBounds());				
 	}//ctor
 	
@@ -137,8 +138,10 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 */
 	public SOM_GeomObj(SOM_GeomMapManager _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat, SOM_GeomObjTypes _GeoType) {
 		super(_mapMgr, _exType, _oid);
-		animWin = _mapMgr.dispWin;
+		//animWin = _mapMgr.dispWin;
 		objGeomType = _GeoType;		
+		classIDs = new HashSet<Integer>();
+		categoryIDs = new HashSet<Integer>();
 		initGeomFlags();
 		rndClrAra = getRandClr();		
 		int minNumSmplsForEachExample = objGeomType.getVal();
@@ -148,17 +151,32 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		//only data needed to be saved
 		srcPts = buildSrcPtsFromCSVString(minNumSmplsForEachExample, _csvDat);
 		
-		//build geomSrcSamples from srcPts
+		//build geomSrcSamples from srcPts 
 		geomSrcSamples = new SOM_GeomSmplDataForEx[srcPts.length];
-		for(int i=0;i<geomSrcSamples.length;++i) {geomSrcSamples[i] = new SOM_GeomSmplDataForEx(this, srcPts[i]);}
+		for(int i=0;i<geomSrcSamples.length;++i) {geomSrcSamples[i] = new SOM_GeomSmplDataForEx(this, new SOM_GeomSamplePointf(srcPts[i], objGeomType.toString()+"_"+getID()+"_gen_pt_"+i));}
 		
-		objSamples = new SOM_GeomObjSamples(this);
+		objSamples = new SOM_GeomObjSamples(this, objGeomType, rndClrAra, labelClrAra);
 		setWorldBounds(_mapMgr.getWorldBounds());						
 	}
 	
+	
+//	public SOM_GeomObj(SOM_GeomMapManager _mapMgr, SOM_GeomMapNode _mapNode, SOM_GeomObjTypes _GeoType) {
+//		super(_mapMgr, SOM_ExDataType.MapNode,_GeoType.toString()+"_"+_mapNode.OID);
+//		objGeomType = _GeoType;		
+//		initGeomFlags();
+//		int minNumSmplsForEachExample = objGeomType.getVal();
+//		setGeomFlag(is3dIDX, minNumSmplsForEachExample>2);
+//		labelClrAra = getGeomFlag(is3dIDX)? new int[] {0,0,0,255} : new int[] {255,255,255,255};
+//		rndClrAra = getRandClr();		
+//		
+//		
+//		objSamples = new SOM_GeomObjSamples(this, objGeomType, rndClrAra, labelClrAra);
+//		setWorldBounds(_mapMgr.getWorldBounds());						
+//	}
+	
 	public SOM_GeomObj(SOM_GeomObj _otr) {
 		super(_otr);
-		animWin = _otr.animWin;
+		//animWin = _otr.animWin;
 		objGeomType = _otr.objGeomType;
 		classIDs = _otr.classIDs;
 		categoryIDs = _otr.categoryIDs;
@@ -259,7 +277,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * build pshape to hold samples, to speed up rendering
 	 * @param _numSmplPts
 	 */
-	public final void buildSampleSetAndPShapes(int _numSmplPts) {
+	public final void buildSmplSetAndSmplPShapes(int _numSmplPts) {
 		objSamples.buildSampleSetAndPShapes(mapMgr.win.pa,_numSmplPts);
 	}//buildSampleSet
 	
@@ -293,6 +311,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	protected final void buildFeaturesMap() {
 		clearFtrMap(ftrMapTypeKey);//
 		buildFeaturesMap_Indiv();
+		//find magnitude of features
 		ftrVecMag = 0;
 		Float ftrSqrMag = 0.0f;
 		int ftrSize = ftrMaps[ftrMapTypeKey].size();
@@ -351,7 +370,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	@Override
 	protected final void setIsTrainingDataIDX_Priv() {
 		exampleDataType = isTrainingData ? SOM_ExDataType.Training : SOM_ExDataType.Testing;
-		nodeClrs = mapMgr.getClrFillStrkTxtAra(exampleDataType);
+		setMapNodeClrs(mapMgr.getClrFillStrkTxtAra(exampleDataType));
 	}
 	
 	/**
@@ -394,7 +413,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 		
 	////////////////////////
 	// draw functions
-	protected final int lBnd = 40, uBnd = 255, rndBnd = uBnd - lBnd;
+	protected static final int lBnd = 40, uBnd = 255, rndBnd = uBnd - lBnd;
 	//convert a world location within the bounded cube region to be a 4-int color array
 	public abstract int[] getClrFromWorldLoc(myPointf pt);
 	/**
@@ -511,10 +530,10 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	}
 		
 	/**
-	 * Draw this object's
+	 * Draw this object's label
 	 * @param pa
 	 */
-	public abstract void drawMyLabel(my_procApplet pa);
+	public abstract void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin);
 			
 	/**
 	 * draw this object
@@ -560,10 +579,10 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	
 	
 	/**
-	 * draw this object's samples, using the random color
+	 * draw this object's samples' labels
 	 * @param pa
 	 */
-	public abstract void drawMySmplsLabel(my_procApplet pa);
+	public abstract void drawMySmplsLabel(my_procApplet pa, SOM_AnimWorldWin animWin);
 	
 	/**
 	 * draw this object's samples, using the random color
@@ -585,7 +604,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	 * Draw this object's bmu with a label
 	 * @param pa
 	 */
-	public abstract void drawMeLabel_BMU(my_procApplet pa);
+	public abstract void drawMyLabel_BMU(my_procApplet pa);
 	public void drawMeSelected_BMU_ClrLoc(my_procApplet pa,float animTmMod) {
 		drawMeClrLoc_BMU(pa);
 		_drawMeSelected_BMU(pa, animTmMod);

@@ -69,30 +69,7 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	 * call from UI to set min and max radius
 	 */
 	public final void setMinMaxRad(float min, float max) {minRad = min; maxRad=max;}
-	
-	@Override
-	protected Integer[] getAllClassLabels() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	protected String getClassSegMappingDescrStr() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected Integer[] getAllCategoryLabels() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected String getCategorySegMappingDescrStr() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	protected void buildValidationDataAra() {
