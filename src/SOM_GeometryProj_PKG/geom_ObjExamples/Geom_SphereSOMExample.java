@@ -4,9 +4,11 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
+import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
@@ -14,6 +16,7 @@ import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.MyMathUtils;
 import base_Utils_Objects.vectorObjs.myPointf;
+import base_Utils_Objects.vectorObjs.myVectorf;
 
 /**
  * class to hold center location, radius, color and samples of sphere used to train SOM
@@ -59,7 +62,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		//for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
       	//msgObj.dispInfoMessage("SOM_Sphere", "ctor", "\nUsed Ctr : " + _ctr.toStrBrf() + " radius : "  + _rad +" | Find center and radius of sphere with pts : " + res);
       	ctrLoc = new myPointf();
-      	radius = findCenterAndRadFromPtsUsingDet(srcPts, ctrLoc);		
+      	radius = findCenterAndRadFromPtsUsingDet(getSrcPts(), ctrLoc);		
       	sphrDet = (int)(Math.sqrt(radius) + 10);	
 		//ctrLoc = findCtrOfSphereFrom4Pts(srcPts);
 		super.buildLocClrInitObjAndSamples(ctrLoc, _numSmplPts);
@@ -74,6 +77,24 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		super.buildLocClrAndSamplesFromCSVStr(ctrLoc, _csvDat);
 	}
 	
+	/**
+	 * ctor to build object corresponding to bmu geometric object
+	 * @param _mapMgr
+	 * @param _mapNode
+	 */
+	public Geom_SphereSOMExample(SOM_GeomMapManager _mapMgr, SOM_GeomMapNode _mapNode) {
+		super(_mapMgr, _mapNode, SOM_GeomObjTypes.sphere);
+		//with 4 srcPts, find center of sphere
+		//String res = "";
+		//for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
+      	//msgObj.dispInfoMessage("SOM_Sphere", "ctor", "\nUsed Ctr : " + _ctr.toStrBrf() + " radius : "  + _rad +" | Find center and radius of sphere with pts : " + res);
+      	ctrLoc = new myPointf();
+      	radius = findCenterAndRadFromPtsUsingDet(getSrcPts(), ctrLoc);		
+      	sphrDet = (int)(Math.sqrt(radius) + 10);	
+		//ctrLoc = findCtrOfSphereFrom4Pts(srcPts);
+		super.buildLocClrInitObjAndSamples(ctrLoc, SOM_GeomObjTypes.sphere.getVal());		
+	}
+	
 	public Geom_SphereSOMExample(Geom_SphereSOMExample _otr) {
 		super(_otr);
 		ctrLoc = _otr.ctrLoc;
@@ -81,23 +102,6 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		sphrDet = _otr.sphrDet;
 		worldBounds = _otr.worldBounds;
 	}//copy ctor
-
-	/**
-	 * initialize object's ID, and build SOM_GeomSamplePointf array from the source samples used to derive this object
-	 * @param _srcSmpls  
-	 * @return
-	 */
-	@Override
-	protected SOM_GeomSamplePointf[] initAndBuildSourcePoints(SOM_GeomSmplDataForEx[] _srcSmpls) {
-		//set here since this is called from the base class constructor
-		setID(IDGen++);
-		SOM_GeomSamplePointf[] ptAra = new SOM_GeomSamplePointf[geomSrcSamples.length];
-		for(int i=0;i<geomSrcSamples.length;++i) {
-			if(geomSrcSamples[i].getObj() == null) {geomSrcSamples[i].setObj(this);}
-			ptAra[i]=new SOM_GeomSamplePointf(geomSrcSamples[i].getPoint(), objGeomType.toString()+"_"+getID()+"_SrcPt_"+i);
-		}
-		return ptAra;
-	}
 
 	/**
 	 * test whether center and radius derived from the 4 source points 
@@ -201,7 +205,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		_ctr.set(Float.parseFloat(ptsAsStr[1].trim()),Float.parseFloat(ptsAsStr[2].trim()),Float.parseFloat(ptsAsStr[3].trim()));
 		return Float.parseFloat(ptsAsStr[0].trim());
 	}
-    
+	
 	/**
 	 * call from ctor of base class, but set statically for each instancing class type
 	 * @param _worldBounds
@@ -221,16 +225,6 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	public final int[] getClrFromWorldLoc(myPointf pt){return getClrFromWorldLoc_3D(pt,worldBounds);}//getClrFromWorldLoc
 
 	
-	private final myPointf getRandPosOnSphere(double rad, myPointf ctr){
-		myPointf pos = new myPointf();
-		double 	cosTheta = ThreadLocalRandom.current().nextDouble(-1,1), sinTheta =  Math.sin(Math.acos(cosTheta)),
-				phi = ThreadLocalRandom.current().nextDouble(0,MyMathUtils.twoPi_f);
-		pos.set(sinTheta * Math.cos(phi), sinTheta * Math.sin(phi),cosTheta);
-		pos._mult((float) rad);
-		pos._add(ctr);
-		return pos;
-	}//getRandPosOnSphere
-
 	/**
 	 * return a random point on this object
 	 */
@@ -239,6 +233,20 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 
 	////////////////////////////
 	// feature functionality (inherited from SOM_Example
+	/**
+	 * build an array of source points from the characteristic features of the source map node
+	 */
+	@Override
+	protected final SOM_GeomSamplePointf[] buildSrcPtsFromBMUMapNodeFtrs(float[] mapFtrs, int _numSrcSmpls, String _dispLabel) {
+		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[_numSrcSmpls];
+		myPointf _ctrLoc = new myPointf(mapFtrs[0],mapFtrs[1],mapFtrs[2]);
+		float _rad = mapFtrs[3];
+		myPointf[] pts = getRandSpherePoints(_rad, _ctrLoc);
+		for(int i=0;i<res.length; ++i) {res[i] = new SOM_GeomSamplePointf(pts[i], _dispLabel+"_BMU_pt_"+i);}
+		return res;			
+	}//buildSrcPtsFromBMUMapNode
+	
+	
 	/**
 	 * object shape-specific feature building - ftrVecMag calced in base class
 	 */
@@ -330,12 +338,9 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	@Override
 	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin){
 		pa.pushMatrix();pa.pushStyle();		
-		pa.setColorValFill(0,255); 
-		pa.setColorValStroke(0,255);		
-		pa.translate(ctrLoc); 
-		animWin.unSetCamOrient();
-		pa.scale(1.75f);
-		pa.text(""+getID(), .33f*radius,-.33f*lblDist,0); 
+		pa.setFill(this.labelClrAra, 255);
+		pa.setStroke(this.labelClrAra, 255);		
+		_drawLabelAtLoc_3D(pa, ctrLoc, animWin, dispLabel + " Origin : " + ctrLoc.toStrBrf() +" | Radius " + String.format("%.4f", radius), 1.0f, .71f*radius);
 		pa.popStyle();pa.popMatrix();
 	}
 	
@@ -359,6 +364,12 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 //		pa.text(""+getID(), rad,-rad,0); 
 //		pa.popStyle();pa.popMatrix();
 	}
+
+
+	/**
+	 * initialize object's ID
+	 */
+	protected final int incrID() {return IDGen++;}
 
 
 

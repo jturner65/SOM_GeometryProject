@@ -5,9 +5,11 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
+import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
@@ -39,17 +41,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * basis vectors for plane - should be orthogonal and normalized - idx 0 is normal
 	 */
 	protected final myVectorf[] basisVecs;
-	
-//	/**
-//	 * angle between normal and "up" - use this for display
-//	 */
-//	protected final float rotAngle;
-//	
-//	/**
-//	 * normalized axis between normal and "up" - use this to rotate for display
-//	 */
-//	protected final myVectorf rotAxis;
-	
+
 	/**
 	 * display points for this plane to draw maximally based on world bounds
 	 */
@@ -75,6 +67,17 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 */
 	protected PShape[] planeObjs;	
 	
+	
+//	/**
+//	 * angle between normal and "up" - use this for display
+//	 */
+//	protected final float rotAngle;
+//	
+//	/**
+//	 * normalized axis between normal and "up" - use this to rotate for display
+//	 */
+//	protected final myVectorf rotAxis;
+	
 	/**
 	 * Constructor for plane object
 	 * @param _mapMgr owning som map manager
@@ -82,14 +85,11 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param _numSmplPts : # of sample points to build for this object
 	 * @param _worldBnds 4 points that bound the plane for display purposes
 	 */	
-	//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds) {
 	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
 		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane);	
-		//planeOrigin = _ctr;	
-		//norm is idx 0
 		//plane norm
-		myVectorf tmpNorm = myVectorf._cross(new myVectorf(srcPts[0], srcPts[1]), new myVectorf(srcPts[0], srcPts[2]))._normalize();
-		eq = getPlanarEqFromPointAndNorm(tmpNorm, srcPts[0]);
+		myVectorf tmpNorm = myVectorf._cross(new myVectorf(getSrcPts()[0], getSrcPts()[1]), new myVectorf(getSrcPts()[0], getSrcPts()[2]))._normalize();
+		eq = getPlanarEqFromPointAndNorm(tmpNorm, getSrcPts()[0]);
 		//works because plane is built with unit normal in equation
 		planeOrigin = new myPointf(-eq[0]*eq[3],-eq[1]*eq[3],-eq[2]*eq[3]);
 		myVectorf tmpOriginVec = new myVectorf(planeOrigin);
@@ -109,9 +109,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		}
 		for(int j=0;j<minMaxDiffValAra[2].length;++j) {minMaxDiffValAra[2][j] = minMaxDiffValAra[1][j] -minMaxDiffValAra[0][j];	}
 
-		//find closest point on plane to origin
-		//planeOrigin 
-		
 		orthoFrame = new myPointf[3];
 		
 		for(int i=0;i<orthoFrame.length;++i) {
@@ -134,8 +131,8 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 */
 	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
 		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.plane);
-		myVectorf tmpNorm = myVectorf._cross(new myVectorf(srcPts[0], srcPts[1]), new myVectorf(srcPts[0], srcPts[2]))._normalize();
-		eq = getPlanarEqFromPointAndNorm(tmpNorm, srcPts[0]);
+		myVectorf tmpNorm = myVectorf._cross(new myVectorf(getSrcPts()[0], getSrcPts()[1]), new myVectorf(getSrcPts()[0], getSrcPts()[2]))._normalize();
+		eq = getPlanarEqFromPointAndNorm(tmpNorm, getSrcPts()[0]);
 		//works because plane is built with unit normal in equation
 		planeOrigin = new myPointf(-eq[0]*eq[3],-eq[1]*eq[3],-eq[2]*eq[3]);
 		myVectorf tmpOriginVec = new myVectorf(planeOrigin);
@@ -155,11 +152,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		}
 		for(int j=0;j<minMaxDiffValAra[2].length;++j) {minMaxDiffValAra[2][j] = minMaxDiffValAra[1][j] -minMaxDiffValAra[0][j];	}
 
-		//find closest point on plane to origin
-		//planeOrigin 
-		
-		orthoFrame = new myPointf[3];
-		
+		orthoFrame = new myPointf[3];		
 		for(int i=0;i<orthoFrame.length;++i) {
 			orthoFrame[i]= myPointf._add(planeOrigin, frameLen, basisVecs[i]);
 		}
@@ -167,6 +160,47 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		super.buildLocClrAndSamplesFromCSVStr(buildLocForColor(), _csvDat);
 		buildPlanePShapes();
 	}
+	
+	/**
+	 * ctor to build object corresponding to bmu geometric object
+	 * @param _mapMgr
+	 * @param _mapNode
+	 */
+	public Geom_PlaneSOMExample(SOM_GeomMapManager _mapMgr, SOM_GeomMapNode _mapNode) {
+		super(_mapMgr, _mapNode, SOM_GeomObjTypes.plane);
+		//plane norm
+		myVectorf tmpNorm = myVectorf._cross(new myVectorf(getSrcPts()[0], getSrcPts()[1]), new myVectorf(getSrcPts()[0], getSrcPts()[2]))._normalize();
+		eq = getPlanarEqFromPointAndNorm(tmpNorm, getSrcPts()[0]);
+		//works because plane is built with unit normal in equation
+		planeOrigin = new myPointf(-eq[0]*eq[3],-eq[1]*eq[3],-eq[2]*eq[3]);
+		myVectorf tmpOriginVec = new myVectorf(planeOrigin);
+		if(tmpOriginVec._dot(tmpNorm) < 0) {tmpNorm._mult(-1.0f);	}		//make normal point away from absolute origin
+		
+		//build basis vectors
+		basisVecs = buildBasisVecs(tmpNorm);
+		
+		dispBoundPts = calc_plane_WBBox_IntersectPoints();
+		minMaxDiffValAra = new float[][] {{100000,100000,100000},{-100000,-100000,-100000},{0,0,0}};
+		for(int i=0;i<dispBoundPts.length;++i) {
+			float[] ptAra = dispBoundPts[i].asArray();
+			for(int j=0;j<ptAra.length;++j) {
+				minMaxDiffValAra[0][j] = (minMaxDiffValAra[0][j] > ptAra[j] ? ptAra[j] : minMaxDiffValAra[0][j]);
+				minMaxDiffValAra[1][j] = (minMaxDiffValAra[1][j] < ptAra[j] ? ptAra[j] : minMaxDiffValAra[1][j]);				
+			}
+		}
+		for(int j=0;j<minMaxDiffValAra[2].length;++j) {minMaxDiffValAra[2][j] = minMaxDiffValAra[1][j] -minMaxDiffValAra[0][j];	}
+
+		orthoFrame = new myPointf[3];
+		
+		for(int i=0;i<orthoFrame.length;++i) {
+			orthoFrame[i]= myPointf._add(planeOrigin, frameLen, basisVecs[i]);
+		}
+		//build new point location for color, squaring the distance from the origin to provide more diversity
+	
+		super.buildLocClrInitObjAndSamples(buildLocForColor(), SOM_GeomObjTypes.plane.getVal());
+		buildPlanePShapes();
+	}
+	
 
 	public Geom_PlaneSOMExample(Geom_PlaneSOMExample _otr) {
 		super(_otr);	
@@ -181,6 +215,17 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		worldBounds = _otr.worldBounds;
 		planeObjs = _otr.planeObjs;		
 	}
+	/**
+	 * build rotational quantities for this plane - how to rotate a horizontal plane to match the orientation of this plane
+	 * using axis-angle
+	 */
+//	private void buildRotVecs() {
+//		//axis and angle to rotate simple plane for display to coincide with orienation of this plane's normal
+//		rotAxis = myVectorf.UP._cross(basisVecs[0]);
+//		rotAxis._normalize();		
+//		rotAngle = (float) Math.acos(basisVecs[0]._dot(myVectorf.UP));
+//	}
+	
 	
 	//build new point location for color, increasing the distance from the origin to provide more diversity
 	private myPointf buildLocForColor() {		
@@ -189,6 +234,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		return new myPointf(myPointf.ZEROPT, mod, basisVecs[0]);
 	}
 	
+
 	/**
 	 * build pshapes representing planes for different colors, to speed up rendering
 	 */
@@ -202,71 +248,10 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		planeObjs[SOM_GeomObjDrawType.selected.getVal()] = buildSelectedPoly();
 
 	}//buildPlanePShapes
-	
-	/**
-	 * build rotational quantities for this plane - how to rotate a horizontal plane to match the orientation of this plane
-	 * using axis-angle
-	 */
-//	private void buildRotVecs() {
-//		//axis and angle to rotate simple plane for display to coincide with orienation of this plane's normal
-//		rotAxis = myVectorf.UP._cross(basisVecs[0]);
-//		rotAxis._normalize();		
-//		rotAngle = (float) Math.acos(basisVecs[0]._dot(myVectorf.UP));
-//	}
-	
-	
-	/**
-	 * initialize object's ID, and build SOM_GeomSamplePointf array from the source samples used to derive this object
-	 * @param _srcSmpls
-	 * @return
-	 */
-	@Override
-	protected SOM_GeomSamplePointf[] initAndBuildSourcePoints(SOM_GeomSmplDataForEx[] _srcSmpls) {
-		//set here since this is called from the base class constructor
-		setID(IDGen++);
-		SOM_GeomSamplePointf[] ptAra = new SOM_GeomSamplePointf[geomSrcSamples.length];
-		for(int i=0;i<geomSrcSamples.length;++i) {
-			if(geomSrcSamples[i].getObj() == null) {geomSrcSamples[i].setObj(this);}
-			ptAra[i]=new SOM_GeomSamplePointf(geomSrcSamples[i].getPoint(), objGeomType.toString()+"_"+getID()+"_SrcPt_"+i);
-		}
-		return ptAra;
-	}
 
 	
 	private PShape buildPoly(boolean hasFill, int[] clr) {
 		PShape poly = mapMgr.win.pa.createShape(); 
-//		if(hasFill) {
-//			poly.beginShape(poly.TRIANGLE_FAN);
-//			poly.fill(clr[0],clr[1],clr[2],255);				
-//			poly.stroke(clr[0],clr[1],clr[2],255);
-//			poly.strokeWeight(2.0f);
-//			poly.normal(basisVecs[0].x, basisVecs[0].y, basisVecs[0].z); 
-//			poly.vertex(planeOrigin.x,planeOrigin.y,planeOrigin.z);
-//			for(int i=0;i<dispBoundPts.length;++i){poly.vertex(dispBoundPts[i].x,dispBoundPts[i].y,dispBoundPts[i].z);} 
-//			poly.vertex(dispBoundPts[0].x,dispBoundPts[0].y,dispBoundPts[0].z);
-//			poly.endShape(mapMgr.win.pa.CLOSE);
-//		} else {
-//			poly.beginShape();
-//			poly.noFill();		
-//			poly.stroke(clr[0],clr[1],clr[2],255);
-//			poly.strokeWeight(2.0f);
-//			poly.normal(basisVecs[0].x, basisVecs[0].y, basisVecs[0].z); 
-//			for(int i=0;i<dispBoundPts.length;++i){poly.vertex(dispBoundPts[i].x,dispBoundPts[i].y,dispBoundPts[i].z);} 
-//			poly.endShape(mapMgr.win.pa.CLOSE);
-//			
-//		}
-//		poly.beginShape();
-//		if(hasFill) {
-//			poly.fill(clr[0],clr[1],clr[2],255);
-//		} else {
-//			poly.noFill();		
-//		}
-//		poly.stroke(clr[0],clr[1],clr[2],255);
-//		poly.strokeWeight(3.0f);
-//		poly.normal(basisVecs[0].x, basisVecs[0].y, basisVecs[0].z); 
-//		for(int i=0;i<dispBoundPts.length;++i){poly.vertex(dispBoundPts[i].x,dispBoundPts[i].y,dispBoundPts[i].z);} 
-//		poly.endShape(mapMgr.win.pa.CLOSE);
-		
 		//all have lines to center
 		poly.beginShape(poly.TRIANGLE_FAN);
 		if(hasFill) {
@@ -469,6 +454,26 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 
 	////////////////////////////
 	// feature functionality (inherited from SOM_Example
+	
+	/**
+	 * build an array of source points from the characteristic features of the source map node
+	 */
+	@Override
+	protected final SOM_GeomSamplePointf[] buildSrcPtsFromBMUMapNodeFtrs(float[] mapFtrs, int _numSrcSmpls, String _dispLabel) {
+		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[_numSrcSmpls];
+		myVectorf tmpNorm = new myVectorf(mapFtrs[0],mapFtrs[1],mapFtrs[2])._normalize();//should be normalized, but in case it isn't
+		myVectorf[] basisVecs = buildBasisVecs(tmpNorm);
+		myPointf originPt = new myPointf(mapFtrs[3],mapFtrs[4],mapFtrs[5]);		
+		//float[] eq = getPlanarEqFromPointAndNorm(tmpNorm, originPt);
+		res[0]= new SOM_GeomSamplePointf(myPointf._add(originPt, 10.0f, basisVecs[1]), _dispLabel+"_BMU_pt_0");
+		res[1]= new SOM_GeomSamplePointf(myPointf._add(originPt, 10.0f, basisVecs[2]), _dispLabel+"_BMU_pt_1");
+		res[2]= new SOM_GeomSamplePointf(myPointf._add(originPt, 10.0f, basisVecs[1], 10.0f, basisVecs[2]) , _dispLabel+"_BMU_pt_2");
+		
+		return res;			
+	}//buildSrcPtsFromBMUMapNode
+	
+
+	
 	/**
 	 * object shape-specific feature building - ftrVecMag calced in base class
 	 */
@@ -500,17 +505,11 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @return
 	 */
 	@Override
-	protected String getRawDescColNamesForCSV_Indiv() {
-		// TODO Auto-generated method stub
-		return "";
-	}
-
-	
+	protected String getRawDescColNamesForCSV_Indiv() {	return "";}
 
 	@Override
 	public final TreeMap<Integer, Integer> getTrainingLabels() {
 		TreeMap<Integer, Integer> res = new TreeMap<Integer, Integer>();
-		// TODO Auto-generated method stub
 		return res;
 	}
 
@@ -521,21 +520,17 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * get an appropriate sample location to build sample sets, based on what kind of object is being built
 	 * @return
 	 */
-
+//_drawLabelAtLoc_3D(my_procApplet pa, myPointf pt, SOM_AnimWorldWin animWin, String label, float _off)
 	@Override
 	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin) {
 		pa.pushMatrix();pa.pushStyle();	
-		pa.stroke(100,100,100,255);
-		pa.fill(0,0,0,255);
+		pa.setFill(this.labelClrAra, 255);
+		pa.setStroke(this.labelClrAra, 255);
 		pa.strokeWeight(2.0f);
+		_drawLabelAtLoc_3D(pa, planeOrigin, animWin, dispLabel + " Origin : " + planeOrigin.toStrBrf() +" | Normal " + basisVecs[0].toStrBrf(), 1.5f, 2.5f);
 		for(int i=0;i<dispBoundPts.length;++i){
-			pa.pushMatrix();pa.pushStyle();	
 			pa.line(planeOrigin, dispBoundPts[i]);
-			pa.translate(dispBoundPts[i]); 
-			animWin.unSetCamOrient();
-			pa.scale(1.75f);
-			pa.text(""+i, 3.0f,-3.0f,0); 
-			pa.popStyle();pa.popMatrix();
+			_drawLabelAtLoc_3D(pa, dispBoundPts[i], animWin, dispLabel + " Bound " + i+" : " + dispBoundPts[i].toStrBrf(), 1.25f,  2.0f);
 		}
 		
 		pa.popStyle();pa.popMatrix();
@@ -552,19 +547,8 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	protected void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
 		pa.pushMatrix();pa.pushStyle();			
 		pa.strokeWeight(2.0f);
-//		pa.pushMatrix();pa.pushStyle();
-//			pa.translate(_origin.x,_origin.y,_origin.z); 
-//			//rotate up to plane norm planeNorm
-//			pa.rotate(rotAngle,rotAxis);
-//			//draw plane as box currently
-//			//TODO replace with method built on end points derived from equation
-//			
-//			//pa.box(500,500,1);
-//			
-//		pa.popStyle();pa.popMatrix();
-		pa.shape(planeObjs[drawType.getVal()]);
-		//pa.showNoClose(dispBoundPts);//, basisVecs[0]);
-		
+
+		pa.shape(planeObjs[drawType.getVal()]);		
 		pa.popStyle();pa.popMatrix();
 	}
 
@@ -596,25 +580,15 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		pa.translate(planeOrigin);
 		pa.scale(1.0f + modCnt*.5f);
 		pa.translate(-planeOrigin.x,-planeOrigin.y,-planeOrigin.z);
-//		pa.pushMatrix();pa.pushStyle();
-//			pa.translate(_origin.x,_origin.y,_origin.z); 
-//			//rotate up to plane norm planeNorm
-//			pa.rotate(rotAngle,rotAxis);
-//			//draw plane as box currently
-//			//TODO replace with method built on end points derived from equation
-//			
-//			//pa.box(500,500,1);
-//			
-//		pa.popStyle();pa.popMatrix();
+
 		pa.shape(planeObjs[selIDX]);
-		//pa.showNoClose(dispBoundPts);//, basisVecs[0]);
 		
 		pa.popStyle();pa.popMatrix();
 	}
 	
 	@Override
 	public void drawMyLabel_BMU(my_procApplet pa) {
-		// TODO Auto-generated method stub
+
 		
 	}
 
@@ -633,5 +607,13 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		// TODO Auto-generated method stub
 		
 	}
+	
 
-}
+	/**
+	 * initialize object's ID
+	 */
+	protected final int incrID() {return IDGen++;}
+
+
+
+}//class Geom_PlaneSOMExample

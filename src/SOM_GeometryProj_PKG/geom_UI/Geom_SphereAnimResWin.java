@@ -26,7 +26,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	/**
 	 * set initial valuess
 	 */
-	public float minSphRad = 20, maxSphRad = 100;
+	public float minSphRad = 50, maxSphRad = 100;
 	
 
 	public Geom_SphereAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed,String _winTxt, boolean _canDrawTraj) {
@@ -106,7 +106,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final int getMinNumSmplsPerObj() {return 50;}
 	@Override
-	protected final int getMaxNumSmplsPerObj() {return 1000;}
+	protected final int getMaxNumSmplsPerObj() {return 500;}
 	/**
 	 * calculate the max # of examples for this type object : n choose k where k is degree
 	 */

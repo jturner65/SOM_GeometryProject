@@ -3,6 +3,7 @@ package SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
+import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_LineSOMMapNode;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_LineExManager;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.runners.Geom_LineObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
@@ -10,7 +11,7 @@ import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomFtrBndMon;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
@@ -63,7 +64,7 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	}
 
 	@Override
-	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc, String[] tkns) {return new SOM_GeomMapNode(this,mapLoc, tkns);}	
+	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc, String[] tkns) {return new Geom_LineSOMMapNode(this,mapLoc, tkns);}	
 
 	@Override
 	public String getClassSegmentTitleString(int classID) {

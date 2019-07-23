@@ -11,7 +11,7 @@ import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.SOM_MapManager;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.myPoint;

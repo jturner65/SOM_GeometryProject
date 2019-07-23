@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import base_SOM_Objects.SOM_MapManager;
 import base_UI_Objects.my_procApplet;
@@ -70,7 +70,7 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	protected static final int numBaseAnimWinPrivFlags = 14;
 		
 	//initial values
-	public int numGeomObjs = 200, numSmplPointsPerObj = 200, numTrainingExamples = 40000, curSelGeomObjIDX = 0;
+	public int numGeomObjs = 10, numSmplPointsPerObj = 200, numTrainingExamples = 40000, curSelGeomObjIDX = 0;
 	//fraction of max count of binomial coefficient to set as # of training examples to sample from objects + samples
 	public double fractOfBinomialForBaseNumTrainEx = .001;
 	
@@ -471,11 +471,11 @@ public abstract class SOM_AnimWorldWin extends myDispWindow {
 	
 	private void _drawObjs(SOM_GeomObj[] objs, int curSelObjIDX, float animTimeMod, boolean mapBuiltAndUseMapLoc, boolean showSmpls, boolean showObjs, boolean useLocClr, boolean showSel,boolean showWireFrame, boolean showSmplsLabel, boolean showLabel) {
 		if(mapBuiltAndUseMapLoc) {
-			if(showSmpls) {		_drawObjSmpls_UseBMUs(objs,useLocClr);}
 			if(showObjs) {		_drawObjs_UseBMUs(objs,useLocClr, showWireFrame, showLabel);}			
+			if(showSmpls) {		_drawObjSmpls_UseBMUs(objs,useLocClr);}
 		} else {
-			if(showSmpls) {		_drawObjSmpls(objs,curSelObjIDX,animTimeMod,useLocClr,showSel,showSmplsLabel);}
 			if(showObjs) {		_drawObjs_UseActual(objs,curSelObjIDX,animTimeMod,useLocClr,showSmpls,showSel, showWireFrame, showLabel);	}
+			if(showSmpls) {		_drawObjSmpls(objs,curSelObjIDX,animTimeMod,useLocClr,showSel,showSmplsLabel);}
 		} 
 			
 	}//_drawObjs

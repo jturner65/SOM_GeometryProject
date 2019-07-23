@@ -6,12 +6,14 @@ import java.util.concurrent.ThreadLocalRandom;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_examples.SOM_FtrDataType;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.MyMathUtils;
 import base_Utils_Objects.vectorObjs.myPointf;
@@ -64,10 +66,10 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 */
 	public Geom_LineSOMExample(Geom_LineMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
 		super(_mapMgr, _exType, _id, _srcSmpls, SOM_GeomObjTypes.line);
-		srcPts[0].z = 0.0f;
-		srcPts[1].z = 0.0f;
+		getSrcPts()[0].z = 0.0f;
+		getSrcPts()[1].z = 0.0f;
 		//z is always 0 - making this in 2 d
-		dir=new myVectorf(srcPts[0],srcPts[1]);
+		dir=new myVectorf(getSrcPts()[0],getSrcPts()[1]);
 		dir.z = 0;
 		dir._normalize();	
 		//origin is closest point to 0,0 on line
@@ -76,7 +78,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		
 		//build bounds on s and t, if appropriate - by here equations define objects should be built
 		worldTBounds = calcTBounds();
-		super.buildLocClrInitObjAndSamples(srcPts[0], _numSmplPts);
+		super.buildLocClrInitObjAndSamples(getSrcPts()[0], _numSmplPts);
 		dispEndPts = new myPointf[2];
 		dispAra = new String[2];
 		float low_t = worldTBounds[0][0], hi_t = worldTBounds[0][0] + worldTBounds[1][0];
@@ -95,10 +97,10 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	
 	public Geom_LineSOMExample(Geom_LineMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
 		super(_mapMgr, _exType, _oid, _csvDat, SOM_GeomObjTypes.line);
-		srcPts[0].z = 0.0f;
-		srcPts[1].z = 0.0f;
+		getSrcPts()[0].z = 0.0f;
+		getSrcPts()[1].z = 0.0f;
 		//z is always 0 - making this in 2 d
-		dir=new myVectorf(srcPts[0],srcPts[1]);
+		dir=new myVectorf(getSrcPts()[0],getSrcPts()[1]);
 		dir.z = 0;
 		dir._normalize();	
 		//origin is closest point to 0,0 on line
@@ -107,7 +109,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		
 		//build bounds on s and t, if appropriate - by here equations define objects should be built
 		worldTBounds = calcTBounds();
-		super.buildLocClrAndSamplesFromCSVStr(srcPts[0], _csvDat);
+		super.buildLocClrAndSamplesFromCSVStr(getSrcPts()[0], _csvDat);
 		
 		dispEndPts = new myPointf[2];
 		dispAra = new String[2];
@@ -119,6 +121,42 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		
 	}
 	
+	/**
+	 * ctor to build object corresponding to bmu geometric object
+	 * @param _mapMgr
+	 * @param _mapNode
+	 */
+	public Geom_LineSOMExample(SOM_GeomMapManager _mapMgr, SOM_GeomMapNode _mapNode) {
+		super(_mapMgr, _mapNode, SOM_GeomObjTypes.line);
+		getSrcPts()[0].z = 0.0f;
+		getSrcPts()[1].z = 0.0f;
+		//z is always 0 - making this in 2 d
+		dir=new myVectorf(getSrcPts()[0],getSrcPts()[1]);
+		dir.z = 0;
+		dir._normalize();	
+		//origin is closest point to 0,0 on line
+		origin = findClosestPointOnLine(myPointf.ZEROPT);
+		origin.z = 0;
+		
+		//build bounds on s and t, if appropriate - by here equations define objects should be built
+		worldTBounds = calcTBounds();
+		super.buildLocClrInitObjAndSamples(getSrcPts()[0], SOM_GeomObjTypes.line.getVal());
+		dispEndPts = new myPointf[2];
+		dispAra = new String[2];
+		float low_t = worldTBounds[0][0], hi_t = worldTBounds[0][0] + worldTBounds[1][0];
+		dispEndPts[0] = getPointOnLine(worldTBounds[0][0]);
+		dispEndPts[1] = getPointOnLine(worldTBounds[0][0] + worldTBounds[1][0]);
+		
+		float ctr_t = this.getTForPointOnLine(origin);
+		if(ctr_t < low_t) {			origin.set(dispEndPts[0]);}
+		else if (ctr_t > hi_t) {	origin.set(dispEndPts[1]);}
+		
+		dispAra[0] = "BMU_End pt 0 w/min t : " + worldTBounds[0][0] + " | "+dispEndPts[0].toStrBrf();
+		dispAra[1] = "BMU_End pt 1 w/max t : " + (worldTBounds[0][0]+worldTBounds[1][0])+ " | "+dispEndPts[1].toStrBrf();
+			
+	}
+	
+	
 	public Geom_LineSOMExample(Geom_LineSOMExample _otr) {
 		super(_otr);
 		dir = _otr.dir;
@@ -127,22 +165,6 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		worldBounds = _otr.worldBounds;
 	}//copy ctor
 	
-	/**
-	 * initialize object's ID, and build SOM_GeomSamplePointf array from the source samples used to derive this object
-	 * @param _srcSmpls
-	 * @return
-	 */
-	@Override
-	protected SOM_GeomSamplePointf[] initAndBuildSourcePoints(SOM_GeomSmplDataForEx[] _srcSmpls) {
-		//set here since this is called from the base class constructor
-		setID(IDGen++);
-		SOM_GeomSamplePointf[] ptAra = new SOM_GeomSamplePointf[geomSrcSamples.length];
-		for(int i=0;i<geomSrcSamples.length;++i) {
-			if(geomSrcSamples[i].getObj() == null) {geomSrcSamples[i].setObj(this);}
-			ptAra[i]=new SOM_GeomSamplePointf(geomSrcSamples[i].getPoint(), objGeomType.toString()+"_"+getID()+"_SrcPt_"+i);
-		}
-		return ptAra;
-	}
 
 	/**
 	 * call from ctor of base class, but set statically for each instancing class type
@@ -175,7 +197,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 * @return result array
 	 */
 	protected final float[][] calcTBounds(){
-		float[] ptA_ara = srcPts[0].asArray(), dirAra = dir.asArray();
+		float[] ptA_ara = getSrcPts()[0].asArray(), dirAra = dir.asArray();
 		//eq  pt = pta + t * dir -> t = (pt-pta)/dir for each dof
 		//mins has location for each dof
 		float[] mins = worldBounds[0];		
@@ -184,7 +206,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 			res[0][i]=100000000.0f;			
 		}
 		//for every bound, set t value in bound's ortho dim
-		float[] tAtBounds = new float[worldBounds[0].length * worldBounds.length];
+		//float[] tAtBounds = new float[worldBounds[0].length * worldBounds.length];
 		TreeMap<Float, Integer> tmpBnds = new TreeMap<Float, Integer>();
 		float curMax;
 	
@@ -210,15 +232,15 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 
 	public final myPointf findClosestPointOnLine(myPointf p) {
 		//find projection t of vector ap (from a to p) on dir, then find a + t * dir
-		myVectorf proj = new myVectorf(srcPts[0],p);
-		return myVectorf._add(srcPts[0], proj._dot(dir), dir);
+		myVectorf proj = new myVectorf(getSrcPts()[0],p);
+		return myVectorf._add(getSrcPts()[0], proj._dot(dir), dir);
 	}
 	/**
 	 * return a point on the line 
 	 * @param t
 	 * @return
 	 */
-	public final myPointf getPointOnLine(float t) {return myVectorf._add(srcPts[0], t, dir);}
+	public final myPointf getPointOnLine(float t) {return myVectorf._add(getSrcPts()[0], t, dir);}
 	
 	/**
 	 * find t value for point on line - expects point to be on line!
@@ -229,8 +251,8 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		//pt  == origin  + t * dir
 		// -> t = (pt.x - origin.x)/dir.x 
 		float t = 0.0f;
-		if(Math.abs(dir.x)> MyMathUtils.eps) {	t = (pt.x - srcPts[0].x)/dir.x;} 
-		else {									t = (pt.y - srcPts[0].y)/dir.y;}//vertical line			
+		if(Math.abs(dir.x)> MyMathUtils.eps) {	t = (pt.x - getSrcPts()[0].x)/dir.x;} 
+		else {									t = (pt.y - getSrcPts()[0].y)/dir.y;}//vertical line			
 		return t;
 	}
 	
@@ -245,6 +267,20 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	
 	////////////////////////////
 	// feature functionality (inherited from SOM_Example
+	
+	/**
+	 * build an array of source points from the characteristic features of the source map node
+	 */
+	@Override
+	protected final SOM_GeomSamplePointf[] buildSrcPtsFromBMUMapNodeFtrs(float[] mapFtrs, int _numSrcSmpls, String _dispLabel) {
+		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[_numSrcSmpls];
+		myVectorf tmpNorm = new myVectorf(mapFtrs[0],mapFtrs[1],0.0f)._normalize();//should be normalized, but in case it isn't
+		myPointf ctrPt = new myPointf(mapFtrs[2],mapFtrs[3],0.0f);
+		res[0]= new SOM_GeomSamplePointf(myVectorf._add(ctrPt, 11.0f,tmpNorm), _dispLabel+"_BMU_pt_0");
+		res[1]= new SOM_GeomSamplePointf(myVectorf._add(ctrPt, -12.0f,tmpNorm), _dispLabel+"_BMU_pt_1");
+		return res;			
+	}//buildSrcPtsFromBMUMapNode
+	
 	
 	/**
 	 * object shape-specific feature building - ftrVecMag calced in base class
@@ -280,17 +316,35 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		// TODO Auto-generated method stub
 		return res;
 	}	
+	
+	private final void showMyPoint(my_procApplet pa, myPointf P, float r) {
+		pa.pushMatrix(); pa.pushStyle(); 
+		pa.translate(P.x,P.y,0); 
+		pa.circle(0,0,r,r);						
+		pa.popStyle(); pa.popMatrix();
+	} // render sphere of radius r and center P)	
+
+	private final void showMyPoint(my_procApplet pa, myPointf P, float r, String s, float _off) {
+		pa.pushMatrix(); pa.pushStyle(); 
+		pa.translate(P.x,P.y,0); 
+		pa.circle(0,0,r,r);				
+		pa.text(s, _off, _off);
+		pa.popStyle(); pa.popMatrix();
+	} // render sphere of radius r and center P)	
+
 	///////////////////////////
 	// draw functionality
 	@Override
 	protected final void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
+		pa.pushMatrix();pa.pushStyle();	
 		pa.strokeWeight(2.0f);
 		pa.line(dispEndPts[0],dispEndPts[1]);
-		pa.show(dispEndPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
-		pa.show(dispEndPts[1], 5.0f, "", myVectorf.ZEROVEC, -1, true);
-		pa.show(srcPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
-		pa.show(srcPts[1], 5.0f, "", myVectorf.ZEROVEC, -1, true);
-		pa.show(origin, 5.0f, "", myVectorf.ZEROVEC, -1, true);
+		showMyPoint(pa,dispEndPts[0], 5.0f);
+		showMyPoint(pa,dispEndPts[1], 5.0f);
+		showMyPoint(pa,getSrcPts()[0], 5.0f);
+		showMyPoint(pa,getSrcPts()[1], 5.0f);
+		showMyPoint(pa,origin, 5.0f);
+		pa.popStyle();pa.popMatrix();
 	}
 
 	/**
@@ -298,23 +352,28 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 */
 	@Override
 	protected final void _drawMe_Geom_BMU(my_procApplet pa, SOM_GeomObjDrawType drawType) {
-		pa.strokeWeight(2.0f);
-		pa.line(dispEndPts[0],dispEndPts[1]);
-		pa.show(dispEndPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
-		pa.show(dispEndPts[1], 5.0f, "", myVectorf.ZEROVEC, -1, true);
-		pa.show(srcPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
-		pa.show(srcPts[1], 5.0f, "", myVectorf.ZEROVEC, -1, true);
-		pa.show(origin, 5.0f, "", myVectorf.ZEROVEC, -1, true);
+//		pa.strokeWeight(2.0f);
+//		pa.line(dispEndPts[0],dispEndPts[1]);
+//		pa.show(dispEndPts[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+//		pa.show(dispEndPts[1], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+//		pa.show(getSrcPts()[0], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+//		pa.show(getSrcPts()[1], 5.0f, "", myVectorf.ZEROVEC, -1, true);
+//		pa.show(origin, 5.0f, "", myVectorf.ZEROVEC, -1, true);
 	}
 
 	@Override
-	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin) {		
+	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin) {
+		pa.pushMatrix();pa.pushStyle();		
+		pa.setFill(labelClrAra,255);
+		pa.setStroke(labelClrAra,255);
+		pa.strokeWeight(2.0f);
 		//(myPointf P, float r, String s, myVectorf D, int clr, boolean flat)
-		pa.show(dispEndPts[0], 5.0f, "ID " + getID()+dispAra[0], myVectorf.ZEROVEC, -1, true);
-		pa.show(dispEndPts[1], 5.0f, "ID " + getID()+dispAra[1], myVectorf.ZEROVEC, -1, true);
-		pa.show(srcPts[0], 5.0f, "pt a :"+srcPts[0].toStrBrf(), myVectorf.ZEROVEC, -1, true);
-		pa.show(srcPts[1], 5.0f, "pt b :"+srcPts[1].toStrBrf(), myVectorf.ZEROVEC, -1, true);
-		pa.show(origin, 5.0f, "ID " + getID()+"| Origin " + origin.toStrBrf() + " | Dir : " + dir.toStrBrf() +" | " +dispAra[0]+"->"+dispAra[1], myVectorf.ZEROVEC, -1, true);
+		showMyPoint(pa,dispEndPts[0], 5.0f, dispLabel+dispAra[0], 0.0f);
+		showMyPoint(pa,dispEndPts[1], 5.0f, dispLabel+dispAra[1], 0.0f);
+		showMyPoint(pa,getSrcPts()[0], 5.0f, "pt a :"+getSrcPts()[0].toStrBrf(), 0.0f);
+		showMyPoint(pa,getSrcPts()[1], 5.0f, "pt b :"+getSrcPts()[1].toStrBrf(), 0.0f);
+		showMyPoint(pa,origin, 5.0f, dispLabel+"| Origin " + origin.toStrBrf() + " | Dir : " + dir.toStrBrf() +" | " +dispAra[0]+"->"+dispAra[1], 0.0f);
+		pa.popStyle();pa.popMatrix();	
 	}
 	
 	/**
@@ -324,11 +383,14 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	@Override
 	public final void drawMySmplsLabel(my_procApplet pa, SOM_AnimWorldWin animWin){	objSamples.drawMySmplsLabel_2D(pa);}//
 
+	
+	protected static float modCnt = 0;//counter that will determine when the color should switch
 	@Override
 	protected final void _drawMeSelected(my_procApplet pa, float animTmMod) {
-		// TODO Auto-generated method stub
-
-	}
+		modCnt += animTmMod;
+		if(modCnt > 1.0){	modCnt = 0.0f;	}//blink every ~second
+		
+	}//_drawMeSelected
 
 	@Override
 	public void drawMyLabel_BMU(my_procApplet pa) {
@@ -341,6 +403,12 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		// TODO Auto-generated method stub
 
 	}
+
+
+	/**
+	 * initialize object's ID
+	 */
+	protected final int incrID() {return IDGen++;}
 
 
 

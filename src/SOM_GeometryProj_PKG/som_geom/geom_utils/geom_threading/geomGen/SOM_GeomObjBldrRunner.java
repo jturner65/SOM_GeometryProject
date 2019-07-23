@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import base_Utils_Objects.threading.runners.myThreadRunner;
 
 /**

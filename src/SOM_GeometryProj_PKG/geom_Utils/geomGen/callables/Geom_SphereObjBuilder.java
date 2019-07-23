@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
@@ -34,9 +34,9 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 			
 		//now get 4 points to determine this sphere - make sure they are ortho		
 		myPointf[] spherePts = getRandSpherePoints(rad,ctr);	
-		for(myPointf p : spherePts) {
-			msgObj.dispInfoMessage("Geom_SphereObjBuilder", "_buildSingleObject", "pt : " + p.toStrBrf());
-		}
+//		for(myPointf p : spherePts) {
+//			msgObj.dispInfoMessage("Geom_SphereObjBuilder", "_buildSingleObject", "pt : " + p.toStrBrf());
+//		}
 		String ID = "Sphere_"+String.format("%05d", idx);
 		SOM_GeomSamplePointf[] pts = new SOM_GeomSamplePointf[spherePts.length];
 		for(int i=0;i<pts.length; ++i) {pts[i] = new SOM_GeomSamplePointf(spherePts[i],ID+"_gen_pt_"+i);}

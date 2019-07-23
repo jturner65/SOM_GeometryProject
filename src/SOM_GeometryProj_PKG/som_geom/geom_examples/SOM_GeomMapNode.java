@@ -3,22 +3,21 @@ package SOM_GeometryProj_PKG.som_geom.geom_examples;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_examples.SOM_MapNode;
 import base_Utils_Objects.vectorObjs.Tuple;
 
-public class SOM_GeomMapNode extends SOM_MapNode {
+public abstract class SOM_GeomMapNode extends SOM_MapNode {
 	/**
 	 * a visual representation of the data in this map node
 	 */
 	protected SOM_GeomObj visObj;
 	
 
-	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, float[] _ftrs) {super(_map, _mapNodeLoc, _ftrs);  }
+	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, float[] _ftrs) {super(_map, _mapNodeLoc, _ftrs);  visObj = buildVisObj();}
 
-	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, String[] _strftrs) {super(_map, _mapNodeLoc, _strftrs);float[] _ftrs = this.getFtrs();}
+	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, String[] _strftrs) {super(_map, _mapNodeLoc, _strftrs); visObj = buildVisObj();}
 
 	@Override
 	protected void _initDataFtrMappings() {
@@ -37,6 +36,12 @@ public class SOM_GeomMapNode extends SOM_MapNode {
 		}			
 		return res;		
 	}
+	
+	/**
+	 * build the visualization object for this map node
+	 * @return
+	 */
+	protected abstract SOM_GeomObj buildVisObj();
 
 	@Override
 	protected final String getFtrWtSegment_CSVStr_Hdr() {return "Map Node Loc,Probability,Ftr IDX";}
@@ -62,8 +67,9 @@ public class SOM_GeomMapNode extends SOM_MapNode {
 
 	@Override
 	//manage instancing map node handling - specifically, handle using 2ndary features as node markers (like a product tag or a class)
-	//in other words, this takes the passed example's "class" in our case all the order jps, and assigns them to this node
-	protected void addTrainingExToBMUs_Priv(double dist, SOM_Example ex) {
+	//in other words, this takes the passed example's "class", in our case all the constituent points that make up the example, and assigns them to this node
+	//class and category are managed by an integer key
+	protected void addTrainingExToBMUs_Priv(double sqDist, SOM_Example ex) {
 //		TreeMap<Tuple<Integer, Integer>, Integer> trainExOrderCounts = ((Straff_CustProspectExample)ex).getOrderCountsForExample();
 //		//for each jpg-jp used in training example, assign 
 //		//TreeMap<Integer, Integer> jpCountsAtJpGrp, npJpCountsAtJpGrp;
@@ -77,7 +83,31 @@ public class SOM_GeomMapNode extends SOM_MapNode {
 //	
 //		}
 	}
-
+	/**
+	 * get salient name prefix for class segment for the objects mapped to this bmu
+	 * @return
+	 */
+	@Override
+	public final String getClassSegName() {return "_SrcPt_Count_Pt_";}
+	/**
+	 * get salient descriptions for class segment for the objects mapped to this bmu
+	 * @return
+	 */
+	@Override
+	public final String getClassSegDesc() {return "Source Pt Counts for Source Pt :";}
+	
+	/**
+	 * get salient name prefix for category segment for the objects mapped to this bmu
+	 * @return
+	 */
+	@Override
+	public final String getCategorySegName() {return "";}
+	/**
+	 * get salient descriptions for category segment for the objects mapped to this bmu
+	 * @return
+	 */
+	@Override
+	public final String getCategorySegDesc() {return "";}
 	@Override
 	//assign relevant info to this map node from neighboring map node(s) to cover for this node not having any training examples assigned
 	//only copies ex's mappings, which might not be appropriate

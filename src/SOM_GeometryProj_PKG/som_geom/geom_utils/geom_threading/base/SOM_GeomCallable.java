@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_Utils_Objects.MyMathUtils;
@@ -150,16 +150,20 @@ public abstract class SOM_GeomCallable implements Callable<Boolean> {
 	 * @return array of 3 non-colinear points
 	 */
 	protected myPointf[] getRandPlanePoints() {
-		myPointf a = getRandPointInBounds_3D();
-		myPointf b = getRandPointInBounds_3D();
+		myPointf a = getRandPointInBounds_3D(),b;
+		do { b = getRandPointInBounds_3D();} while (a.equals(b));
 		myPointf c;
 		myVectorf ab = new myVectorf(a,b), ac;
-		ab._normalize();				
+		ab._normalize();
+		boolean eqFail = false, dotProdFail = false;
 		do {
 			c = getRandPointInBounds_3D();
+			eqFail = (a.equals(c)) || (b.equals(c));
+			if(eqFail) {continue;}
 			ac = new myVectorf(a,c);
 			ac._normalize();
-		} while (Math.abs(ab._dot(ac))==1.0f);
+			dotProdFail = (Math.abs(ab._dot(ac))==1.0f);
+		} while (eqFail || dotProdFail);
 		myPointf[] planePts = new myPointf[] {a,b,c};		
 		return planePts;
 	}
@@ -169,16 +173,20 @@ public abstract class SOM_GeomCallable implements Callable<Boolean> {
 	 * @return array of 3 non-colinear points
 	 */
 	protected myPoint[] getRandPlanePoints_Double() {
-		myPoint a = getRandPointInBounds_3D_Double();
-		myPoint b = getRandPointInBounds_3D_Double();
+		myPoint a = getRandPointInBounds_3D_Double(), b;
+		do{b= getRandPointInBounds_3D_Double();} while (a.equals(b));
 		myPoint c;
 		myVector ab = new myVector(a,b), ac;
 		ab._normalize();
+		boolean eqFail = false, dotProdFail = false;
 		do {
 			c = getRandPointInBounds_3D_Double();
+			eqFail = (a.equals(c)) || (b.equals(c));
+			if(eqFail) {continue;}
 			ac = new myVector(a,c);
 			ac._normalize();
-		} while (Math.abs(ab._dot(ac))==1.0f);
+			dotProdFail = (Math.abs(ab._dot(ac))==1.0f);
+		} while (eqFail || dotProdFail);
 		myPoint[] planePts = new myPoint[] {a,b,c};		
 		return planePts;
 	}
@@ -235,29 +243,38 @@ public abstract class SOM_GeomCallable implements Callable<Boolean> {
 	 * @param rad radius of desired sphere
 	 * @param ctr center of desired sphere
 	 */	
-	protected final myPointf[] getRandSpherePoints(double rad, myPointf ctr){
-		myPointf a = getRandPosOnSphere(rad, ctr), b = getRandPosOnSphere(rad, ctr);
+	protected final myPointf[] getRandSpherePoints(float rad, myPointf ctr){
+		myPointf a = getRandPosOnSphere(rad, ctr),b;
+		do { b = getRandPosOnSphere(rad, ctr);} while (a.equals(b));
 		myPointf c,d;
-		myVectorf ab = new myVectorf(a,b), ac, bc, ad;
+		myVectorf ab = new myVectorf(a,b), ac = myVectorf.ZEROVEC, bc, ad;
 		ab._normalize();
 		int iter = 0;
+		boolean eqFail = false, dotProdFail = false;
 		do {
 			++iter;
 			c = getRandPosOnSphere(rad, ctr);
+			eqFail = (a.equals(c)) || (b.equals(c));
+			if(eqFail) {continue;}
 			ac = new myVectorf(a,c);
 			ac._normalize();
-		} while (Math.abs(ab._dot(ac))==1.0f);		//if 1 or -1 then collinear
+			dotProdFail = (Math.abs(ab._dot(ac))==1.0f);
+		} while (eqFail || dotProdFail);
 		//4th point needs to be non-coplanar - will guarantee that 
 		//it is also not collinear with any pair of existing points
 		//normal to abc plane
 		myVectorf planeNorm = ab._cross(ac)._normalize();
 		//now find d so that it does not line in plane of abc - vector from ab
+		eqFail = false; dotProdFail = false;
 		do {
 			++iter;
 			d = getRandPosOnSphere(rad, ctr);
+			eqFail = a.equals(d) || b.equals(d) || c.equals(d);
+			if(eqFail) {continue;}
 			ad = new myVectorf(a,d);
 			ad._normalize();
-		} while (ad._dot(planeNorm) == 0.0f);//if 0 then in plane (ortho to normal)
+			dotProdFail = (ad._dot(planeNorm) == 0.0f);
+		} while (eqFail || dotProdFail);//if 0 then in plane (ortho to normal)
 		
 		myPointf[] spherePts = new myPointf[] {a,b,c,d};		
 		if(iter>2) {//check this doesn't take too long - most of the time should never take more than a single iteration through each do loop
@@ -268,28 +285,37 @@ public abstract class SOM_GeomCallable implements Callable<Boolean> {
 	}
 	
 	protected final myPoint[] getRandSpherePoints_Double(double rad, myPoint ctr){
-		myPoint a = getRandPosOnSphere_Double(rad, ctr), b = getRandPosOnSphere_Double(rad, ctr);
+		myPoint a = getRandPosOnSphere_Double(rad, ctr), b;
+		do{b= getRandPosOnSphere_Double(rad, ctr);} while (a.equals(b));
 		myPoint c,d;
-		myVector ab = new myVector(a,b), ac, bc, ad;
+		myVector ab = new myVector(a,b), ac = myVector.ZEROVEC, bc, ad;
 		ab._normalize();
 		int iter = 0;
+		boolean eqFail = false, dotProdFail = false;
 		do {
 			++iter;
 			c = getRandPosOnSphere_Double(rad, ctr);
+			eqFail = (a.equals(c)) || (b.equals(c));
+			if(eqFail) {continue;}
 			ac = new myVector(a,c);
 			ac._normalize();
-		} while (Math.abs(ab._dot(ac))==1.0f);		//if 1 or -1 then collinear
+			dotProdFail = (Math.abs(ab._dot(ac))==1.0f);
+		} while (eqFail || dotProdFail);
 		//4th point needs to be non-coplanar - will guarantee that 
 		//it is also not collinear with any pair of existing points
 		//normal to abc plane
 		myVector planeNorm = ab._cross(ac)._normalize();
 		//now find d so that it does not line in plane of abc - vector from ab
+		eqFail = false; dotProdFail = false;
 		do {
 			++iter;
 			d = getRandPosOnSphere_Double(rad, ctr);
+			eqFail = a.equals(d) || b.equals(d) || c.equals(d);
+			if(eqFail) {continue;}
 			ad = new myVector(a,d);
 			ad._normalize();
-		} while (ad._dot(planeNorm) == 0.0f);//if 0 then in plane (ortho to normal)
+			dotProdFail = (ad._dot(planeNorm) == 0.0f);
+		} while (eqFail || dotProdFail);//if 0 then in plane (ortho to normal)
 		
 		myPoint[] spherePts = new myPoint[] {a,b,c,d};		
 		if(iter>2) {

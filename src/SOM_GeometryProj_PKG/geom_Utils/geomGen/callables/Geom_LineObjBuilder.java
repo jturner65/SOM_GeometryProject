@@ -2,7 +2,7 @@ package SOM_GeometryProj_PKG.geom_Utils.geomGen.callables;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
@@ -29,8 +29,8 @@ public class Geom_LineObjBuilder extends SOM_GeomObjBuilder {
 //		 * 		first idx 	: 0 is min; 1 is diff
 //		 * 		2nd idx 	: 0 is x, 1 is y
 //		 */
-		myPointf a = getRandPointInBounds_2D();
-		myPointf b = getRandPointInBounds_2D();
+		myPointf a = getRandPointInBounds_2D(),b;
+		do {b = getRandPointInBounds_2D();} while(a.equals(b));
 		String ID = "Line_"+String.format("%05d", idx);
 		SOM_GeomSamplePointf[] pts = new SOM_GeomSamplePointf[] {new SOM_GeomSamplePointf(a, ID+"_gen_pt_0" ),new SOM_GeomSamplePointf(b, ID+"_gen_pt_1")};
 		SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, pts);

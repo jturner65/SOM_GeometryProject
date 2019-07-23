@@ -2,7 +2,7 @@ package SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen;
 
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.base.SOM_GeomCallable;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 

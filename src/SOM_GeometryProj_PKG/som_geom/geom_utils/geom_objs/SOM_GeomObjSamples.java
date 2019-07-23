@@ -1,6 +1,7 @@
 package SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs;
 
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.myPointf;
 import processing.core.PShape;
@@ -48,7 +49,7 @@ public class SOM_GeomObjSamples {
 	public SOM_GeomObjSamples(SOM_GeomObj _ownr, SOM_GeomObjTypes _objGeomType, int[] _rndClrAra, int[] _lblClrAra) {
 		ownr = _ownr;
 		ptRad = (float)Math.pow(_objGeomType.getVal(), 1.4);
-		objTypeStrAndID = _objGeomType.toString() + "_"+ownr.getID();
+		objTypeStrAndID = ownr.getDispLabel();
 		rndClrAra = new int[_rndClrAra.length];
 		System.arraycopy(_rndClrAra, 0, rndClrAra, 0, _rndClrAra.length);
 		labelClrAra = new int[_lblClrAra.length];
@@ -97,10 +98,10 @@ public class SOM_GeomObjSamples {
 		SOM_GeomSamplePointf[] tmpSmplAra = new SOM_GeomSamplePointf[_numSmplPtsToBuild];
 		int stIDX = 0;
 		if(0==_stSmplLblIDX) {//if starting from 0, then this means we are making original sample set - add ownr.src pts
-			for(int i=0;i<ownr.srcPts.length;++i) {
-				tmpSmplAra[i]=new SOM_GeomSamplePointf(ownr.srcPts[i],objTypeStrAndID+"_Smpl_"+String.format("%04d", i));
+			for(int i=0;i<ownr.getSrcPts().length;++i) {
+				tmpSmplAra[i]=new SOM_GeomSamplePointf(ownr.getSrcPts()[i],objTypeStrAndID+"_Smpl_"+String.format("%04d", i));
 			}
-			stIDX=ownr.srcPts.length;
+			stIDX=ownr.getSrcPts().length;
 		}
 		for(int i=stIDX;i<tmpSmplAra.length;++i) {	
 			tmpSmplAra[i]=new SOM_GeomSamplePointf(ownr.getRandPointOnObj(), objTypeStrAndID+"_Smpl_"+String.format("%04d", (i+_stSmplLblIDX))); 

@@ -1,5 +1,7 @@
 package SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs;
 
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
+
 /**
  * This object will hold a reference to a point and the SOM_GeomObj that the point comes from
  * A single SOM Example will be made up of 2 or more of these : 

@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.callables.Geom_PlaneObjBuilder;
 import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.SOM_MapManager;

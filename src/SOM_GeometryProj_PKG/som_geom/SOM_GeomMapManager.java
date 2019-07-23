@@ -8,7 +8,7 @@ import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMProjConfig;
 import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
 import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomFtrBndMon;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObj;
+import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.SOM_MapManager;
@@ -109,7 +109,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	public SOM_GeomMapManager(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap, String _geomObjType, int _numFtrs) {
 		super(_win, _dims, _argsMap);
 			//# of training features determined by type of object
-		this.setNumTrainFtrs(_numFtrs);
+		setNumTrainFtrs(_numFtrs);
 		//worldBounds=_worldBounds;
 		geomObjType=_geomObjType;
 		projConfigData.setSOMProjName(geomObjType);	
@@ -541,7 +541,7 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 	public void setAllBMUsFromMap() {
 		//make sure class and category segments are built 
 		//build class segments from mapped training examples - these are the sample points
-		buildClassSegmentsOnMap();
+		//buildClassSegmentsOnMap();
 		//build category segments from mapped training examples
 		//buildCategorySegmentsOnMap();
 		//set "product" bmus (any examples that don't directly relate to training data but rather provide descriptions of training data)
