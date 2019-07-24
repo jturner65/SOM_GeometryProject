@@ -15,8 +15,10 @@ import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
 import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_examples.SOM_FtrDataType;
 import base_SOM_Objects.som_examples.SOM_MapNode;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
+import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.Tuple;
 import base_Utils_Objects.vectorObjs.myPoint;
 
@@ -64,7 +66,7 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	}
 
 	@Override
-	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc, String[] tkns) {return new Geom_LineSOMMapNode(this,mapLoc, tkns);}	
+	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {return new Geom_LineSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);}	
 
 	@Override
 	public String getClassSegmentTitleString(int classID) {
@@ -119,5 +121,6 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	public final void setMouseRelease() {
 		
 	}
+
 	
 }//classGeom_LineMapMgr

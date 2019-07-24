@@ -407,14 +407,14 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	
 	@Override
 	protected final void buildFeaturesMap() {
-		clearFtrMap(ftrMapTypeKey);//
+		clearFtrMap(rawftrMapTypeKey);//
 		buildFeaturesMap_Indiv();
 		//find magnitude of features
 		ftrVecMag = 0;
 		Float ftrSqrMag = 0.0f;
-		int ftrSize = ftrMaps[ftrMapTypeKey].size();
+		int ftrSize = ftrMaps[rawftrMapTypeKey].size();
 		for(int i=0;i<ftrSize;++i) {
-			Float val = ftrMaps[ftrMapTypeKey].get(i);
+			Float val = ftrMaps[rawftrMapTypeKey].get(i);
 			ftrSqrMag += val * val;
 			((SOM_GeomMapManager)mapMgr).trainDatObjBnds.checkValInBnds(i, val);			
 		}
@@ -442,7 +442,7 @@ public abstract class SOM_GeomObj extends SOM_Example  {
 	
 	@Override
 	protected final void buildStdFtrsMap() {	//build standardized features
-		calcStdFtrVector(ftrMaps[ftrMapTypeKey], ftrMaps[stdFtrMapTypeKey], mapMgr.getTrainFtrMins(),mapMgr.getTrainFtrDiffs(), -1.0f, 2.0f);
+		calcStdFtrVector(ftrMaps[rawftrMapTypeKey], ftrMaps[stdFtrMapTypeKey], mapMgr.getTrainFtrMins(),mapMgr.getTrainFtrDiffs(), -1.0f, 2.0f);
 		setFlag(stdFtrsBuiltIDX, true);
 	}	
 	

@@ -282,11 +282,11 @@ public class SOM_GeometryMain extends my_procApplet {
 	 */
 	private void setDispAndModMapMgr(int flagIDX, int dispIDX, boolean val) {
 		setWinFlagsXOR(dispIDX, val);
-		if(val) {//(val) && (getVisFlag(showSOMMapUI))) {
-			System.out.println("Sending window map mgr : " + dispWinFrames[dispIDX].name);
-			SOM_MapManager mapMgr = ((SOM_AnimWorldWin)dispWinFrames[dispIDX]).getMapMgr();
+		//if(val) {//(val) && (getVisFlag(showSOMMapUI))) {
+			System.out.println("Sending window map mgr : " + dispWinFrames[curFocusWin].name);
+			SOM_MapManager mapMgr = ((SOM_AnimWorldWin)dispWinFrames[curFocusWin]).getMapMgr();
 			if(null != mapMgr) {			((SOM_MapUIWin)dispWinFrames[dispSOMMapIDX]).setMapMgr(mapMgr);			}		
-		}
+		//}
 	}//setDispAndModMapMgr
 	
 	

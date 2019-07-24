@@ -586,44 +586,26 @@ public abstract class SOM_GeomMapManager extends SOM_MapManager {
 
 	////////////////////////////
 	// draw functions
+
 	
-//	/**
-//	 * draw source objects in owning anim res window
-//	 * @param pa
-//	 * @param animTimeMod
-//	 * @param curSelGeomObjIDX
-//	 * @param showMapBasedLocs
-//	 * @param showSelUIObj
-//	 */
-//	public final void drawSrcObjsInUIWindow(my_procApplet pa, float animTimeMod, int curSelGeomObjIDX, boolean showMapBasedLocs) {
-//		if(getFlag(srcGeomObjsAllBuiltIDX)){
-//			//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is true");
-//			if(showMapBasedLocs){				//show map-based locations
-//				dispWin._drawObjs_UseBMUs(pa, sourceGeomObjects, curSelGeomObjIDX, animTimeMod);
-//			} else {										//show objects based on their own location/data, not map-derived quantities		
-//				dispWin._drawObjs_UseActual(pa, sourceGeomObjects, curSelGeomObjIDX, animTimeMod);
-//			}//use locs or map-locs
-//		}
-//	}//drawSrcObjsInUIWindow
-//
-//	/**
-//	 * draw synthesized objects in owning anim res window
-//	 * @param pa
-//	 * @param animTimeMod
-//	 * @param curSelGeomObjIDX
-//	 * @param showMapBasedLocs
-//	 * @param showSelUIObj
-//	 */
-//	public final void drawSynthObjsInUIWindow(my_procApplet pa, float animTimeMod, boolean showMapBasedLocs) {
-//		if(getFlag(trainDatObjsAllBuiltIDX)){
-//			//msgObj.dispInfoMessage("SOM_AnimWorldWin", "drawMe", "ui obj data loaded is true");
-//			if(showMapBasedLocs){				//show map-based locations
-//				dispWin._drawObjs_UseBMUs(pa, trainDatGeomObjects, -1, animTimeMod);
-//			} else {										//show objects based on their own location/data, not map-derived quantities		
-//				dispWin._drawObjs_UseActual(pa, trainDatGeomObjects, -1, animTimeMod);
-//			}//use locs or map-locs
-//		}
-//	}//drawSynthObjsInUIWindow
+	@Override
+	protected void initMapArasIndiv(int w, int h, int format, int num2ndFtrVals) {
+		
+	}
+
+
+	@Override
+	protected void drawSegmentsUMatrixDispIndiv(my_procApplet pa) {
+			
+	}
+	@Override
+	protected void drawMapRectangle_Indiv(my_procApplet pa, int curImgNum) {		
+	}
+
+	@Override
+	protected void drawPerFtrMap_Indiv(my_procApplet pa) {		
+	}
+
 
 	@Override
 	protected final float getPreBuiltMapInfoDetail(my_procApplet pa, String[] str, int i, float yOff, boolean isLoaded) {

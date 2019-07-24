@@ -289,11 +289,11 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	protected final void buildFeaturesMap_Indiv() {
 		//build feature-based example for this example - for lines example should be closest origin point + normalized dir vector
 		//ONLY USE x,y VALS
-		ftrMaps[ftrMapTypeKey].put(0,dir.x);
-		ftrMaps[ftrMapTypeKey].put(1,dir.y);
+		ftrMaps[rawftrMapTypeKey].put(0,dir.x);
+		ftrMaps[rawftrMapTypeKey].put(1,dir.y);
 		
-		ftrMaps[ftrMapTypeKey].put(2,origin.x);
-		ftrMaps[ftrMapTypeKey].put(3,origin.y);
+		ftrMaps[rawftrMapTypeKey].put(2,origin.x);
+		ftrMaps[rawftrMapTypeKey].put(3,origin.y);
 	}
 	/**
 	 * Instance-class specific required info for this example to build feature data - use this so we don't have to reload and rebuilt from data every time

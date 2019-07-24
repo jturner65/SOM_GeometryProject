@@ -63,7 +63,6 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 		//this is just a place holder - windows will set proper map manager when this window is selected to be active
 		return ((SOM_GeometryMain)pa).getLinesWindow().getMapMgr();
 	}
-	
 
 	/**
 	 * instance-specific window initialization
@@ -74,7 +73,7 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 		//setFlags(showRightSideMenu, true);	
 		//moved from mapMgr ctor, to remove dependence on papplet in that object
 		//pa.setAllMenuBtnNames(menuBtnNames);	
-		initMapAras(1, 1);
+		mapMgr.initMapAras(1, 1);
 	}
 
 	/**
@@ -118,10 +117,6 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 	protected final void setupGUIObjsArasIndiv(ArrayList<Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals) {		
 	}
 	@Override
-	protected void initMapArasIndiv(int w, int h, int format, int num2ndFtrVals) {
-		
-	}
-	@Override
 	protected void setVisScreenDimsPriv_Indiv() {
 		// TODO Auto-generated method stub
 		
@@ -142,8 +137,7 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 	protected void drawRightSideInfoBarPriv(float modAmtMillis) {
 		pa.pushMatrix();pa.pushStyle();
 		//display current simulation variables - call sim world through sim exec
-		if(curPreBuiltMapIDX == -1) {curPreBuiltMapIDX=0;}
-		mapMgr.drawResultBar(pa, yOff,curPreBuiltMapIDX);
+		mapMgr.drawResultBar(pa, yOff);
 		pa.popStyle();pa.popMatrix();					
 	}//drawOnScreenStuff
 	
@@ -159,11 +153,6 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 	protected void drawMapIndiv() {
 		
 		
-	}
-
-	@Override
-	protected void drawSegmentsUMatrixDispIndiv() {
-			
 	}
 
 	@Override
@@ -260,18 +249,6 @@ public class SOM_GeomMapUIWin extends SOM_MapUIWin {
 	protected int getCategoryLabelFromIDX(int _idx) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	protected void drawMapRectangle_Indiv(int curImgNum) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void drawPerFtrMap_Indiv() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

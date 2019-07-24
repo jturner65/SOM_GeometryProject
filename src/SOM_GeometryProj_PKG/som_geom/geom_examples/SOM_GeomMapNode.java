@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_Example;
+import base_SOM_Objects.som_examples.SOM_FtrDataType;
 import base_SOM_Objects.som_examples.SOM_MapNode;
 import base_Utils_Objects.vectorObjs.Tuple;
 
@@ -15,9 +16,9 @@ public abstract class SOM_GeomMapNode extends SOM_MapNode {
 	protected SOM_GeomObj visObj;
 	
 
-	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, float[] _ftrs) {super(_map, _mapNodeLoc, _ftrs);  visObj = buildVisObj();}
+	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, SOM_FtrDataType _ftrTypeUsedToTrain,float[] _ftrs) {super(_map, _mapNodeLoc, _ftrTypeUsedToTrain,_ftrs); }
 
-	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, String[] _strftrs) {super(_map, _mapNodeLoc, _strftrs); visObj = buildVisObj();}
+	public SOM_GeomMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc, SOM_FtrDataType _ftrTypeUsedToTrain,String[] _strftrs) {super(_map, _mapNodeLoc, _ftrTypeUsedToTrain,_strftrs); }
 
 	@Override
 	protected void _initDataFtrMappings() {
@@ -120,7 +121,7 @@ public abstract class SOM_GeomMapNode extends SOM_MapNode {
 	@Override
 	protected void buildAllNonZeroFtrIDXs() {
 		allNonZeroFtrIDXs = new ArrayList<Integer>();
-		for(Integer idx : ftrMaps[ftrMapTypeKey].keySet()) {		allNonZeroFtrIDXs.add(idx);	}
+		for(Integer idx : ftrMaps[rawftrMapTypeKey].keySet()) {		allNonZeroFtrIDXs.add(idx);	}
 	}//buildAllNonZeroFtrIDXs
 	/**
 	 * called after features for this map node were built, but before another map node is built
@@ -132,7 +133,7 @@ public abstract class SOM_GeomMapNode extends SOM_MapNode {
 	 * called at the end of feature vector building, but before another map node is built
 	 */
 	@Override
-	protected void _buildFeatureVectorEnd_Priv() {}
+	protected void _buildFeatureVectorEnd_Priv() {visObj = buildVisObj();}
 
 	@Override
 	protected String dispFtrVal(TreeMap<Integer, Float> ftrs, Integer idx) {
