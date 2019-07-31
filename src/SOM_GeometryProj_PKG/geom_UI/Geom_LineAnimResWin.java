@@ -114,7 +114,7 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final long getNumTrainingExamples(int objs, int smplPerObj) {
 		long ttlNumSamples = objs * smplPerObj;
-		return (ttlNumSamples *(ttlNumSamples-1))/2;
+		return (ttlNumSamples *(ttlNumSamples-1L))/2L;
 	}
 	
 	

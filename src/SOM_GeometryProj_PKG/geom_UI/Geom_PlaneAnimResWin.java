@@ -124,7 +124,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final long getNumTrainingExamples(int objs, int smplPerObj) {
 		long ttlNumSamples = objs * smplPerObj;
-		return (ttlNumSamples *(ttlNumSamples-1)*(ttlNumSamples-2))/6;
+		return (ttlNumSamples *(ttlNumSamples-1L)*(ttlNumSamples-2L))/6L;
 	}
 
 	@Override

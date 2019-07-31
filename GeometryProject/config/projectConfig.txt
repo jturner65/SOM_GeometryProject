@@ -51,6 +51,13 @@ SOMExeName_base,"trainSOM"
 #
 #	default feature type used to train in this project
 ftrTypeUsedToTrainStr,"stdFtrs"
+#
+#	min value used for standardized/scaled feature mapping/proposal
+stdFtr_destMin,"-1.0f"
+#
+#	diff (max - min) value used for standardized/scaled feature mapping/proposal
+stdFtr_destDiff,"2.0f"
+#
 #	short name to be used in file names to specify this project - should only be a simple string!
 SOMProjName,"Geom"
 #
