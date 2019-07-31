@@ -7,9 +7,9 @@ trainDataDenseFN,Train_NULL_Smp_112405_of_112405_typ_stdFtrs_Dt_05_08_12_00.lrn
 trainDataSparseFN,Train_NULL_Smp_112405_of_112405_typ_stdFtrs_Dt_05_08_12_00.svm
 outFilesPrefix,Out_NULL_Smp_112405_x50_y50_k2
 # mapInts descriptors
-mapCols,50
-mapStRad,25
-mapRows,50
+mapCols,10
+mapStRad,5
+mapRows,10
 mapEndRad,1
 mapEpochs,50
 mapKType,0

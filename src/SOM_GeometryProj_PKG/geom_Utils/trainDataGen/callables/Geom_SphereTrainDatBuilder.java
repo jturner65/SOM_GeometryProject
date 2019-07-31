@@ -5,19 +5,18 @@ import java.util.concurrent.ThreadLocalRandom;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_SphereExManager;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 import base_Utils_Objects.vectorObjs.myPointf;
 import base_Utils_Objects.vectorObjs.myVectorf;
 
 public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
 
 	public Geom_SphereTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_SphereExManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals) {
-		super(_mapMgr, _exMgr, _allExs, _intVals, "Spheres", SOM_GeomObjTypes.sphere.getVal());
+		super(_mapMgr, _exMgr, _allExs, _intVals);
 	}
 	
 	/**
@@ -61,7 +60,7 @@ public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	@Override
 	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSmplDataForEx[] exAra, int idx) {
 		String ID = "Sphere_Train_"+getObjID(idx);
-		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, exAra, numExPerObj);
+		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, exAra, numExPerObj, false);
 		//boolean passed = obj.testSphereConstruction(ctr, rad, 1.0f);
 		return obj;
 	}

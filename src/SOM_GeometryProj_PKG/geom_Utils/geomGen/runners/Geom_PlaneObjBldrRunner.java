@@ -6,16 +6,15 @@ import java.util.concurrent.ExecutorService;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.callables.Geom_PlaneObjBuilder;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
-import base_SOM_Objects.SOM_MapManager;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 
 public class Geom_PlaneObjBldrRunner extends SOM_GeomObjBldrRunner {
 
 	public Geom_PlaneObjBldrRunner(SOM_GeomMapManager _mapMgr, ExecutorService _th_exec, SOM_GeomObj[] _objArray, boolean _forceST, int[] _numVals, SOM_GeomObjBldrTasks _taskType) {
-		super(_mapMgr, _th_exec, _objArray, "Planes", _forceST, _numVals,  _taskType);
+		super(_mapMgr, _th_exec, _objArray, _forceST, _numVals,  _taskType);
 		
 	}
 

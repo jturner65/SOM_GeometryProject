@@ -2,18 +2,18 @@ package SOM_GeometryProj_PKG.geom_Utils.geomGen.callables;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBuilder;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBuilder;
 import base_Utils_Objects.vectorObjs.myPointf;
 
 public class Geom_LineObjBuilder extends SOM_GeomObjBuilder {
 
 	public Geom_LineObjBuilder(Geom_LineMapMgr _mapMgr,  SOM_GeomObj[] _objArray, int[] _intVals, SOM_GeomObjBldrTasks _taskToDo) {
-		super(_mapMgr,  _objArray,_intVals, _taskToDo, "Lines");
+		super(_mapMgr,  _objArray,_intVals, _taskToDo);
 	}
 	
 	/**
@@ -35,9 +35,8 @@ public class Geom_LineObjBuilder extends SOM_GeomObjBuilder {
 		SOM_GeomSamplePointf[] pts = new SOM_GeomSamplePointf[] {new SOM_GeomSamplePointf(a, ID+"_gen_pt_0" ),new SOM_GeomSamplePointf(b, ID+"_gen_pt_1")};
 		SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, pts);
 		
-		Geom_LineSOMExample line = new Geom_LineSOMExample(((Geom_LineMapMgr)mapMgr), _exDataType, ID, _srcSmpls, numSmplsPerObj);
+		Geom_LineSOMExample line = new Geom_LineSOMExample(((Geom_LineMapMgr)mapMgr), _exDataType, ID, _srcSmpls, numSmplsPerObj, true);
 		return line;
 	}
 
-
-}
+}//class Geom_LineObjBuilder

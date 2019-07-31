@@ -4,10 +4,10 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_fileIO.SOM_ExCSVDataLoader;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 
 public class Geom_PlaneCSVDataLoader extends SOM_ExCSVDataLoader {
 	protected final SOM_ExDataType exType;

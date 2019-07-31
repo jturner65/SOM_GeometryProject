@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.SOM_GeometryMain;
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import base_SOM_Objects.SOM_MapManager;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
+import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_UI_Objects.*;
+import base_Utils_Objects.MyMathUtils;
 import base_Utils_Objects.vectorObjs.myPoint;
 import base_Utils_Objects.vectorObjs.myVector;
 
@@ -30,7 +32,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	
 
 	public Geom_SphereAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed,String _winTxt, boolean _canDrawTraj) {
-		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, "Spheres");
+		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, SOM_GeomObjTypes.sphere);
 		super.initThisWin(_canDrawTraj, true, false);
 	}
 
@@ -38,8 +40,8 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 * return appropriate map manager for this window
 	 */
 	@Override
-	public final SOM_GeomMapManager buildMapManager() {
-		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(null, this, SOMMapDims, pa.cubeBnds, ((SOM_GeometryMain)pa).argsMap);
+	public final SOM_GeomMapManager buildGeom_SOMMapManager() {
+		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(somUIWin, this, pa.cubeBnds, ((SOM_GeometryMain)pa).argsMap);
 		return _mgr;
 	}
 
@@ -100,6 +102,9 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	}
 	
 	@Override
+	protected final String[] setUI_GeomObjFeatureListVals() {	return Geom_SphereSOMExample.ftrNames;};
+	
+	@Override
 	protected final int getMinNumObjs() {	return 1;}
 	@Override
 	protected final int getMaxNumObjs() {	return 50;}
@@ -111,10 +116,18 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 * calculate the max # of examples for this type object : n choose k where k is degree
 	 */
 	@Override
-	protected final long getNumTrainingExamples(int objs, int smplPerObj) {
+	protected final long getNumTrainingExamples(int objs, int smplPerObj) {		
 		long ttlNumSamples = objs * smplPerObj;
-		return (ttlNumSamples *(ttlNumSamples-1)*(ttlNumSamples-2)*(ttlNumSamples-3))/24;
+		this.msgObj.dispInfoMessage("Geom_SphereAnimResWin", "getNumTrainingExamples", "Start ttlNumSamples : " + ttlNumSamples);
+//		long tmpEx = MyMathUtils.choose( ttlNumSamples, 4);
+//		this.msgObj.dispInfoMessage("Geom_SphereAnimResWin", "getNumTrainingExamples", "Choose function :  " +tmpEx );
+		long tmpEx2 = (ttlNumSamples *(ttlNumSamples-1L)*(ttlNumSamples-2L)*(ttlNumSamples-3L))/24L;
+		this.msgObj.dispInfoMessage("Geom_SphereAnimResWin", "getNumTrainingExamples", "Manual calc : " + tmpEx2);
+		return tmpEx2;
 	}
+	
+
+
 
 	/**
 	 * send all instance-specific values from UI to map manager
@@ -164,13 +177,16 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 
 	//////////////////////////////
 	// instance-based draw handling
-	
+	/**
+	 * any instance-window specific display
+	 * @param modAmtMillis
+	 */
 	@Override
-	protected final void drawRightSideInfoBarPriv(float modAmtMillis) {
-		// TODO Auto-generated method stub
+	protected final float drawRightSideInfoBar_Indiv(float modAmtMillis, float yOff) {
 		
+		return yOff;
 	}
-
+	
 	@Override
 	protected final void drawOnScreenStuffPriv(float modAmtMillis) {
 		// TODO Auto-generated method stub

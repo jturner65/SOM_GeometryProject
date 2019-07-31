@@ -4,13 +4,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBuilder;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBuilder;
 import base_Utils_Objects.vectorObjs.myPointf;
 
 public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
@@ -18,7 +17,7 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 	protected final float minRad,  maxRad, diffRad;
 
 	public Geom_SphereObjBuilder(Geom_SphereMapMgr _mapMgr, SOM_GeomObj[] _objArray, int[] _intVals, SOM_GeomObjBldrTasks _taskToDo, float[] radSpan) {
-		super(_mapMgr,  _objArray,_intVals, _taskToDo, "Spheres");
+		super(_mapMgr,  _objArray,_intVals, _taskToDo);
 		minRad = radSpan[0];
 		maxRad = radSpan[1];
 		diffRad = maxRad - minRad;
@@ -44,8 +43,10 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 		SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, pts);
 		
 		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, myPointf _ctr, float _rad, int _numSmplPts, float[][] _worldBounds)
-		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, _srcSmpls, numSmplsPerObj);
-		boolean passed = obj.testSphereConstruction(ctr, rad, 1.0f);
+		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, _srcSmpls, numSmplsPerObj, true);
+		//boolean passed = 
+		obj.testSphereConstruction(ctr, rad, 1.0f);
+		
 		return obj;
 	}
 

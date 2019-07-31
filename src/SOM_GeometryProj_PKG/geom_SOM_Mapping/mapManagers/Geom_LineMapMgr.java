@@ -5,20 +5,20 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
 import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_LineSOMMapNode;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_LineExManager;
+import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.runners.Geom_LineObjBldrRunner;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomFtrBndMon;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_FtrDataType;
 import base_SOM_Objects.som_examples.SOM_MapNode;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
+import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomExampleManager;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
+import base_SOM_Objects.som_ui.SOM_MseOvrDisplay;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
-import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.Tuple;
 import base_Utils_Objects.vectorObjs.myPoint;
 
@@ -26,8 +26,8 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	
 	public static final int numFlags = numGeomBaseFlags;	
 	//SOM_GeomMapManager(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap, String _geomObjType)
-	public Geom_LineMapMgr(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
-		super(_win, _dispWin, _dims, _worldBounds, _argsMap, "Lines", Geom_LineSOMExample._numFtrs);
+	public Geom_LineMapMgr(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
+		super(_win, _dispWin, _worldBounds, _argsMap, SOM_GeomObjTypes.line, Geom_LineSOMExample._numFtrs);
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 	 * @return
 	 */
 	@Override
-	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv(String _exMgrName) {return new Geom_LineExManager(this, "Lines", "Line Geometric Objects", SOM_ExDataType.Training, false,_exMgrName);}
+	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv(String _exMgrName) {return new Geom_LineExManager(this, SOM_GeomObjTypes.line.toString(), "Line Geometric Objects", SOM_ExDataType.Training, false,_exMgrName);}
 	/**
 	 * send any instance-specific control/ui values to objRunners, based on task
 	 */
@@ -58,6 +58,13 @@ public class Geom_LineMapMgr extends SOM_GeomMapManager {
 			default : {break;}
 		}
 	}
+
+	
+	/**
+	 * build the example that represents the SOM data where the mouse is
+	 */
+	@Override
+	protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
 
 	@Override
 	protected void buildValidationDataAra() {

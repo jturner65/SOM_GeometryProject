@@ -6,11 +6,10 @@ import java.util.concurrent.ExecutorService;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.callables.Geom_SphereObjBuilder;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
-import base_SOM_Objects.SOM_MapManager;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 
 public class Geom_SphereObjBldrRunner extends SOM_GeomObjBldrRunner {
 	/**
@@ -29,7 +28,7 @@ public class Geom_SphereObjBldrRunner extends SOM_GeomObjBldrRunner {
 	 */
 	
 	public Geom_SphereObjBldrRunner(SOM_GeomMapManager _mapMgr, ExecutorService _th_exec, SOM_GeomObj[] _objArray, boolean _forceST, int[] _numVals, SOM_GeomObjBldrTasks _taskType) {
-		super(_mapMgr, _th_exec, _objArray, "Spheres", _forceST, _numVals, _taskType);
+		super(_mapMgr, _th_exec, _objArray,  _forceST, _numVals, _taskType);
 		radSpan = new float[2];
 	}
 	

@@ -4,15 +4,15 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
+import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.MyMathUtils;
 import base_Utils_Objects.vectorObjs.myPointf;
@@ -26,9 +26,13 @@ import base_Utils_Objects.vectorObjs.myVectorf;
 public class Geom_SphereSOMExample extends SOM_GeomObj{
 	private static int IDGen = 0;
 	/**
-	 * feature vector size for this object rad + 3d center
+	 * string array denoting names of features
 	 */
-	public static final int _numFtrs = 4;
+	public static final String[] ftrNames = {"Center x","Center y","Center z","Radius"};
+	/**
+	 * feature vector size for this object : 3d point + 3d line
+	 */
+	public static final int _numFtrs = ftrNames.length;
 	/**
 	 * center location
 	 */
@@ -55,8 +59,8 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * @param _numSmplPts : # of sample points to build for this object TODO move to post-construction process
 	 * @param _worldBounds : bounds within which the points/samples of this object should remain constrained
 	 */
-	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
-		super(_mapMgr, _exType, _id, _srcSmpls,  SOM_GeomObjTypes.sphere);
+	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
+		super(_mapMgr, _exType, _id, _srcSmpls,  SOM_GeomObjTypes.sphere,_shouldBuildSamples);
 		//with 4 srcPts, find center of sphere
 		//String res = "";
 		//for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
@@ -344,14 +348,8 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		pa.popStyle();pa.popMatrix();
 	}
 	
-	/**
-	 * draw this object's samples, using the random color
-	 * @param pa
-	 */
-	@Override
-	public final void drawMySmplsLabel(my_procApplet pa, SOM_AnimWorldWin animWin){	objSamples.drawMySmplsLabel_3D(pa, animWin);}//
 	
-///////////////BMU / datapoint drawing
+	///////////////BMU / datapoint drawing
 	
 	@Override
 	public void drawMyLabel_BMU(my_procApplet pa){

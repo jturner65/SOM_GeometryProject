@@ -8,13 +8,13 @@ import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.procData_loaders.Geom_LineCSVDataLoader;
 import SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables.Geom_LineTrainDatBuilder;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_fileIO.SOM_ExCSVDataLoader;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomExampleManager;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 
 public class Geom_LineExManager extends SOM_GeomExampleManager {
 	
@@ -37,10 +37,17 @@ public class Geom_LineExManager extends SOM_GeomExampleManager {
 	protected void buildAllEx_MT(SOM_GeomSmplDataForEx[] allSamples, int numThdCallables, int ttlNumTrainEx) {
 		List<Future<Boolean>> trainDataBldFtrs = new ArrayList<Future<Boolean>>();
 		List<SOM_GeomTrainExBuilder> trainDataBldrs = new ArrayList<SOM_GeomTrainExBuilder>();
-		
+		//int numVals, int numThds
+		int numPerThd = calcNumPerThd(ttlNumTrainEx, numThdCallables);
 		//SOM_GeomMapManager _mapMgr, SOM_GeomExampleManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals
-		for (int i=0; i<numThdCallables;++i) {	trainDataBldrs.add(new Geom_LineTrainDatBuilder((Geom_LineMapMgr) mapMgr, this, allSamples, new int[] {0,allSamples.length,i, ttlNumTrainEx, numThdCallables}));}
+		int stIDX = 0, endIDX = numPerThd;
 		
+		for (int i=0; i<numThdCallables-1;++i) {				
+			trainDataBldrs.add(new Geom_LineTrainDatBuilder((Geom_LineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,endIDX,i, ttlNumTrainEx, numThdCallables}));
+			stIDX =endIDX;
+			endIDX += numPerThd;
+		}
+		trainDataBldrs.add(new Geom_LineTrainDatBuilder((Geom_LineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,ttlNumTrainEx,numThdCallables-1, ttlNumTrainEx, numThdCallables}));
 		try {trainDataBldFtrs = th_exec.invokeAll(trainDataBldrs);for(Future<Boolean> f: trainDataBldFtrs) { 			f.get(); 		}} catch (Exception e) { e.printStackTrace(); }					
 		
 	}

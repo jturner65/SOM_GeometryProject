@@ -26,7 +26,7 @@ public class Geom_SOMMseOvrDisp extends SOM_MseOvrDisplay {
 	@Override
 	protected String getFtrDispTitleString(int count) {return "Ftrs :  count : "+count;}
 	/**
-	 * construct per feature display value
+	 * construct per feature display value 
 	 * @param ftrIDX : the index in the feature vector
 	 * @param ftr : the value in the ftr vector
 	 * @param strongestFtrs : the map being populated with the string arrays at each ftr value

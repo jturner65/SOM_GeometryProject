@@ -5,18 +5,19 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_SphereSOMMapNode;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_SphereExManager;
+import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.runners.Geom_SphereObjBldrRunner;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomExampleManager;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomFtrBndMon;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_FtrDataType;
 import base_SOM_Objects.som_examples.SOM_MapNode;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
+import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomExampleManager;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
+import base_SOM_Objects.som_ui.SOM_MseOvrDisplay;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_Utils_Objects.vectorObjs.Tuple;
 import base_Utils_Objects.vectorObjs.myPoint;
@@ -30,8 +31,8 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	 */
 	protected float minRad, maxRad;
 
-	public Geom_SphereMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
-		super(_win, _dispWin, _dims, _worldBounds, _argsMap, "Spheres", Geom_SphereSOMExample._numFtrs);
+	public Geom_SphereMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
+		super(_win, _dispWin, _worldBounds, _argsMap, SOM_GeomObjTypes.sphere, Geom_SphereSOMExample._numFtrs);
 	}
 
 	/**
@@ -53,7 +54,7 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	 * @return
 	 */
 	@Override
-	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv(String _exMgrName) {return new Geom_SphereExManager(this, "Spheres", "Sphere Geometric Objects",  SOM_ExDataType.Training, false, _exMgrName);}
+	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv(String _exMgrName) {return new Geom_SphereExManager(this, SOM_GeomObjTypes.sphere.toString(), "Sphere Geometric Objects",  SOM_ExDataType.Training, false, _exMgrName);}
 	/**
 	 * send any instance-specific control/ui values to objRunners, based on task
 	 */
@@ -66,6 +67,12 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 		}
 		((Geom_SphereObjBldrRunner)objRunner).setRadSpan(minRad, maxRad);
 	}
+	
+	/**
+	 * build the example that represents the SOM data where the mouse is
+	 */
+	@Override
+	protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
 	
 	/**
 	 * call from UI to set min and max radius

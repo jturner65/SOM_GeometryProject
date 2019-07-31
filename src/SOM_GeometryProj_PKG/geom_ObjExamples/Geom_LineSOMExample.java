@@ -4,16 +4,15 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
-import base_SOM_Objects.som_examples.SOM_FtrDataType;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
+import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.MyMathUtils;
 import base_Utils_Objects.vectorObjs.myPointf;
@@ -23,9 +22,13 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	private static int IDGen = 0;
 	
 	/**
-	 * feature vector size for this object 2d point  + 2d line
+	 * string array denoting names of features
 	 */
-	public static final int _numFtrs = 4;
+	public static final String[] ftrNames = {"Dir x","Dir y","Origin x","Origin y"};
+	/**
+	 * feature vector size for this object : 3d point + 3d line
+	 */
+	public static final int _numFtrs = ftrNames.length;
 
 	/**
 	 * direction vector for this line
@@ -64,8 +67,8 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 * 		first idx 	: 0 is min; 1 is diff
 	 * 		2nd idx 	: 0 is x, 1 is y
 	 */
-	public Geom_LineSOMExample(Geom_LineMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
-		super(_mapMgr, _exType, _id, _srcSmpls, SOM_GeomObjTypes.line);
+	public Geom_LineSOMExample(Geom_LineMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
+		super(_mapMgr, _exType, _id, _srcSmpls, SOM_GeomObjTypes.line, _shouldBuildSamples);
 		getSrcPts()[0].z = 0.0f;
 		getSrcPts()[1].z = 0.0f;
 		//z is always 0 - making this in 2 d
@@ -375,14 +378,6 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		showMyPoint(pa,origin, 5.0f, dispLabel+"| Origin " + origin.toStrBrf() + " | Dir : " + dir.toStrBrf() +" | " +dispAra[0]+"->"+dispAra[1], 0.0f);
 		pa.popStyle();pa.popMatrix();	
 	}
-	
-	/**
-	 * draw this object's samples, using the random color
-	 * @param pa
-	 */
-	@Override
-	public final void drawMySmplsLabel(my_procApplet pa, SOM_AnimWorldWin animWin){	objSamples.drawMySmplsLabel_2D(pa);}//
-
 	
 	protected static float modCnt = 0;//counter that will determine when the color should switch
 	@Override

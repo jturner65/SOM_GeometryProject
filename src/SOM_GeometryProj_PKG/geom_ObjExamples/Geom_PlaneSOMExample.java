@@ -5,27 +5,33 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
-import SOM_GeometryProj_PKG.som_geom.SOM_GeomMapManager;
-import SOM_GeometryProj_PKG.som_geom.geom_UI.SOM_AnimWorldWin;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomMapNode;
-import SOM_GeometryProj_PKG.som_geom.geom_examples.SOM_GeomObj;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import SOM_GeometryProj_PKG.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
+import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_UI_Objects.my_procApplet;
+import base_UI_Objects.windowUI.myDispWindow;
 import base_Utils_Objects.vectorObjs.myPointf;
 import base_Utils_Objects.vectorObjs.myVectorf;
+import processing.core.PConstants;
 import processing.core.PShape;
 
 public class Geom_PlaneSOMExample extends SOM_GeomObj{ 
 	private static int IDGen = 0;
 	
 	/**
+	 * string array denoting names of features
+	 */
+	public static final String[] ftrNames = {"Norm x","Norm y","Norm z", "Origin x","Origin y","Origin z"};
+	/**
 	 * feature vector size for this object : 3d point + 3d line
 	 */
-	public static final int _numFtrs = 6;
+	public static final int _numFtrs = ftrNames.length;
 	
 	/**
 	 * unique point on this plane closest to origin
@@ -85,8 +91,8 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param _numSmplPts : # of sample points to build for this object
 	 * @param _worldBnds 4 points that bound the plane for display purposes
 	 */	
-	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts) {
-		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane);	
+	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
+		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane, _shouldBuildSamples);	
 		//plane norm
 		myVectorf tmpNorm = myVectorf._cross(new myVectorf(getSrcPts()[0], getSrcPts()[1]), new myVectorf(getSrcPts()[0], getSrcPts()[2]))._normalize();
 		eq = getPlanarEqFromPointAndNorm(tmpNorm, getSrcPts()[0]);
@@ -121,7 +127,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	}//ctor
 	
 	/**
-	 * only srcpts needs to be built from csv
+	 * ctor from csv - only srcpts needs to be built from csv
 	 * @param _mapMgr
 	 * @param _animWin
 	 * @param _exType
@@ -131,6 +137,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 */
 	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
 		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.plane);
+		
 		myVectorf tmpNorm = myVectorf._cross(new myVectorf(getSrcPts()[0], getSrcPts()[1]), new myVectorf(getSrcPts()[0], getSrcPts()[2]))._normalize();
 		eq = getPlanarEqFromPointAndNorm(tmpNorm, getSrcPts()[0]);
 		//works because plane is built with unit normal in equation
@@ -162,7 +169,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	}
 	
 	/**
-	 * ctor to build object corresponding to bmu geometric object
+	 * ctor to build object corresponding to bmu's geometric object
 	 * @param _mapMgr
 	 * @param _mapNode
 	 */
@@ -198,7 +205,14 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		//build new point location for color, squaring the distance from the origin to provide more diversity
 	
 		super.buildLocClrInitObjAndSamples(buildLocForColor(), SOM_GeomObjTypes.plane.getVal());
-		buildPlanePShapes();
+		if(dispBoundPts.length > 0) {	buildPlanePShapes();	} 
+		else {
+			msgObj.dispErrorMessage("Geom_PlaneSOMExample", "BMU Geom Obj Ctor", "Construction Failed due to src points from " + _mapNode.OID+ " having unacceptable format :" + this.geomSrcSamples.length + " pts :");
+			for(int i=0;i<this.geomSrcSamples.length;++i) {
+				msgObj.dispErrorMessage("Geom_PlaneSOMExample", "BMU Geom Obj Ctor", "\t"+geomSrcSamples[i].toString());
+			}
+			
+		}
 	}
 	
 
@@ -212,9 +226,11 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		dispBoundPts = _otr.dispBoundPts;
 		minMaxDiffValAra = _otr.minMaxDiffValAra;
 		orthoFrame = _otr.orthoFrame;
-		worldBounds = _otr.worldBounds;
+		worldBounds = Geom_PlaneSOMExample.worldBounds;
 		planeObjs = _otr.planeObjs;		
 	}
+	
+	
 	/**
 	 * build rotational quantities for this plane - how to rotate a horizontal plane to match the orientation of this plane
 	 * using axis-angle
@@ -251,9 +267,9 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 
 	
 	private PShape buildPoly(boolean hasFill, int[] clr) {
-		PShape poly = mapMgr.win.pa.createShape(); 
+		PShape poly = myDispWindow.pa.createShape(); 
 		//all have lines to center
-		poly.beginShape(poly.TRIANGLE_FAN);
+		poly.beginShape(PConstants.TRIANGLE_FAN);
 		if(hasFill) {
 			poly.fill(clr[0],clr[1],clr[2],255);
 		} else {
@@ -265,7 +281,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		poly.vertex(planeOrigin.x,planeOrigin.y,planeOrigin.z);
 		for(int i=0;i<dispBoundPts.length;++i){poly.vertex(dispBoundPts[i].x,dispBoundPts[i].y,dispBoundPts[i].z);} 
 		poly.vertex(dispBoundPts[0].x,dispBoundPts[0].y,dispBoundPts[0].z);
-		poly.endShape(mapMgr.win.pa.CLOSE);
+		poly.endShape(PConstants.CLOSE);
 		return poly;
 	}
 	
@@ -274,8 +290,8 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @return
 	 */
 	private PShape buildSelectedPoly() {
-		PShape poly = mapMgr.win.pa.createShape(); 
-		poly.beginShape(poly.TRIANGLE_FAN);
+		PShape poly = myDispWindow.pa.createShape(); 
+		poly.beginShape(PConstants.TRIANGLE_FAN);
 		poly.noFill();				
 		poly.stroke(120,120,120,255);
 		poly.strokeWeight(2.0f);
@@ -283,7 +299,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		poly.vertex(planeOrigin.x,planeOrigin.y,planeOrigin.z);
 		for(int i=0;i<dispBoundPts.length;++i){poly.vertex(dispBoundPts[i].x,dispBoundPts[i].y,dispBoundPts[i].z);} 
 		poly.vertex(dispBoundPts[0].x,dispBoundPts[0].y,dispBoundPts[0].z);
-		poly.endShape(mapMgr.win.pa.CLOSE);
+		poly.endShape(PConstants.CLOSE);
 		return poly;
 	}
 		
@@ -334,8 +350,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	// out_points are not sorted.
 	protected myPointf[] calc_plane_WBBox_IntersectPoints(){
 	    ArrayList<myPointf> ptsAra = new ArrayList<myPointf>();
-	    float vd, t;
-
 	    // Test edges along X axis
 	    myVectorf dir = new myVectorf(worldBounds[1][0], 0.f, 0.f); 
 	    
@@ -373,7 +387,11 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	    _checkEachDir(ptsAra, dir, origAra);
 
 	    
-	    if(ptsAra.size() == 0) {return new myPointf[0];}//no intersection
+	    if(ptsAra.size() == 0) {
+	    	msgObj.dispErrorMessage("Geom_PlaneSOMExample", "calc_plane_WBBox_IntersectPoints", "ID : " + this.dispLabel + " : Plane doesn't intersect with enclosing box somehow.");
+	    	
+	    	return new myPointf[0];
+	    }//no intersection
 	    //sort in cw order around normal
 	    TreeMap<Float, myPointf> ptsMap = sortBoundPoints(ptsAra);
 //	    System.out.println("Map : ");
@@ -536,13 +554,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		pa.popStyle();pa.popMatrix();
 	}//drawMyLabel
 
-	/**
-	 * draw this object's samples, using the random color
-	 * @param pa
-	 */
-	@Override
-	public final void drawMySmplsLabel(my_procApplet pa, SOM_AnimWorldWin animWin){	objSamples.drawMySmplsLabel_3D(pa, animWin);}//
-
 	@Override
 	protected void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
 		pa.pushMatrix();pa.pushStyle();			
@@ -608,7 +619,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		
 	}
 	
-
 	/**
 	 * initialize object's ID
 	 */

@@ -49,6 +49,8 @@ SOM_ExampleToBMUMappingsSubDir,"ExamplesToBMUMappings"
 #	Name of SOM Executable - do not include any extensions or pathing information!!
 SOMExeName_base,"trainSOM"
 #
+#	default feature type used to train in this project
+ftrTypeUsedToTrainStr,"stdFtrs"
 #	short name to be used in file names to specify this project - should only be a simple string!
 SOMProjName,"Geom"
 #
@@ -59,7 +61,6 @@ useSparseTestingData,"false"
 #
 #
 #Directory for prebuilt map : 
-#all the following use the new data as of 5/1/19
 #
 #	specify map directories containing prebuilt maps - default is first listed unless otherwise specified below
 #	add as many entries as desired, all using same prefix "preBuiltMapDir"
