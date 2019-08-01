@@ -8,11 +8,9 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.geom_UI.Geom_LineAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_PlaneAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_SphereAnimResWin;
-import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_UI.SOM_GeomMapUIWin;
 import base_SOM_Objects.som_geom.geom_UI.SOM_GeomSideBarMenu;
-import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.*;
 import base_UI_Objects.windowUI.myDispWindow;
 import base_Utils_Objects.vectorObjs.myPoint;
@@ -260,6 +258,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		}
 	}	
 	
+	@SuppressWarnings("unused")
 	private float[] getMaxUIClkCoords() {
 		float[] res = new float[] {0.0f,0.0f,0.0f,0.0f}, tmpCoords;
 		for (int winIDX : winDispIdxXOR) {
@@ -360,7 +359,9 @@ public class SOM_GeometryMain extends my_procApplet {
 		popStyle();popMatrix(); 
 		for(int i =1; i<numDispWins; ++i){if (isShowingWindow(i) && !(dispWinFrames[i].getFlags(myDispWindow.is3DWin))){dispWinFrames[i].draw2D(modAmtMillis);}}
 		//draw SOM window in current window if active/displayed
+		pushMatrix();pushStyle();
 		((SOM_AnimWorldWin) dispWinFrames[curFocusWin]).drawSOMWinUI(modAmtMillis);
+		popStyle();popMatrix();
 
 		drawUI(modAmtMillis);																	//draw UI overlay on top of rendered results			
 		if (doSaveAnim()) {	savePic();}

@@ -21,7 +21,6 @@ import base_SOM_Objects.som_ui.SOM_MseOvrDisplay;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.Tuple;
-import base_Utils_Objects.vectorObjs.myPoint;
 
 public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	
@@ -111,35 +110,6 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 		}
 	}
 	
-	////////////////////////
-	// mouse handling
-	/**
-	 * check mouse over/click in experiment; if btn == -1 then mouse over
-	 * @param msx
-	 * @param msy
-	 * @param mseClckInWorld
-	 * @param btn
-	 * @return
-	 */
-	public final boolean checkMouseClick(int msx, int msy, myPoint mseClckInWorld, int btn) {
-		return false;
-	}
-	/**
-	 * check mouse drag/move in experiment; if btn == -1 then mouse over
-	 * @param msx
-	 * @param msy
-	 * @param mseClckInWorld
-	 * @param btn
-	 * @return
-	 */
-	public final boolean checkMouseDragMove(int msx, int msy, myPoint mseClckInWorld, int btn){
-		return false;
-	}
-	/**
-	 * notify all exps that mouse has been released
-	 */
-	public final void setMouseRelease() {
-		
-	}
+
 	
 }//class Geom_PlaneMapMgr

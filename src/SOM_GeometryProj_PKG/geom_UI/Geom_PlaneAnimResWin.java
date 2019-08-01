@@ -129,7 +129,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	protected final void setUIWinVals_Indiv(int UIidx, float val) {
-		int ival = (int)val;
+		//int ival = (int)val;
 		switch(UIidx){		
 			default : {break;}
 		}	

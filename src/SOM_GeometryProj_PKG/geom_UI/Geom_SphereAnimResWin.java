@@ -10,7 +10,6 @@ import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_UI_Objects.*;
-import base_Utils_Objects.MyMathUtils;
 import base_Utils_Objects.vectorObjs.myPoint;
 import base_Utils_Objects.vectorObjs.myVector;
 
@@ -107,9 +106,9 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final int getMinNumObjs() {	return 1;}
 	@Override
-	protected final int getMaxNumObjs() {	return 50;}
+	protected final int getMaxNumObjs() {	return 20;}
 	@Override
-	protected final int getMinNumSmplsPerObj() {return 50;}
+	protected final int getMinNumSmplsPerObj() {return 10;}
 	@Override
 	protected final int getMaxNumSmplsPerObj() {return 500;}
 	/**

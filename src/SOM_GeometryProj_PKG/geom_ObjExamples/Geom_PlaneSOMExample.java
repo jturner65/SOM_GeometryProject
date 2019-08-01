@@ -122,8 +122,12 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		}
 		//build new point location for color, squaring the distance from the origin to provide more diversity
 	
-		super.buildLocClrInitObjAndSamples(buildLocForColor(), _numSmplPts);
-		buildPlanePShapes();
+		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), _numSmplPts);
+		if(_shouldBuildSamples) {
+			buildPlanePShapes();
+		} else {
+			planeObjs = new PShape[0];
+		}
 	}//ctor
 	
 	/**
@@ -164,7 +168,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 			orthoFrame[i]= myPointf._add(planeOrigin, frameLen, basisVecs[i]);
 		}
 		//build new point location for color, squaring the distance from the origin to provide more diversity
-		super.buildLocClrAndSamplesFromCSVStr(buildLocForColor(), _csvDat);
+		super.buildLocClrAndSamplesFromCSVStr(buildLocForColor(planeOrigin, basisVecs[0]), _csvDat);
 		buildPlanePShapes();
 	}
 	
@@ -204,7 +208,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		}
 		//build new point location for color, squaring the distance from the origin to provide more diversity
 	
-		super.buildLocClrInitObjAndSamples(buildLocForColor(), SOM_GeomObjTypes.plane.getVal());
+		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), SOM_GeomObjTypes.plane.getVal());
 		if(dispBoundPts.length > 0) {	buildPlanePShapes();	} 
 		else {
 			msgObj.dispErrorMessage("Geom_PlaneSOMExample", "BMU Geom Obj Ctor", "Construction Failed due to src points from " + _mapNode.OID+ " having unacceptable format :" + this.geomSrcSamples.length + " pts :");
@@ -215,7 +219,9 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		}
 	}
 	
+	
 
+	@SuppressWarnings("static-access")
 	public Geom_PlaneSOMExample(Geom_PlaneSOMExample _otr) {
 		super(_otr);	
 		planeOrigin = _otr.planeOrigin;
@@ -226,7 +232,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		dispBoundPts = _otr.dispBoundPts;
 		minMaxDiffValAra = _otr.minMaxDiffValAra;
 		orthoFrame = _otr.orthoFrame;
-		worldBounds = Geom_PlaneSOMExample.worldBounds;
+		worldBounds = _otr.worldBounds;
 		planeObjs = _otr.planeObjs;		
 	}
 	
@@ -243,14 +249,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 //	}
 	
 	
-	//build new point location for color, increasing the distance from the origin to provide more diversity
-	private myPointf buildLocForColor() {		
-		float distFromOrigin = myPointf._dist(planeOrigin, myPointf.ZEROPT);
-		float mod = (float) Math.pow(distFromOrigin, 1.2);
-		return new myPointf(myPointf.ZEROPT, mod, basisVecs[0]);
-	}
-	
-
 	/**
 	 * build pshapes representing planes for different colors, to speed up rendering
 	 */
@@ -556,6 +554,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 
 	@Override
 	protected void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
+		if(planeObjs.length==0) {return;}
 		pa.pushMatrix();pa.pushStyle();			
 		pa.strokeWeight(2.0f);
 
@@ -579,11 +578,12 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		pa.popStyle();pa.popMatrix();				
 	}//_drawOrthoFrame
 	
-	protected static float modCnt = 0;//counter that will determine when the color should switch
+	protected float modCnt = 0;//counter that will determine when the color should switch
 
 	private static final int selIDX = SOM_GeomObjDrawType.selected.getVal();
 	@Override
 	protected final void _drawMeSelected(my_procApplet pa, float animTmMod) {
+		if(planeObjs.length==0) {return;}
 		modCnt += animTmMod;
 		if(modCnt > .5){	modCnt = 0;	}//blink every ~second
 		pa.pushMatrix();pa.pushStyle();			
@@ -591,34 +591,12 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		pa.translate(planeOrigin);
 		pa.scale(1.0f + modCnt*.5f);
 		pa.translate(-planeOrigin.x,-planeOrigin.y,-planeOrigin.z);
-
+		
 		pa.shape(planeObjs[selIDX]);
 		
 		pa.popStyle();pa.popMatrix();
 	}
-	
-	@Override
-	public void drawMyLabel_BMU(my_procApplet pa) {
 
-		
-	}
-
-	
-	@Override
-	protected void _drawMe_Geom_BMU(my_procApplet pa, SOM_GeomObjDrawType drawType) {
-//		pa.pushMatrix();pa.pushStyle();	
-//		//rotate up to plane norm planeNorm
-//		_drawOrthoFrame(pa);	
-//		pa.popStyle();pa.popMatrix();	
-//		drawPlane(pa,baseObjBMUWorldLoc,drawType); 
-	}
-
-	@Override
-	protected final void _drawMeSelected_BMU(my_procApplet pa, float animTmMod) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	/**
 	 * initialize object's ID
 	 */
