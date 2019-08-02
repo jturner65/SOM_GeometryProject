@@ -140,7 +140,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		//z is always 0 - making this in 2 d
 		_dir.z = 0;
 		_dir._normalize();	
-		if(_dir.y < 0.0) {	_dir._mult(-1.0);	}		//force all dir vectors to have the same "polarity" so 2 points always form the same line
+		if((_dir.y < 0.0) || ((_dir.y == 0.0) && (_dir.x < 0))) {	_dir._mult(-1.0);	}		//force all dir vectors to have the same "polarity" so 2 points always form the same line
 		return _dir;
 	}
 	

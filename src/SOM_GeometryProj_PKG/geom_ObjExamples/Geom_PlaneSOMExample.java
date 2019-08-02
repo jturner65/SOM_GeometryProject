@@ -36,30 +36,30 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	/**
 	 * unique point on this plane closest to origin
 	 */
-	protected final myPointf planeOrigin;
+	protected myPointf planeOrigin;
 	/**
 	 * equation of plane going through planeOrigin with planeNorm
 	 * of the form eq[0]*x + eq[1]*y + eq[2]*z + eq[3] = 0
 	 */
-	protected final float[] eq;
+	protected float[] eq;
 	
 	/**
 	 * basis vectors for plane - should be orthogonal and normalized - idx 0 is normal
 	 */
-	protected final myVectorf[] basisVecs;
+	protected myVectorf[] basisVecs;
 
 	/**
 	 * display points for this plane to draw maximally based on world bounds
 	 */
-	public final myPointf[] dispBoundPts;
+	protected myPointf[] dispBoundPts;
 	/**
 	 * this array holds the minimum and maximum values for x,y and z for this plane
 	 */
-	public final float[][] minMaxDiffValAra;
+	protected float[][] minMaxDiffValAra;
 	/**
 	 * use this with origin point to display
 	 */
-	protected final myPointf[] orthoFrame;
+	protected myPointf[] orthoFrame;
 	/**
 	 * coordinate bounds in world for plane - static across all plane objects
 	 * 		first idx : 0 is min; 1 is diff
@@ -93,35 +93,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 */	
 	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
 		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane, _shouldBuildSamples);	
-		//plane norm
-		myVectorf tmpNorm = myVectorf._cross(new myVectorf(getSrcPts()[0], getSrcPts()[1]), new myVectorf(getSrcPts()[0], getSrcPts()[2]))._normalize();
-		eq = getPlanarEqFromPointAndNorm(tmpNorm, getSrcPts()[0]);
-		//works because plane is built with unit normal in equation
-		planeOrigin = new myPointf(-eq[0]*eq[3],-eq[1]*eq[3],-eq[2]*eq[3]);
-		myVectorf tmpOriginVec = new myVectorf(planeOrigin);
-		if(tmpOriginVec._dot(tmpNorm) < 0) {tmpNorm._mult(-1.0f);	}		//make normal point away from absolute origin
-		
-		//build basis vectors
-		basisVecs = buildBasisVecs(tmpNorm);
-		
-		dispBoundPts = calc_plane_WBBox_IntersectPoints();
-		minMaxDiffValAra = new float[][] {{100000,100000,100000},{-100000,-100000,-100000},{0,0,0}};
-		for(int i=0;i<dispBoundPts.length;++i) {
-			float[] ptAra = dispBoundPts[i].asArray();
-			for(int j=0;j<ptAra.length;++j) {
-				minMaxDiffValAra[0][j] = (minMaxDiffValAra[0][j] > ptAra[j] ? ptAra[j] : minMaxDiffValAra[0][j]);
-				minMaxDiffValAra[1][j] = (minMaxDiffValAra[1][j] < ptAra[j] ? ptAra[j] : minMaxDiffValAra[1][j]);				
-			}
-		}
-		for(int j=0;j<minMaxDiffValAra[2].length;++j) {minMaxDiffValAra[2][j] = minMaxDiffValAra[1][j] -minMaxDiffValAra[0][j];	}
-
-		orthoFrame = new myPointf[3];
-		
-		for(int i=0;i<orthoFrame.length;++i) {
-			orthoFrame[i]= myPointf._add(planeOrigin, frameLen, basisVecs[i]);
-		}
-		//build new point location for color, squaring the distance from the origin to provide more diversity
-	
+		buildBasisOriginAndEq();
 		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), _numSmplPts);
 		if(_shouldBuildSamples) {
 			buildPlanePShapes();
@@ -141,32 +113,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 */
 	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
 		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.plane);
-		
-		myVectorf tmpNorm = myVectorf._cross(new myVectorf(getSrcPts()[0], getSrcPts()[1]), new myVectorf(getSrcPts()[0], getSrcPts()[2]))._normalize();
-		eq = getPlanarEqFromPointAndNorm(tmpNorm, getSrcPts()[0]);
-		//works because plane is built with unit normal in equation
-		planeOrigin = new myPointf(-eq[0]*eq[3],-eq[1]*eq[3],-eq[2]*eq[3]);
-		myVectorf tmpOriginVec = new myVectorf(planeOrigin);
-		if(tmpOriginVec._dot(tmpNorm) < 0) {tmpNorm._mult(-1.0f);	}		//make normal point away from absolute origin
-		
-		//build basis vectors
-		basisVecs = buildBasisVecs(tmpNorm);
-		
-		dispBoundPts = calc_plane_WBBox_IntersectPoints();
-		minMaxDiffValAra = new float[][] {{100000,100000,100000},{-100000,-100000,-100000},{0,0,0}};
-		for(int i=0;i<dispBoundPts.length;++i) {
-			float[] ptAra = dispBoundPts[i].asArray();
-			for(int j=0;j<ptAra.length;++j) {
-				minMaxDiffValAra[0][j] = (minMaxDiffValAra[0][j] > ptAra[j] ? ptAra[j] : minMaxDiffValAra[0][j]);
-				minMaxDiffValAra[1][j] = (minMaxDiffValAra[1][j] < ptAra[j] ? ptAra[j] : minMaxDiffValAra[1][j]);				
-			}
-		}
-		for(int j=0;j<minMaxDiffValAra[2].length;++j) {minMaxDiffValAra[2][j] = minMaxDiffValAra[1][j] -minMaxDiffValAra[0][j];	}
-
-		orthoFrame = new myPointf[3];		
-		for(int i=0;i<orthoFrame.length;++i) {
-			orthoFrame[i]= myPointf._add(planeOrigin, frameLen, basisVecs[i]);
-		}
+		buildBasisOriginAndEq();
 		//build new point location for color, squaring the distance from the origin to provide more diversity
 		super.buildLocClrAndSamplesFromCSVStr(buildLocForColor(planeOrigin, basisVecs[0]), _csvDat);
 		buildPlanePShapes();
@@ -179,6 +126,22 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 */
 	public Geom_PlaneSOMExample(SOM_GeomMapManager _mapMgr, SOM_GeomMapNode _mapNode) {
 		super(_mapMgr, _mapNode, SOM_GeomObjTypes.plane);
+		buildBasisOriginAndEq();	
+		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), SOM_GeomObjTypes.plane.getVal());
+		if(dispBoundPts.length > 0) {	buildPlanePShapes();	} 
+		else {
+			msgObj.dispErrorMessage("Geom_PlaneSOMExample", "BMU Geom Obj Ctor", "Construction Failed due to src points from " + _mapNode.OID+ " having unacceptable format :" + this.geomSrcSamples.length + " pts :");
+			for(int i=0;i<this.geomSrcSamples.length;++i) {
+				msgObj.dispErrorMessage("Geom_PlaneSOMExample", "BMU Geom Obj Ctor", "\t"+geomSrcSamples[i].toString());
+			}
+			
+		}
+	}//ctor from bmu
+	
+	/**
+	 * all planar defining components - called from constructors
+	 */
+	private void buildBasisOriginAndEq() {
 		//plane norm
 		myVectorf tmpNorm = myVectorf._cross(new myVectorf(getSrcPts()[0], getSrcPts()[1]), new myVectorf(getSrcPts()[0], getSrcPts()[2]))._normalize();
 		eq = getPlanarEqFromPointAndNorm(tmpNorm, getSrcPts()[0]);
@@ -206,19 +169,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		for(int i=0;i<orthoFrame.length;++i) {
 			orthoFrame[i]= myPointf._add(planeOrigin, frameLen, basisVecs[i]);
 		}
-		//build new point location for color, squaring the distance from the origin to provide more diversity
-	
-		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), SOM_GeomObjTypes.plane.getVal());
-		if(dispBoundPts.length > 0) {	buildPlanePShapes();	} 
-		else {
-			msgObj.dispErrorMessage("Geom_PlaneSOMExample", "BMU Geom Obj Ctor", "Construction Failed due to src points from " + _mapNode.OID+ " having unacceptable format :" + this.geomSrcSamples.length + " pts :");
-			for(int i=0;i<this.geomSrcSamples.length;++i) {
-				msgObj.dispErrorMessage("Geom_PlaneSOMExample", "BMU Geom Obj Ctor", "\t"+geomSrcSamples[i].toString());
-			}
-			
-		}
-	}
-	
+	}//buildBasisOriginAndEq
 	
 
 	@SuppressWarnings("static-access")

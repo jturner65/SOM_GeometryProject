@@ -28,18 +28,18 @@ public class SOM_GeometryMain extends my_procApplet {
 	private int[] visFlags;
 	private final int
 		showUIMenu = 0,
-		showSpereAnimRes = 1,
-		showLineAnimRes = 2,
-		showPlaneAnimRes = 3
+		showLineAnimRes = 1,
+		showPlaneAnimRes = 2,
+		showSpereAnimRes = 3
 		//,showSOMMapUI = 4
 		;
 	public final int numVisFlags = 4;
 	
 	//idx's in dispWinFrames for each window - 0 is always left side menu window
 	private static final int
-		dispSphereAnimResIDX = 1,	
-		dispLineAnimResIDX = 2,
-		dispPlaneAnimResIDX = 3
+		dispLineAnimResIDX = 1,
+		dispPlaneAnimResIDX = 2,
+		dispSphereAnimResIDX = 3	
 		//,dispSOMMapIDX = 4
 		;
 																		//set array of vector values (sceneFcsVals) based on application
@@ -103,8 +103,8 @@ public class SOM_GeometryMain extends my_procApplet {
 		//includes 1 for menu window (never < 1) - always have same # of visFlags as myDispWindows
 		int numWins = numVisFlags;		
 		//titles and descs, need to be set before sidebar menu is defined
-		String[] _winTitles = new String[]{"","Sphere World","Lines World","Planes World"},//,"SOM Map UI"},
-				_winDescr = new String[] {"", "Display Spheres and Sphere surface samples","Display Lines and sample points","Display Planes and plan surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
+		String[] _winTitles = new String[]{"","Lines World","Planes World","Sphere World"},//,"SOM Map UI"},
+				_winDescr = new String[] {"","Display Lines and sample points","Display Planes and plan surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
 		initWins(numWins,_winTitles, _winDescr);
 		//call for menu window
 		buildInitMenuWin(showUIMenu);
@@ -122,12 +122,8 @@ public class SOM_GeometryMain extends my_procApplet {
 		//int[] _fill, int[] _strk, 			: window fill and stroke colors
 		//int _trajFill, int _trajStrk)			: trajectory fill and stroke colors, if these objects can be drawn in window (used as alt color otherwise)
 		//specify windows that cannot be shown simultaneously here
-		initXORWins(new int[]{showSpereAnimRes,showLineAnimRes,showPlaneAnimRes},new int[]{dispSphereAnimResIDX,dispLineAnimResIDX, dispPlaneAnimResIDX});
+		initXORWins(new int[]{showLineAnimRes,showPlaneAnimRes,showSpereAnimRes},new int[]{dispLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX});
 
-		wIdx = dispSphereAnimResIDX; fIdx= showSpereAnimRes;
-		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,245,255,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
-		
 		wIdx = dispLineAnimResIDX; fIdx= showLineAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,true,false}, new int[]{0,0,0,255},new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
 		dispWinFrames[wIdx] = new Geom_LineAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
@@ -135,6 +131,11 @@ public class SOM_GeometryMain extends my_procApplet {
 		wIdx = dispPlaneAnimResIDX; fIdx= showPlaneAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
 		dispWinFrames[wIdx] = new Geom_PlaneAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+
+		wIdx = dispSphereAnimResIDX; fIdx= showSpereAnimRes;
+		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,245,255,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
+		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		
 		
 		for(int i=1;i<4;++i) {
 			curFocusWin = i;
@@ -199,6 +200,15 @@ public class SOM_GeometryMain extends my_procApplet {
 	@Override
 	protected String getPrjNmShrt() {		return prjNmShrt;	}
 
+	/**
+	 * present an application-specific array of mouse over btn names 
+	 * for the selection of the desired mouse over text display - if is length 0 or null, will not be displayed
+	 */
+	@Override
+	public String[] getMouseOverSelBtnNames() {
+		// TODO Auto-generated method stub
+		return SOM_AnimWorldWin.MseOvrLblsAra;
+	}
 	
 	//////////////////////////////////////////////////////
 	/// user interaction
@@ -240,7 +250,7 @@ public class SOM_GeometryMain extends my_procApplet {
 			//val is btn state before transition 
 			boolean bVal = (val == 1?  false : true);
 			//each entry in this array should correspond to a clickable window, not counting menu
-			setVisFlag(btn+showSpereAnimRes, bVal);
+			setVisFlag(btn+1, bVal);
 		}
 	}//handleShowWin
 	
@@ -250,9 +260,9 @@ public class SOM_GeometryMain extends my_procApplet {
 		//this.pr("In getUIRectVals for idx : " + idx);
 		switch(idx){
 		case dispMenuIDX 				: { return new float[0];}			//idx 0 is parent menu sidebar
-		case dispSphereAnimResIDX		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
 		case dispLineAnimResIDX			: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
 		case dispPlaneAnimResIDX 		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
+		case dispSphereAnimResIDX		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
 		//case dispSOMMapIDX 				: {	return getMaxUIClkCoords();}
 		default :  return dispWinFrames[dispMenuIDX].uiClkCoords;
 		}
@@ -286,9 +296,9 @@ public class SOM_GeometryMain extends my_procApplet {
 		visFlags[flIDX] = (val ?  visFlags[flIDX] | mask : visFlags[flIDX] & ~mask);
 		switch (idx){
 			case showUIMenu 	    : { dispWinFrames[dispMenuIDX].setFlags(myDispWindow.showIDX,val);    break;}											//whether or not to show the main ui window (sidebar)			
-			case showSpereAnimRes	: {setDispAndModMapMgr(showSpereAnimRes, dispSphereAnimResIDX, val);break;}//{setWinFlagsXOR(dispSphereAnimResIDX, val); break;}
 			case showLineAnimRes	: {setDispAndModMapMgr(showLineAnimRes, dispLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
 			case showPlaneAnimRes	: {setDispAndModMapMgr(showPlaneAnimRes, dispPlaneAnimResIDX, val);break;}//{setWinFlagsXOR(dispPlaneAnimResIDX, val); break;}
+			case showSpereAnimRes	: {setDispAndModMapMgr(showSpereAnimRes, dispSphereAnimResIDX, val);break;}//{setWinFlagsXOR(dispSphereAnimResIDX, val); break;}
 //			case showSOMMapUI 		: {		//set active map manager based on currently displayed window
 //				dispWinFrames[dispSOMMapIDX].setFlags(myDispWindow.showIDX,val); 
 //				if(val) {
