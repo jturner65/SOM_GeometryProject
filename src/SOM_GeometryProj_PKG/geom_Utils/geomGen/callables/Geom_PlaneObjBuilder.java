@@ -6,7 +6,6 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBuilder;
 import base_Utils_Objects.vectorObjs.myPointf;
@@ -32,13 +31,13 @@ public class Geom_PlaneObjBuilder extends SOM_GeomObjBuilder {
 		myPointf[] planePts = getRandPlanePoints();
 		String ID = "Plane_"+String.format("%05d", idx);
 		SOM_GeomSamplePointf[] pts = new SOM_GeomSamplePointf[planePts.length];
-		for(int i=0;i<pts.length; ++i) {pts[i] = new SOM_GeomSamplePointf(planePts[i],ID+"_gen_pt_"+i);}
+		for(int i=0;i<pts.length; ++i) {pts[i] = new SOM_GeomSamplePointf(planePts[i],ID+"_gen_pt_"+i, null);}
 		
-		SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, pts);
+		//SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, pts);
 		
 		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds)
 		//animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj, worldBounds);
-		return new Geom_PlaneSOMExample(((Geom_PlaneMapMgr)mapMgr), _exDataType, ID, _srcSmpls, numSmplsPerObj, true);
+		return new Geom_PlaneSOMExample(((Geom_PlaneMapMgr)mapMgr), _exDataType, ID, pts, numSmplsPerObj, true);
 	}
 
 }//class Geom_PlaneObjBuilder

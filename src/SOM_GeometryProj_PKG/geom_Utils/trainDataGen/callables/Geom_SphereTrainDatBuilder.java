@@ -8,15 +8,16 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
-import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomTrainingExUniqueID;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 import base_Utils_Objects.vectorObjs.myPointf;
 import base_Utils_Objects.vectorObjs.myVectorf;
 
 public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
 
-	public Geom_SphereTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_SphereExManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals) {
-		super(_mapMgr, _exMgr, _allExs, _intVals);
+	public Geom_SphereTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_SphereExManager _exMgr,SOM_GeomSamplePointf[] _allExs, int[] _intVals, SOM_GeomTrainingExUniqueID[] _idxsToUse) {
+		super(_mapMgr, _exMgr, _allExs, _intVals, _idxsToUse);
 	}
 	
     /**
@@ -26,11 +27,11 @@ public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
      * @param _ctr destination for derived center point
      * @return calculated radius
      */    
-    private double findCenterAndRadFromPtsUsingDet(SOM_GeomSmplDataForEx[] pts, myPointf _ctr){
+    private double findCenterAndRadFromPtsUsingDet(SOM_GeomSamplePointf[] pts, myPointf _ctr){
     	double[][] ptsAsAra = new double[pts.length][];
     	double[] ptSqMags = new double[pts.length];
     	for(int i=0;i<ptsAsAra.length;++i) {
-    		ptsAsAra[i] = pts[i].getPoint().asHAraPt_Dbl(); 
+    		ptsAsAra[i] = pts[i].asHAraPt_Dbl(); 
     		ptSqMags[i] = 0.0f;
     		for(int j=0;j<ptsAsAra[i].length-1; ++j) {ptSqMags[i] += ptsAsAra[i][j]*ptsAsAra[i][j];}//don't add 1 from homogeneous eqs
     	}//homogeneous     	
@@ -103,22 +104,22 @@ public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	 * @return
 	 */
 	@Override
-	protected final SOM_GeomSmplDataForEx[] genPtsForObj(ThreadLocalRandom rnd) {
-		SOM_GeomSmplDataForEx[] res = new SOM_GeomSmplDataForEx[numExPerObj];
+	protected final SOM_GeomSamplePointf[] genPtsForObj(ThreadLocalRandom rnd) {
+		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[numExPerObj];
 		//1st 2 points are always ok
 		Integer[] idxs2 = genUniqueIDXs(2, rnd);
 		for(int i=0;i<2;++i) {	res[i]=allExamples[idxs2[i]];}
-		myPointf a =res[0].getPoint();
-		myVectorf ab = new myVectorf(a,res[1].getPoint());
+		myPointf a =res[0];
+		myVectorf ab = new myVectorf(a,res[1]);
 		ab._normalize();
 		myVectorf ac, ad;
-		SOM_GeomSmplDataForEx c,d;
+		SOM_GeomSamplePointf c,d;
 		int cIDX;
 		do {
 			cIDX = idxs2[0];
 			while((cIDX==idxs2[0]) || (cIDX==idxs2[1])){	cIDX =rnd.nextInt(0,allExamples.length);}		
 			c = allExamples[cIDX];
-			ac = new myVectorf(a,c.getPoint());
+			ac = new myVectorf(a,c);
 			ac._normalize();			
 		}while (Math.abs(ab._dot(ac))==1.0f);
 		res[2]=c;
@@ -128,7 +129,7 @@ public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
 			int dIDX = idxs2[0];
 			while((dIDX==idxs2[0]) || (dIDX==idxs2[1]) || (dIDX==cIDX)){	dIDX =rnd.nextInt(0,allExamples.length);}				
 			d = allExamples[dIDX];
-			ad = new myVectorf(a,d.getPoint());
+			ad = new myVectorf(a,d);
 			ad._normalize();
 		} while (ad._dot(planeNorm) == 0.0f);//if 0 then in plane (ortho to normal)
 		res[3]=d;		
@@ -137,7 +138,7 @@ public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	
 	
 	@SuppressWarnings("unused")
-	private void _dbgDispSphere(SOM_GeomSmplDataForEx[] exAra, int idx) {
+	private void _dbgDispSphere(SOM_GeomSamplePointf[] exAra, int idx) {
 		myPointf ctrLoc = new myPointf();
       	double radius = findCenterAndRadFromPtsUsingDet(exAra, ctrLoc);		
 
@@ -149,7 +150,7 @@ public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	}
 
 	@Override
-	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSmplDataForEx[] exAra, int idx) {
+	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSamplePointf[] exAra, int idx) {
 		String ID = "Sphere_Train_"+getObjID(idx);
 		//_dbgDispSphere(exAra, idx);
 		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, exAra, numExPerObj, false);

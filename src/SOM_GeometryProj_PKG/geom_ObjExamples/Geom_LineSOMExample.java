@@ -12,7 +12,6 @@ import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.MyMathUtils;
 import base_Utils_Objects.vectorObjs.myPointf;
@@ -71,7 +70,7 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 	 * 		first idx 	: 0 is min; 1 is diff
 	 * 		2nd idx 	: 0 is x, 1 is y
 	 */
-	public Geom_LineSOMExample(Geom_LineMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
+	public Geom_LineSOMExample(Geom_LineMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
 		super(_mapMgr, _exType, _id, _srcSmpls, SOM_GeomObjTypes.line, _shouldBuildSamples);
 		buildDirOriginAndDispPts("");		
 		super.buildLocClrInitObjAndSamples(origin, _numSmplPts);
@@ -265,8 +264,8 @@ public class Geom_LineSOMExample extends SOM_GeomObj {
 		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[_numSrcSmpls];
 		myVectorf tmpNorm = new myVectorf(mapFtrs[0],mapFtrs[1],0.0f)._normalize();//should be normalized, but in case it isn't
 		myPointf ctrPt = new myPointf(mapFtrs[2],mapFtrs[3],0.0f);
-		res[0]= new SOM_GeomSamplePointf(myVectorf._add(ctrPt, 11.0f,tmpNorm), _dispLabel+"_BMU_pt_0");
-		res[1]= new SOM_GeomSamplePointf(myVectorf._add(ctrPt, -12.0f,tmpNorm), _dispLabel+"_BMU_pt_1");
+		res[0]= new SOM_GeomSamplePointf(myVectorf._add(ctrPt, 11.0f,tmpNorm), _dispLabel+"_BMU_pt_0", this);
+		res[1]= new SOM_GeomSamplePointf(myVectorf._add(ctrPt, -12.0f,tmpNorm), _dispLabel+"_BMU_pt_1", this);
 		return res;			
 	}//buildSrcPtsFromBMUMapNode
 	

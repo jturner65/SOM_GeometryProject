@@ -95,9 +95,9 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 * @param tmpListObjVals treemap keyed by object IDX and value is list of strings of values for all UI list select objects
 	 */
 	@Override
-	protected final void setupGUIObjsAras_Indiv(ArrayList<Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals) {
-		tmpUIObjArray.add(new Object[] {new double[]{20,500,1}, (double)minSphRad, "Min sphere radius", new boolean[]{false, false, true}});   				//gIDX_NumUIObjs 		                                                                        
-		tmpUIObjArray.add(new Object[] {new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius", new boolean[]{false, false, true}});  				//gIDX_NumUISamples 	                                                                        	
+	protected final void setupGUIObjsAras_Indiv(TreeMap<Integer, Object[]> tmpUIObjArray , TreeMap<Integer, String[]> tmpListObjVals) {
+		tmpUIObjArray.put(gIDX_MinRadius,new Object[] {new double[]{20,500,1}, (double)minSphRad, "Min sphere radius", new boolean[]{false, false, true}});   				//gIDX_MinRadius	                                                                        
+		tmpUIObjArray.put(gIDX_MaxRadius,new Object[] {new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius", new boolean[]{false, false, true}});  				//gIDX_MaxRadius	                                                                        	
 	}
 	
 	@Override

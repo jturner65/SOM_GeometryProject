@@ -11,7 +11,6 @@ import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_UI_Objects.my_procApplet;
 import base_Utils_Objects.vectorObjs.myPointf;
 
@@ -56,7 +55,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * @param _numSmplPts : # of sample points to build for this object TODO move to post-construction process
 	 * @param _worldBounds : bounds within which the points/samples of this object should remain constrained
 	 */
-	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
+	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
 		super(_mapMgr, _exType, _id, _srcSmpls,  SOM_GeomObjTypes.sphere,_shouldBuildSamples);
 		//with 4 srcPts, find center of sphere
 		//String res = "";
@@ -247,7 +246,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		myPointf _ctrLoc = new myPointf(mapFtrs[0],mapFtrs[1],mapFtrs[2]);
 		float _rad = mapFtrs[3];
 		myPointf[] pts = getRandSpherePoints(_rad, _ctrLoc);
-		for(int i=0;i<res.length; ++i) {res[i] = new SOM_GeomSamplePointf(pts[i], _dispLabel+"_BMU_pt_"+i);}
+		for(int i=0;i<res.length; ++i) {res[i] = new SOM_GeomSamplePointf(pts[i], _dispLabel+"_BMU_pt_"+i, this);}
 		return res;			
 	}//buildSrcPtsFromBMUMapNode
 	

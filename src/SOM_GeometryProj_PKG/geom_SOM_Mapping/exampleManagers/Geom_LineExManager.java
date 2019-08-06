@@ -1,8 +1,12 @@
 package SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_LineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
@@ -13,7 +17,8 @@ import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_Example;
 import base_SOM_Objects.som_fileIO.SOM_ExCSVDataLoader;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomExampleManager;
-import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomTrainingExUniqueID;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 
 public class Geom_LineExManager extends SOM_GeomExampleManager {
@@ -34,7 +39,7 @@ public class Geom_LineExManager extends SOM_GeomExampleManager {
 	protected SOM_Example[] castArray(ArrayList<SOM_Example> tmpList) {return (Geom_LineSOMExample[])(tmpList.toArray(new Geom_LineSOMExample[0]));		}
 	
 	@Override
-	protected void buildAllEx_MT(SOM_GeomSmplDataForEx[] allSamples, int numThdCallables, int ttlNumTrainEx) {
+	protected void buildAllEx_MT(SOM_GeomSamplePointf[] allSamples, int numThdCallables, int ttlNumTrainEx,SOM_GeomTrainingExUniqueID[] _idxsToUse) {
 		List<Future<Boolean>> trainDataBldFtrs = new ArrayList<Future<Boolean>>();
 		List<SOM_GeomTrainExBuilder> trainDataBldrs = new ArrayList<SOM_GeomTrainExBuilder>();
 		//int numVals, int numThds
@@ -43,14 +48,33 @@ public class Geom_LineExManager extends SOM_GeomExampleManager {
 		int stIDX = 0, endIDX = numPerThd;
 		
 		for (int i=0; i<numThdCallables-1;++i) {				
-			trainDataBldrs.add(new Geom_LineTrainDatBuilder((Geom_LineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,endIDX,i, ttlNumTrainEx, numThdCallables}));
+			trainDataBldrs.add(new Geom_LineTrainDatBuilder((Geom_LineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,endIDX,i, ttlNumTrainEx, numThdCallables},_idxsToUse));
 			stIDX =endIDX;
 			endIDX += numPerThd;
 		}
-		trainDataBldrs.add(new Geom_LineTrainDatBuilder((Geom_LineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,ttlNumTrainEx,numThdCallables-1, ttlNumTrainEx, numThdCallables}));
-		try {trainDataBldFtrs = th_exec.invokeAll(trainDataBldrs);for(Future<Boolean> f: trainDataBldFtrs) { 			f.get(); 		}} catch (Exception e) { e.printStackTrace(); }					
-		
+		trainDataBldrs.add(new Geom_LineTrainDatBuilder((Geom_LineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,ttlNumTrainEx,numThdCallables-1, ttlNumTrainEx, numThdCallables},_idxsToUse));
+		try {trainDataBldFtrs = th_exec.invokeAll(trainDataBldrs);for(Future<Boolean> f: trainDataBldFtrs) { 			f.get(); 		}} catch (Exception e) { e.printStackTrace(); }			
 	}
+	
+	/**
+	 * with given # of samples to choose from, how many unique samples can be drawn?
+	 */
+	@Override
+	protected long getMaxNumUniqueTrainingEx(long ttlNumSamples) {return (ttlNumSamples *(ttlNumSamples-1L))/2L;}
+	
+	/**
+	 * build a single list of sorted, unique idxs in allSamples that satisfy object creation constraints
+	 * @param allSamples list of all object samples available
+	 * @param rnd the current thread's rng engine
+	 * @return sorted list of idxs
+	 */
+	@Override
+	protected Integer[] genUniqueObjIDXs(SOM_GeomSamplePointf[] allSamples, ThreadLocalRandom rnd){
+		TreeSet<Integer> idxs = new TreeSet<Integer>();
+		//any pair of samples create a line, so just need a unique pair
+		while(idxs.size() < 2) {	idxs.add(rnd.nextInt(0,allSamples.length));}		
+		return idxs.toArray(new Integer[0]);
+	}//genUniqueObjIDXs
 	
 	@Override
 	protected void buildMTLoader(String[] loadSrcFNamePrefixAra, int numPartitions) {
@@ -62,8 +86,7 @@ public class Geom_LineExManager extends SOM_GeomExampleManager {
 	}
 
 	@Override
-	protected SOM_Example buildSingleExample(String _oid, String _str) {
-		return new Geom_LineSOMExample((Geom_LineMapMgr)mapMgr, curDataType, _oid, _str);
-	}
+	protected SOM_Example buildSingleExample(String _oid, String _str) {return new Geom_LineSOMExample((Geom_LineMapMgr)mapMgr, curDataType, _oid, _str);}
+
 
 }//class Geom_LineSOMExampleManager

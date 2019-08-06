@@ -88,7 +88,7 @@ public class Geom_LineAnimResWin extends SOM_AnimWorldWin {
 	}
 
 	@Override
-	protected void setupGUIObjsAras_Indiv(ArrayList<Object[]> tmpUIObjArray,TreeMap<Integer, String[]> tmpListObjVals) {
+	protected void setupGUIObjsAras_Indiv(TreeMap<Integer, Object[]> tmpUIObjArray ,TreeMap<Integer, String[]> tmpListObjVals) {
 				
 	}
 	

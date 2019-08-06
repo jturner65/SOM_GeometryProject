@@ -8,28 +8,30 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_LineMapMgr;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
-import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
-import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomTrainingExUniqueID;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder; 
 
 public class Geom_LineTrainDatBuilder extends SOM_GeomTrainExBuilder {
 
-	public Geom_LineTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_LineExManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals) {
-		super(_mapMgr, _exMgr, _allExs, _intVals);
+	public Geom_LineTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_LineExManager _exMgr,SOM_GeomSamplePointf[] _allExs, int[] _intVals, SOM_GeomTrainingExUniqueID[] _idxsToUse) {
+		super(_mapMgr, _exMgr, _allExs, _intVals, _idxsToUse);
 	}
 
 	/**
 	 * for lines just need 2 points; planes need 3 non-colinear points; spheres need 4 non-coplanar points, no 3 of which are colinear
 	 * @return
 	 */
-	protected final SOM_GeomSmplDataForEx[] genPtsForObj(ThreadLocalRandom rnd) {
-		SOM_GeomSmplDataForEx[] res = new SOM_GeomSmplDataForEx[numExPerObj];
+	@Override
+	protected final SOM_GeomSamplePointf[] genPtsForObj(ThreadLocalRandom rnd) {
+		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[numExPerObj];
 		Integer[] idxs = genUniqueIDXs(numExPerObj, rnd);
 		for(int i=0;i<res.length;++i) {	res[i]=allExamples[idxs[i]];}
 		return res;
 	};
 
 	@Override
-	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSmplDataForEx[] exAra, int idx) {
+	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSamplePointf[] exAra, int idx) {
 		String ID = "Line_Train_"+getObjID(idx);
 		Geom_LineSOMExample line = new Geom_LineSOMExample(((Geom_LineMapMgr)mapMgr),_exDataType, ID, exAra, numExPerObj, false);
 		return line;

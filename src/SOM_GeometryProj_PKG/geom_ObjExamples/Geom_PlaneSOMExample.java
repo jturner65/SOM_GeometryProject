@@ -13,7 +13,6 @@ import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
 import base_UI_Objects.my_procApplet;
 import base_UI_Objects.windowUI.myDispWindow;
 import base_Utils_Objects.vectorObjs.myPointf;
@@ -91,7 +90,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param _numSmplPts : # of sample points to build for this object
 	 * @param _worldBnds 4 points that bound the plane for display purposes
 	 */	
-	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSmplDataForEx[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
+	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
 		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane, _shouldBuildSamples);	
 		buildBasisOriginAndEq();
 		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), _numSmplPts);
@@ -432,9 +431,9 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		myVectorf[] basisVecs = buildBasisVecs(tmpNorm);
 		myPointf originPt = new myPointf(mapFtrs[3],mapFtrs[4],mapFtrs[5]);		
 		//float[] eq = getPlanarEqFromPointAndNorm(tmpNorm, originPt);
-		res[0]= new SOM_GeomSamplePointf(myPointf._add(originPt, 10.0f, basisVecs[1]), _dispLabel+"_BMU_pt_0");
-		res[1]= new SOM_GeomSamplePointf(myPointf._add(originPt, 10.0f, basisVecs[2]), _dispLabel+"_BMU_pt_1");
-		res[2]= new SOM_GeomSamplePointf(myPointf._add(originPt, 10.0f, basisVecs[1], 10.0f, basisVecs[2]) , _dispLabel+"_BMU_pt_2");
+		res[0]= new SOM_GeomSamplePointf(myPointf._add(originPt, 10.0f, basisVecs[1]), _dispLabel+"_BMU_pt_0", this);
+		res[1]= new SOM_GeomSamplePointf(myPointf._add(originPt, 10.0f, basisVecs[2]), _dispLabel+"_BMU_pt_1", this);
+		res[2]= new SOM_GeomSamplePointf(myPointf._add(originPt, 10.0f, basisVecs[1], 10.0f, basisVecs[2]) , _dispLabel+"_BMU_pt_2", this);
 		
 		return res;			
 	}//buildSrcPtsFromBMUMapNode

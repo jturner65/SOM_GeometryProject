@@ -8,15 +8,16 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
-import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSmplDataForEx;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomTrainingExUniqueID;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 import base_Utils_Objects.vectorObjs.myPointf;
 import base_Utils_Objects.vectorObjs.myVectorf;
 
 public class Geom_PlaneTrainDatBuilder extends SOM_GeomTrainExBuilder {
 
-	public Geom_PlaneTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_PlaneExManager _exMgr,	SOM_GeomSmplDataForEx[] _allExs, int[] _intVals) {
-		super(_mapMgr, _exMgr, _allExs, _intVals);
+	public Geom_PlaneTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_PlaneExManager _exMgr, SOM_GeomSamplePointf[] _allExs, int[] _intVals, SOM_GeomTrainingExUniqueID[] _idxsToUse) {
+		super(_mapMgr, _exMgr, _allExs, _intVals, _idxsToUse);
 	}
 	
 	/**
@@ -24,22 +25,22 @@ public class Geom_PlaneTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	 * @return
 	 */
 	@Override
-	protected final SOM_GeomSmplDataForEx[] genPtsForObj(ThreadLocalRandom rnd) {
-		SOM_GeomSmplDataForEx[] res = new SOM_GeomSmplDataForEx[numExPerObj];
+	protected final SOM_GeomSamplePointf[] genPtsForObj(ThreadLocalRandom rnd) {
+		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[numExPerObj];
 		//1st 2 points are always ok
 		Integer[] idxs2 = genUniqueIDXs(2, rnd);
 		for(int i=0;i<2;++i) {	res[i]=allExamples[idxs2[i]];}
-		myPointf a =res[0].getPoint();
-		myVectorf ab = new myVectorf(a,res[1].getPoint());
+		myPointf a =res[0];
+		myVectorf ab = new myVectorf(a,res[1]);
 		ab._normalize();
 		myVectorf ac;
-		SOM_GeomSmplDataForEx c;
+		SOM_GeomSamplePointf c;
 		do {
 			int cIDX = idxs2[0];
 			while((cIDX==idxs2[0]) || (cIDX==idxs2[1])){	cIDX =rnd.nextInt(0,allExamples.length);}		
 
 			c = allExamples[cIDX];
-			ac = new myVectorf(a,c.getPoint());
+			ac = new myVectorf(a,c);
 			ac._normalize();			
 		}while (Math.abs(ab._dot(ac))==1.0f);
 		res[2]=c;
@@ -48,7 +49,7 @@ public class Geom_PlaneTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	};
 	
 	@Override
-	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSmplDataForEx[] exAra, int idx) {
+	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSamplePointf[] exAra, int idx) {
 		String ID = "Plane_Train_"+getObjID(idx);
 		return new Geom_PlaneSOMExample(((Geom_PlaneMapMgr)mapMgr), _exDataType, ID, exAra, numExPerObj, false);
 	}

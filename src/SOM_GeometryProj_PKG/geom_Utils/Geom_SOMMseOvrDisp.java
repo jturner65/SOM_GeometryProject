@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import base_SOM_Objects.SOM_MapManager;
-import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_MapNode;
 import base_SOM_Objects.som_ui.SOM_MseOvrDisplay;
+import base_UI_Objects.my_procApplet;
 
 public class Geom_SOMMseOvrDisp extends SOM_MseOvrDisplay {
 
@@ -15,14 +15,9 @@ public class Geom_SOMMseOvrDisp extends SOM_MseOvrDisplay {
 	}
 
 	@Override
-	protected int[] setNodeColors() {return mapMgr.getClrFillStrkTxtAra(SOM_ExDataType.MouseOver);}
-
-	/**
-	 * instancing-specific initialization called for every data change for mouse object
-	 */
-	@Override
-	protected void initAll_Indiv() {	}
-
+	protected int[] setNodeColors() {			
+		return new int[] {my_procApplet.gui_Black,my_procApplet.gui_White,my_procApplet.gui_Black};
+	}
 	@Override
 	protected String getFtrDispTitleString(int count) {return "Ftrs :  count : "+count;}
 	/**
@@ -40,8 +35,29 @@ public class Geom_SOMMseOvrDisp extends SOM_MseOvrDisplay {
 	}
 
 	@Override
-	protected String getClassProbTitleString(SOM_MapNode nearestMapNode, int ttlNumClasses) { return nearestMapNode.mapNodeCoord.toString() + " Class Probs : ("+ttlNumClasses+" classes mapped) ";}
+	protected String getClassProbTitleString(SOM_MapNode nearestMapNode, int ttlNumClasses) { 
+		if(nearestMapNode == null) {		return "Null Nearest Map Node : No Classes present.";	}
+		return nearestMapNode.mapNodeCoord.toString() + " Class Probs : ("+ttlNumClasses+" classes mapped) ";}
 	@Override
-	protected String getCategoryProbTitleString(SOM_MapNode nearestMapNode, int ttlNumCategories) { return nearestMapNode.mapNodeCoord.toString() + " Category Probs : ("+ttlNumCategories+" categories mapped) ";}
+	protected String getCategoryProbTitleString(SOM_MapNode nearestMapNode, int ttlNumCategories) { 
+		if(nearestMapNode == null) {		return "Null Nearest Map Node : No Categories present.";	}
 
+		return nearestMapNode.mapNodeCoord.toString() + " Category Probs : ("+ttlNumCategories+" categories mapped) ";
+	}
+
+	/**
+	 * instancing-specific initialization called for every data change for mouse object
+	 */
+	@Override
+	protected void initAll_Indiv() {}
+	/**
+	 * instancing-specific finalizing called after every mouse-over data process
+	 */
+	@Override
+	protected void finalizeMseLblDatCtor_Indiv(ArrayList<String> _mseLblDat, int longestLine) {	}
+	/**
+	 * instancing-specific clearing called when mouse over display is cleared
+	 */
+	@Override
+	protected void clearMseDat_Indiv() {	}
 }//Sphere_SOMMseOvrDisp

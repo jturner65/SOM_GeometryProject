@@ -22,7 +22,6 @@
 	<classpathentry kind="lib" path="libs/processing/jogl-all-natives-windows-amd64.jar"/>
 	<classpathentry kind="lib" path="libs/processing/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="libs/processing/jogl-all.jar"/>
-	<classpathentry kind="lib" path="libs/base_SOMProjectJTools.jar"/>
 	<classpathentry kind="src" path="data"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

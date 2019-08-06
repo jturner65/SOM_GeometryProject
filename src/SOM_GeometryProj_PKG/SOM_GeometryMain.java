@@ -104,7 +104,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		int numWins = numVisFlags;		
 		//titles and descs, need to be set before sidebar menu is defined
 		String[] _winTitles = new String[]{"","Lines World","Planes World","Sphere World"},//,"SOM Map UI"},
-				_winDescr = new String[] {"","Display Lines and sample points","Display Planes and plan surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
+				_winDescr = new String[] {"","Display Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
 		initWins(numWins,_winTitles, _winDescr);
 		//call for menu window
 		buildInitMenuWin(showUIMenu);
@@ -167,7 +167,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		float[] _dimClosed  =  new float[]{menuWidth, height-hidWinHeight, width-menuWidth, hidWinHeight};
 		
 		//(int _winIDX, float[] _dimOpen, float[] _dimClosed, boolean[] _dispFlags, int[] _fill, int[] _strk, int[] _trajFill, int[] _trajStrk)
-		SOM_GeomMapUIWin resWin = new SOM_GeomMapUIWin(this, "SOM Map UI for " + owner, fIdx, new int[]{50,40,20,255}, new int[]{255,255,255,255}, _dimOpen, _dimClosed, "Visualize SOM Node location for "+owner,canDrawInWin,argsMap,ownerWin);	
+		SOM_GeomMapUIWin resWin = new SOM_GeomMapUIWin(this, "SOM Map UI for " + owner, fIdx, new int[]{20,40,50,200}, new int[]{255,255,255,255}, _dimOpen, _dimClosed, "Visualize SOM Node location for "+owner,canDrawInWin,argsMap,ownerWin);	
 		resWin.finalInit(false, false, new myPoint(-gridDimX/2.0,-gridDimY/2.0,-gridDimZ/2.0), new myVector(0,0,0));
 		resWin.setTrajColors(new int[]{180,180,180,255},new int[]{100,100,100,255});
 		resWin.setRtSideUIBoxClrs(new int[]{0,0,0,200},new int[]{255,255,255,255});
