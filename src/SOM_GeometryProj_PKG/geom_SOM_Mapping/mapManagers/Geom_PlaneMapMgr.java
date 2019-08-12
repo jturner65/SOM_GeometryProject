@@ -62,6 +62,7 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 			default : {break;}
 		}
 	}
+	public final int getNumSamplesToBuildObject() {return 3;}
 
 	/**
 	 * build the example that represents the SOM data where the mouse is

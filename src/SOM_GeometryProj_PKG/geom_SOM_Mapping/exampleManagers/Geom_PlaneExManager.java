@@ -1,7 +1,6 @@
 package SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.Future;
@@ -30,11 +29,6 @@ public class Geom_PlaneExManager extends SOM_GeomExampleManager {
 	}
 	
 	
-	/**
-	 * no need to validate examples for this kind of project
-	 */
-	@Override
-	protected final void validateAndAddExToArray(ArrayList<SOM_Example> tmpList, SOM_Example ex) {tmpList.add(ex);	}
 	@Override
 	protected SOM_Example[] noValidateBuildExampleArray() {return (Geom_PlaneSOMExample[])(exampleMap.values().toArray(new Geom_PlaneSOMExample[0]));		}
 	@Override

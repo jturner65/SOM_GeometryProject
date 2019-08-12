@@ -168,7 +168,6 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 * instance-specific drawing setup before objects are actually drawn 
 	 */
 	protected final void drawMeFirst_Indiv() {//need to translate by half the screen width to center coords
-		//pa.hint(pa.ENABLE_DEPTH_SORT);//slow
 	}
 	
 	/**

@@ -4,7 +4,6 @@ import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
-import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
@@ -56,7 +55,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * @param _worldBounds : bounds within which the points/samples of this object should remain constrained
 	 */
 	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
-		super(_mapMgr, _exType, _id, _srcSmpls,  SOM_GeomObjTypes.sphere,_shouldBuildSamples);
+		super(_mapMgr, _exType, _id, _srcSmpls,  SOM_GeomObjTypes.sphere, true,_shouldBuildSamples);
 		//with 4 srcPts, find center of sphere
 		//String res = "";
 		//for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
@@ -72,7 +71,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	}//ctor
 	
 	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
-		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.sphere);
+		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.sphere, 4, true);
 		ctrLoc = new myPointf();
 		
 		radius = buildCenterAndRadFromCSVStr(ctrLoc, _csvDat);
@@ -85,8 +84,8 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * @param _mapMgr
 	 * @param _mapNode
 	 */
-	public Geom_SphereSOMExample(SOM_GeomMapManager _mapMgr, SOM_GeomMapNode _mapNode) {
-		super(_mapMgr, _mapNode, SOM_GeomObjTypes.sphere);
+	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_GeomMapNode _mapNode) {
+		super(_mapMgr, _mapNode, SOM_GeomObjTypes.sphere, 4, true);
 		//with 4 srcPts, find center of sphere
 		//String res = "";
 		//for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
@@ -95,7 +94,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
       	radius = (float) findCenterAndRadFromPtsUsingDet(getSrcPts(), ctrLoc);		
       	sphrDet = (int)(Math.sqrt(radius) + 10);	
 		//ctrLoc = findCtrOfSphereFrom4Pts(srcPts);
-		super.buildLocClrInitObjAndSamples(ctrLoc, SOM_GeomObjTypes.sphere.getVal());		
+		super.buildLocClrInitObjAndSamples(ctrLoc, 4);		
 	}
 	
 	@SuppressWarnings("static-access")

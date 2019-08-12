@@ -1,0 +1,41 @@
+package SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables;
+
+import java.util.concurrent.ThreadLocalRandom;
+
+import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_2DLineSOMExample;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_2DLineExManager;
+import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_2DLineMapMgr;
+import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomTrainingExUniqueID;
+import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
+import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder; 
+
+public class Geom_2DLineTrainDatBuilder extends SOM_GeomTrainExBuilder {
+
+	public Geom_2DLineTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_2DLineExManager _exMgr,SOM_GeomSamplePointf[] _allExs, int[] _intVals, SOM_GeomTrainingExUniqueID[] _idxsToUse) {
+		super(_mapMgr, _exMgr, _allExs, _intVals, _idxsToUse);
+	}
+
+	/**
+	 * for lines just need 2 points; planes need 3 non-colinear points; spheres need 4 non-coplanar points, no 3 of which are colinear
+	 * @return
+	 */
+	@Override
+	protected final SOM_GeomSamplePointf[] genPtsForObj(ThreadLocalRandom rnd) {
+		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[numExPerObj];
+		Integer[] idxs = genUniqueIDXs(numExPerObj, rnd);
+		for(int i=0;i<res.length;++i) {	res[i]=allExamples[idxs[i]];}
+		return res;
+	};
+
+	@Override
+	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSamplePointf[] exAra, int idx) {
+		String ID = "2D_Line_Train_"+getObjID(idx);
+		Geom_2DLineSOMExample line = new Geom_2DLineSOMExample(((Geom_2DLineMapMgr)mapMgr),_exDataType, ID, exAra, numExPerObj, false);
+		return line;
+		
+	}
+
+}

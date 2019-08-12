@@ -5,7 +5,8 @@ import processing.core.*;
 import java.io.File;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_UI.Geom_LineAnimResWin;
+import SOM_GeometryProj_PKG.geom_UI.Geom_2DLineAnimResWin;
+import SOM_GeometryProj_PKG.geom_UI.Geom_3DLineAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_PlaneAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_SphereAnimResWin;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
@@ -28,19 +29,19 @@ public class SOM_GeometryMain extends my_procApplet {
 	private int[] visFlags;
 	private final int
 		showUIMenu = 0,
-		showLineAnimRes = 1,
-		showPlaneAnimRes = 2,
-		showSpereAnimRes = 3
-		//,showSOMMapUI = 4
+		show2DLineAnimRes = 1,
+		show3DLineAnimRes = 2,
+		showPlaneAnimRes = 3,
+		showSpereAnimRes = 4
 		;
-	public final int numVisFlags = 4;
+	public final int numVisFlags = 5;
 	
 	//idx's in dispWinFrames for each window - 0 is always left side menu window
 	private static final int
-		dispLineAnimResIDX = 1,
-		dispPlaneAnimResIDX = 2,
-		dispSphereAnimResIDX = 3	
-		//,dispSOMMapIDX = 4
+		disp2DLineAnimResIDX = 1,
+		disp3DLineAnimResIDX = 2,
+		dispPlaneAnimResIDX = 3,
+		dispSphereAnimResIDX = 4
 		;
 																		//set array of vector values (sceneFcsVals) based on application
 	//private boolean cyclModCmp;										//comparison every draw of cycleModDraw			
@@ -103,8 +104,8 @@ public class SOM_GeometryMain extends my_procApplet {
 		//includes 1 for menu window (never < 1) - always have same # of visFlags as myDispWindows
 		int numWins = numVisFlags;		
 		//titles and descs, need to be set before sidebar menu is defined
-		String[] _winTitles = new String[]{"","Lines World","Planes World","Sphere World"},//,"SOM Map UI"},
-				_winDescr = new String[] {"","Display Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
+		String[] _winTitles = new String[]{"","2D Lines","3D Lines","3D Planes","3D Spheres"},//,"SOM Map UI"},
+				_winDescr = new String[] {"","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
 		initWins(numWins,_winTitles, _winDescr);
 		//call for menu window
 		buildInitMenuWin(showUIMenu);
@@ -122,11 +123,15 @@ public class SOM_GeometryMain extends my_procApplet {
 		//int[] _fill, int[] _strk, 			: window fill and stroke colors
 		//int _trajFill, int _trajStrk)			: trajectory fill and stroke colors, if these objects can be drawn in window (used as alt color otherwise)
 		//specify windows that cannot be shown simultaneously here
-		initXORWins(new int[]{showLineAnimRes,showPlaneAnimRes,showSpereAnimRes},new int[]{dispLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX});
+		initXORWins(new int[]{show2DLineAnimRes,show3DLineAnimRes,showPlaneAnimRes,showSpereAnimRes},new int[]{disp2DLineAnimResIDX,disp3DLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX});
 
-		wIdx = dispLineAnimResIDX; fIdx= showLineAnimRes;
+		wIdx = disp2DLineAnimResIDX; fIdx= show2DLineAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,true,false}, new int[]{0,0,0,255},new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_LineAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		
+		wIdx = disp3DLineAnimResIDX; fIdx= show3DLineAnimRes;
+		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
+		dispWinFrames[wIdx] = new Geom_3DLineAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
 		
 		wIdx = dispPlaneAnimResIDX; fIdx= showPlaneAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
@@ -137,7 +142,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
 		
 		
-		for(int i=1;i<4;++i) {
+		for(int i=1;i<dispWinFrames.length;++i) {
 			curFocusWin = i;
 			((SOM_AnimWorldWin)dispWinFrames[i]).setGeomMapUIWin(buildSOM_MapDispUIWin((SOM_AnimWorldWin)dispWinFrames[i],winTitles[i], -1, false));
 		}
@@ -174,7 +179,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		return resWin;
 	}
 	
-	public SOM_AnimWorldWin getLinesWindow() {return (SOM_AnimWorldWin) dispWinFrames[dispLineAnimResIDX];}
+	public SOM_AnimWorldWin getLinesWindow() {return (SOM_AnimWorldWin) dispWinFrames[disp2DLineAnimResIDX];}
 	public SOM_AnimWorldWin getPlanesWindow() {return (SOM_AnimWorldWin) dispWinFrames[dispPlaneAnimResIDX];}
 	public SOM_AnimWorldWin getSpheresWindow() {return (SOM_AnimWorldWin) dispWinFrames[dispSphereAnimResIDX];}
 	
@@ -184,7 +189,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		//which objects to initially show
 		setVisFlag(showUIMenu, true);					//show input UI menu	
 		//setVisFlag(showSpereAnimRes, true);
-		setVisFlag(showLineAnimRes, true);
+		setVisFlag(show2DLineAnimRes, true);
 	}//	initOnce
 	
 	@Override
@@ -260,7 +265,8 @@ public class SOM_GeometryMain extends my_procApplet {
 		//this.pr("In getUIRectVals for idx : " + idx);
 		switch(idx){
 		case dispMenuIDX 				: { return new float[0];}			//idx 0 is parent menu sidebar
-		case dispLineAnimResIDX			: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
+		case disp2DLineAnimResIDX			: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
+		case disp3DLineAnimResIDX			: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
 		case dispPlaneAnimResIDX 		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
 		case dispSphereAnimResIDX		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
 		//case dispSOMMapIDX 				: {	return getMaxUIClkCoords();}
@@ -296,7 +302,8 @@ public class SOM_GeometryMain extends my_procApplet {
 		visFlags[flIDX] = (val ?  visFlags[flIDX] | mask : visFlags[flIDX] & ~mask);
 		switch (idx){
 			case showUIMenu 	    : { dispWinFrames[dispMenuIDX].setFlags(myDispWindow.showIDX,val);    break;}											//whether or not to show the main ui window (sidebar)			
-			case showLineAnimRes	: {setDispAndModMapMgr(showLineAnimRes, dispLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
+			case show2DLineAnimRes	: {setDispAndModMapMgr(show2DLineAnimRes, disp2DLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
+			case show3DLineAnimRes	: {setDispAndModMapMgr(show3DLineAnimRes, disp3DLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
 			case showPlaneAnimRes	: {setDispAndModMapMgr(showPlaneAnimRes, dispPlaneAnimResIDX, val);break;}//{setWinFlagsXOR(dispPlaneAnimResIDX, val); break;}
 			case showSpereAnimRes	: {setDispAndModMapMgr(showSpereAnimRes, dispSphereAnimResIDX, val);break;}//{setWinFlagsXOR(dispSphereAnimResIDX, val); break;}
 //			case showSOMMapUI 		: {		//set active map manager based on currently displayed window

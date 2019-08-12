@@ -27,13 +27,6 @@ public class Geom_SphereExManager extends SOM_GeomExampleManager {
 		super(_mapMgr, _exName, _longExampleName, _curDataType, _shouldValidate, _exMgrName);
 	}
 	
-	/**
-	 * no need to validate examples for this kind of project
-	 */
-	@Override
-	protected final void validateAndAddExToArray(ArrayList<SOM_Example> tmpList, SOM_Example ex) {tmpList.add(ex);	}
-
-
 	@Override
 	protected SOM_Example[] noValidateBuildExampleArray() {return (Geom_SphereSOMExample[])(exampleMap.values().toArray(new Geom_SphereSOMExample[0]));		}
 	@Override

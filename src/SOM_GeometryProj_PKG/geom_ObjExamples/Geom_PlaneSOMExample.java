@@ -6,7 +6,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
-import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
@@ -91,7 +90,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param _worldBnds 4 points that bound the plane for display purposes
 	 */	
 	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
-		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane, _shouldBuildSamples);	
+		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane, true, _shouldBuildSamples);	
 		buildBasisOriginAndEq();
 		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), _numSmplPts);
 		if(_shouldBuildSamples) {
@@ -111,7 +110,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param _worldBounds
 	 */
 	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
-		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.plane);
+		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.plane, 3, true);
 		buildBasisOriginAndEq();
 		//build new point location for color, squaring the distance from the origin to provide more diversity
 		super.buildLocClrAndSamplesFromCSVStr(buildLocForColor(planeOrigin, basisVecs[0]), _csvDat);
@@ -123,10 +122,10 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param _mapMgr
 	 * @param _mapNode
 	 */
-	public Geom_PlaneSOMExample(SOM_GeomMapManager _mapMgr, SOM_GeomMapNode _mapNode) {
-		super(_mapMgr, _mapNode, SOM_GeomObjTypes.plane);
+	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_GeomMapNode _mapNode) {
+		super(_mapMgr, _mapNode, SOM_GeomObjTypes.plane, 3, true);
 		buildBasisOriginAndEq();	
-		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), SOM_GeomObjTypes.plane.getVal());
+		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), 3);
 		if(dispBoundPts.length > 0) {	buildPlanePShapes();	} 
 		else {
 			msgObj.dispErrorMessage("Geom_PlaneSOMExample", "BMU Geom Obj Ctor", "Construction Failed due to src points from " + _mapNode.OID+ " having unacceptable format :" + this.geomSrcSamples.length + " pts :");
@@ -205,16 +204,16 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	private void buildPlanePShapes() {
 		//create representation
 		planeObjs = new PShape[SOM_GeomObjDrawType.getNumVals()];
-		planeObjs[SOM_GeomObjDrawType.rndClr.getVal()] = buildPoly(true, rndClrAra);
-		planeObjs[SOM_GeomObjDrawType.locClr.getVal()] = buildPoly(true, locClrAra);
-		planeObjs[SOM_GeomObjDrawType.noFillRndClr.getVal()] = buildPoly(false, rndClrAra);
-		planeObjs[SOM_GeomObjDrawType.noFillLocClr.getVal()] = buildPoly(false, locClrAra);
+		planeObjs[SOM_GeomObjDrawType.rndClr.getVal()] = buildPlaneShape(true, rndClrAra);
+		planeObjs[SOM_GeomObjDrawType.locClr.getVal()] = buildPlaneShape(true, locClrAra);
+		planeObjs[SOM_GeomObjDrawType.noFillRndClr.getVal()] = buildPlaneShape(false, rndClrAra);
+		planeObjs[SOM_GeomObjDrawType.noFillLocClr.getVal()] = buildPlaneShape(false, locClrAra);
 		planeObjs[SOM_GeomObjDrawType.selected.getVal()] = buildSelectedPoly();
 
 	}//buildPlanePShapes
 
 	
-	private PShape buildPoly(boolean hasFill, int[] clr) {
+	private PShape buildPlaneShape(boolean hasFill, int[] clr) {
 		PShape poly = myDispWindow.pa.createShape(); 
 		//all have lines to center
 		poly.beginShape(PConstants.TRIANGLE_FAN);

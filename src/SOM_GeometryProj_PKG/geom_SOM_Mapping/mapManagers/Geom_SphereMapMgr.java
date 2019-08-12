@@ -66,6 +66,7 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 		}
 		((Geom_SphereObjBldrRunner)objRunner).setRadSpan(minRad, maxRad);
 	}
+	public final int getNumSamplesToBuildObject() {return 4;}
 	
 	/**
 	 * build the example that represents the SOM data where the mouse is
