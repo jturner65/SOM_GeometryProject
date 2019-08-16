@@ -57,9 +57,8 @@ public class Geom_2DLineMapMgr extends SOM_GeomMapManager {
 			default : {break;}
 		}
 	}
-	public final int getNumSamplesToBuildObject() {return 2;}
+	public final int getNumSamplesToBuildObject() {return Geom_2DLineSOMExample._numSrcPts;}
 
-	
 	/**
 	 * build the example that represents the SOM data where the mouse is
 	 */

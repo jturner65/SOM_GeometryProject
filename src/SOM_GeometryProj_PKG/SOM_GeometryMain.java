@@ -146,23 +146,6 @@ public class SOM_GeometryMain extends my_procApplet {
 			curFocusWin = i;
 			((SOM_AnimWorldWin)dispWinFrames[i]).setGeomMapUIWin(buildSOM_MapDispUIWin((SOM_AnimWorldWin)dispWinFrames[i],winTitles[i], -1, false));
 		}
-		
-//		wIdx = dispSOMMapIDX; fIdx=showSOMMapUI;
-//		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,false,false}, new int[]{50,40,20,255}, new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255});
-//		dispWinFrames[wIdx] = new mySOMMapUIWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
-//		
-//		//specify windows that cannot be shown simultaneously here
-//		initXORWins(new int[]{showSpereAnimRes,showLineAnimRes,showPlaneAnimRes,showSOMMapUI},new int[]{dispSphereAnimResIDX,dispLineAnimResIDX, dispPlaneAnimResIDX,dispSOMMapIDX});
-//		float popUpWinHeight = PopUpWinOpenFraction * height;
-//		_dimOpen  =  new float[]{menuWidth, popUpWinHeight, width-menuWidth, height-popUpWinHeight};
-//		//hidden
-//		_dimClosed  =  new float[]{menuWidth, height-hidWinHeight, width-menuWidth, hidWinHeight};
-//		
-//		wIdx = dispSOMMapIDX; fIdx=showSOMMapUI;
-//		//(int _winIDX, float[] _dimOpen, float[] _dimClosed, boolean[] _dispFlags, int[] _fill, int[] _strk, int[] _trajFill, int[] _trajStrk)
-//		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,false,false}, new int[]{50,40,20,255}, new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255});
-//		dispWinFrames[wIdx] = new SOM_GeomMapUIWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX],argsMap);		
-		
 	}//	initVisOnce_Priv
 	
 	private SOM_GeomMapUIWin buildSOM_MapDispUIWin(SOM_AnimWorldWin ownerWin, String owner, int fIdx, boolean canDrawInWin) {

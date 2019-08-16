@@ -32,6 +32,11 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	public static final int _numFtrs = ftrNames.length;
 	
 	/**
+	 * # of source points used to build object
+	 */
+	public static final int _numSrcPts = 3;
+	
+	/**
 	 * unique point on this plane closest to origin
 	 */
 	protected myPointf planeOrigin;
@@ -110,7 +115,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param _worldBounds
 	 */
 	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
-		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.plane, 3, true);
+		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.plane, _numSrcPts, true);
 		buildBasisOriginAndEq();
 		//build new point location for color, squaring the distance from the origin to provide more diversity
 		super.buildLocClrAndSamplesFromCSVStr(buildLocForColor(planeOrigin, basisVecs[0]), _csvDat);
@@ -123,9 +128,9 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param _mapNode
 	 */
 	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_GeomMapNode _mapNode) {
-		super(_mapMgr, _mapNode, SOM_GeomObjTypes.plane, 3, true);
+		super(_mapMgr, _mapNode, SOM_GeomObjTypes.plane, true);
 		buildBasisOriginAndEq();	
-		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), 3);
+		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), _numSrcPts);
 		if(dispBoundPts.length > 0) {	buildPlanePShapes();	} 
 		else {
 			msgObj.dispErrorMessage("Geom_PlaneSOMExample", "BMU Geom Obj Ctor", "Construction Failed due to src points from " + _mapNode.OID+ " having unacceptable format :" + this.geomSrcSamples.length + " pts :");
@@ -424,8 +429,8 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * build an array of source points from the characteristic features of the source map node
 	 */
 	@Override
-	protected final SOM_GeomSamplePointf[] buildSrcPtsFromBMUMapNodeFtrs(float[] mapFtrs, int _numSrcSmpls, String _dispLabel) {
-		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[_numSrcSmpls];
+	protected final SOM_GeomSamplePointf[] buildSrcPtsFromBMUMapNodeFtrs(float[] mapFtrs,  String _dispLabel) {
+		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[_numSrcPts];
 		myVectorf tmpNorm = new myVectorf(mapFtrs[0],mapFtrs[1],mapFtrs[2])._normalize();//should be normalized, but in case it isn't
 		myVectorf[] basisVecs = buildBasisVecs(tmpNorm);
 		myPointf originPt = new myPointf(mapFtrs[3],mapFtrs[4],mapFtrs[5]);		

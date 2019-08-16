@@ -27,6 +27,11 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	 * feature vector size for this object : 3d point + 3d line
 	 */
 	public static final int _numFtrs = ftrNames.length;
+	
+	/**
+	 * # of source points used to build object
+	 */
+	public static final int _numSrcPts = 2;
 
 	/**
 	 * direction vector for this line
@@ -78,7 +83,7 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	}//ctor		
 	
 	public Geom_2DLineSOMExample(Geom_2DLineMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
-		super(_mapMgr, _exType, _oid, _csvDat, SOM_GeomObjTypes.line_2D, 2, false);
+		super(_mapMgr, _exType, _oid, _csvDat, SOM_GeomObjTypes.line_2D, _numSrcPts, false);
 		buildDirOriginAndDispPts("");		
 		super.buildLocClrAndSamplesFromCSVStr(origin, _csvDat);
 	}//csv ctor
@@ -89,9 +94,9 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	 * @param _mapNode
 	 */
 	public Geom_2DLineSOMExample(Geom_2DLineMapMgr _mapMgr, SOM_GeomMapNode _mapNode) {
-		super(_mapMgr, _mapNode, SOM_GeomObjTypes.line_2D, 2, false);
+		super(_mapMgr, _mapNode, SOM_GeomObjTypes.line_2D, false);
 		buildDirOriginAndDispPts("BMU");
-		super.buildLocClrInitObjAndSamples(origin, 2);
+		super.buildLocClrInitObjAndSamples(origin, _numSrcPts);
 		
 		boundOriginWithinLine();
 	}//bmu ctor
@@ -259,8 +264,8 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	 * build an array of source points from the characteristic features of the source map node
 	 */
 	@Override
-	protected final SOM_GeomSamplePointf[] buildSrcPtsFromBMUMapNodeFtrs(float[] mapFtrs, int _numSrcSmpls, String _dispLabel) {
-		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[_numSrcSmpls];
+	protected final SOM_GeomSamplePointf[] buildSrcPtsFromBMUMapNodeFtrs(float[] mapFtrs,  String _dispLabel) {
+		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[_numSrcPts];
 		myVectorf tmpNorm = new myVectorf(mapFtrs[0],mapFtrs[1],0.0f)._normalize();//should be normalized, but in case it isn't
 		myPointf ctrPt = new myPointf(mapFtrs[2],mapFtrs[3],0.0f);
 		res[0]= new SOM_GeomSamplePointf(myVectorf._add(ctrPt, 11.0f,tmpNorm), _dispLabel+"_BMU_pt_0", this);

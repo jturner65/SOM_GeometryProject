@@ -179,8 +179,6 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	protected final void setCustMenuBtnNames() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	//////////////////////////////

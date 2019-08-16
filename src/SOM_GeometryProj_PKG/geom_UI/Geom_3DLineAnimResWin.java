@@ -211,7 +211,7 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	protected final void endCntlKeyI() {}
 
 	@Override
-	protected final myPoint getMsePtAs3DPt(myPoint mseLoc) {	return new myPoint(mseLoc.x, mseLoc.y, 0);}
+	protected myPoint getMsePtAs3DPt(myPoint mseLoc) {		return new myPoint(mseLoc);	}
 
 
 }//class Geom_LineSOMAnimResWin

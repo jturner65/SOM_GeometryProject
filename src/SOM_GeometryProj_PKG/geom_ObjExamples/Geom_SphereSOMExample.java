@@ -28,6 +28,12 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * feature vector size for this object : 3d point + 3d line
 	 */
 	public static final int _numFtrs = ftrNames.length;
+	
+	/**
+	 * # of source points used to build object
+	 */
+	public static final int _numSrcPts = 4;
+
 	/**
 	 * center location
 	 */
@@ -71,7 +77,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	}//ctor
 	
 	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
-		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.sphere, 4, true);
+		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.sphere, _numSrcPts, true);
 		ctrLoc = new myPointf();
 		
 		radius = buildCenterAndRadFromCSVStr(ctrLoc, _csvDat);
@@ -85,7 +91,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * @param _mapNode
 	 */
 	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_GeomMapNode _mapNode) {
-		super(_mapMgr, _mapNode, SOM_GeomObjTypes.sphere, 4, true);
+		super(_mapMgr, _mapNode, SOM_GeomObjTypes.sphere, true);
 		//with 4 srcPts, find center of sphere
 		//String res = "";
 		//for(int i=0;i<srcPts.length;++i) {res += srcPts[i].toStrBrf() + "; ";	}
@@ -94,7 +100,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
       	radius = (float) findCenterAndRadFromPtsUsingDet(getSrcPts(), ctrLoc);		
       	sphrDet = (int)(Math.sqrt(radius) + 10);	
 		//ctrLoc = findCtrOfSphereFrom4Pts(srcPts);
-		super.buildLocClrInitObjAndSamples(ctrLoc, 4);		
+		super.buildLocClrInitObjAndSamples(ctrLoc, _numSrcPts);		
 	}
 	
 	@SuppressWarnings("static-access")
@@ -240,8 +246,8 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * build an array of source points from the characteristic features of the source map node
 	 */
 	@Override
-	protected final SOM_GeomSamplePointf[] buildSrcPtsFromBMUMapNodeFtrs(float[] mapFtrs, int _numSrcSmpls, String _dispLabel) {
-		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[_numSrcSmpls];
+	protected final SOM_GeomSamplePointf[] buildSrcPtsFromBMUMapNodeFtrs(float[] mapFtrs, String _dispLabel) {
+		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[_numSrcPts];
 		myPointf _ctrLoc = new myPointf(mapFtrs[0],mapFtrs[1],mapFtrs[2]);
 		float _rad = mapFtrs[3];
 		myPointf[] pts = getRandSpherePoints(_rad, _ctrLoc);
