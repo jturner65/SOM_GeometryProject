@@ -300,7 +300,6 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	@Override
 	protected String getRawDescColNamesForCSV_Indiv() {	return "";}
 	
-	
 
 	@Override
 	public final TreeMap<Integer, Integer> getTrainingLabels() {
