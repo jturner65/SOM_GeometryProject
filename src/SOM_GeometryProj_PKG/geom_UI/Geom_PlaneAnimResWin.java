@@ -32,9 +32,9 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	private final int numPrivFlags = numBaseAnimWinPrivFlags + 1;	
 	
 
-	public Geom_PlaneAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
-		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, SOM_GeomObjTypes.plane);
-		super.initThisWin(_canDrawTraj, true, false);
+	public Geom_PlaneAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt) {
+		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.plane);
+		super.initThisWin(false);
 	}
 
 	@Override

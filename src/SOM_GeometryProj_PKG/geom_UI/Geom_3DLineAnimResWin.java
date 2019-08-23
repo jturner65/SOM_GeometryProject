@@ -30,9 +30,9 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	 * @param _winTxt
 	 * @param _canDrawTraj
 	 */	
-	public Geom_3DLineAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt, boolean _canDrawTraj) {
-		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, SOM_GeomObjTypes.line_3D);
-		super.initThisWin(_canDrawTraj, true, false);
+	public Geom_3DLineAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt) {
+		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.line_3D);
+		super.initThisWin(false);
 	}
 
 	/**

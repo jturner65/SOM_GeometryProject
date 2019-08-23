@@ -30,9 +30,9 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	public float minSphRad = 50, maxSphRad = 100;
 	
 
-	public Geom_SphereAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed,String _winTxt, boolean _canDrawTraj) {
-		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, _canDrawTraj, SOM_GeomObjTypes.sphere);
-		super.initThisWin(_canDrawTraj, true, false);
+	public Geom_SphereAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed,String _winTxt) {
+		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.sphere);
+		super.initThisWin(false);
 	}
 
 	/**

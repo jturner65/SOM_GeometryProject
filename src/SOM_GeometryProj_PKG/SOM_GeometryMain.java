@@ -111,7 +111,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		buildInitMenuWin(showUIMenu);
 		//menu bar init
 		int wIdx = dispMenuIDX,fIdx=showUIMenu;
-		dispWinFrames[wIdx] = new SOM_GeomSideBarMenu(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);	
+		dispWinFrames[wIdx] = new SOM_GeomSideBarMenu(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);	
 		//instanced window dimensions when open and closed - only showing 1 open at a time
 		float[] _dimOpen  =  new float[]{menuWidth, 0, width-menuWidth, height}, _dimClosed  =  new float[]{menuWidth, 0, hideWinWidth, height};	
 		//setInitDispWinVals : use this to define the values of a display window
@@ -127,36 +127,36 @@ public class SOM_GeometryMain extends my_procApplet {
 
 		wIdx = disp2DLineAnimResIDX; fIdx= show2DLineAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,true,false}, new int[]{0,0,0,255},new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);		
 		
 		wIdx = disp3DLineAnimResIDX; fIdx= show3DLineAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_3DLineAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		dispWinFrames[wIdx] = new Geom_3DLineAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);		
 		
 		wIdx = dispPlaneAnimResIDX; fIdx= showPlaneAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_PlaneAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		dispWinFrames[wIdx] = new Geom_PlaneAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);		
 
 		wIdx = dispSphereAnimResIDX; fIdx= showSpereAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,245,255,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx],dispWinFlags[wIdx][dispCanDrawInWinIDX]);		
+		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);		
 		
 		
 		for(int i=1;i<dispWinFrames.length;++i) {
 			curFocusWin = i;
-			((SOM_AnimWorldWin)dispWinFrames[i]).setGeomMapUIWin(buildSOM_MapDispUIWin((SOM_AnimWorldWin)dispWinFrames[i],winTitles[i], -1, false));
+			((SOM_AnimWorldWin)dispWinFrames[i]).setGeomMapUIWin(buildSOM_MapDispUIWin((SOM_AnimWorldWin)dispWinFrames[i],winTitles[i], -1));
 		}
 	}//	initVisOnce_Priv
 	
-	private SOM_GeomMapUIWin buildSOM_MapDispUIWin(SOM_AnimWorldWin ownerWin, String owner, int fIdx, boolean canDrawInWin) {
+	private SOM_GeomMapUIWin buildSOM_MapDispUIWin(SOM_AnimWorldWin ownerWin, String owner, int fIdx) {
 		float popUpWinHeight = PopUpWinOpenFraction * height;
 		float[] _dimOpen  =  new float[]{menuWidth, popUpWinHeight, width-menuWidth, height-popUpWinHeight};
 		//hidden
 		float[] _dimClosed  =  new float[]{menuWidth, height-hidWinHeight, width-menuWidth, hidWinHeight};
 		
 		//(int _winIDX, float[] _dimOpen, float[] _dimClosed, boolean[] _dispFlags, int[] _fill, int[] _strk, int[] _trajFill, int[] _trajStrk)
-		SOM_GeomMapUIWin resWin = new SOM_GeomMapUIWin(this, "SOM Map UI for " + owner, fIdx, new int[]{20,40,50,200}, new int[]{255,255,255,255}, _dimOpen, _dimClosed, "Visualize SOM Node location for "+owner,canDrawInWin,argsMap,ownerWin);	
-		resWin.finalInit(false, false, new myPoint(-gridDimX/2.0,-gridDimY/2.0,-gridDimZ/2.0), new myVector(0,0,0));
+		SOM_GeomMapUIWin resWin = new SOM_GeomMapUIWin(this, "SOM Map UI for " + owner, fIdx, new int[]{20,40,50,200}, new int[]{255,255,255,255}, _dimOpen, _dimClosed, "Visualize SOM Node location for "+owner,argsMap,ownerWin);	
+		resWin.finalInit(false,false, false, new myPoint(-gridDimX/2.0,-gridDimY/2.0,-gridDimZ/2.0), new myVector(0,0,0));
 		resWin.setTrajColors(new int[]{180,180,180,255},new int[]{100,100,100,255});
 		resWin.setRtSideUIBoxClrs(new int[]{0,0,0,200},new int[]{255,255,255,255});
 		return resWin;
