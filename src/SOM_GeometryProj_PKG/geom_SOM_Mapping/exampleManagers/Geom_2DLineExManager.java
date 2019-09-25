@@ -32,20 +32,20 @@ public class Geom_2DLineExManager extends SOM_GeomExampleManager {
 	protected SOM_Example[] castArray(ArrayList<SOM_Example> tmpList) {return (Geom_2DLineSOMExample[])(tmpList.toArray(new Geom_2DLineSOMExample[0]));		}
 	
 	@Override
-	protected void buildAllEx_MT(SOM_GeomSamplePointf[] allSamples, int numThdCallables, int ttlNumTrainEx,SOM_GeomTrainingExUniqueID[] _idxsToUse) {
+	protected void buildAllEx_MT(SOM_GeomSamplePointf[] allSamples, int numThdCallables, int ttlNumTrainEx, SOM_GeomTrainingExUniqueID[] _idxsToUse) {
 		List<Future<Boolean>> trainDataBldFtrs = new ArrayList<Future<Boolean>>();
 		List<SOM_GeomTrainExBuilder> trainDataBldrs = new ArrayList<SOM_GeomTrainExBuilder>();
 		//int numVals, int numThds
 		int numPerThd = calcNumPerThd(ttlNumTrainEx, numThdCallables);
 		//SOM_GeomMapManager _mapMgr, SOM_GeomExampleManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals
 		int stIDX = 0, endIDX = numPerThd;
-		
 		for (int i=0; i<numThdCallables-1;++i) {				
 			trainDataBldrs.add(new Geom_2DLineTrainDatBuilder((Geom_2DLineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,endIDX,i, ttlNumTrainEx, numThdCallables},_idxsToUse));
 			stIDX =endIDX;
 			endIDX += numPerThd;
 		}
 		trainDataBldrs.add(new Geom_2DLineTrainDatBuilder((Geom_2DLineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,ttlNumTrainEx,numThdCallables-1, ttlNumTrainEx, numThdCallables},_idxsToUse));
+		//msgObj.dispInfoMessage("Geom_2DLineExManager", "buildAllEx_MT", "Building : " + ttlNumTrainEx + " examples among :"+numThdCallables+" threads with final thread starting at :"+ stIDX + " and ending at :"+ttlNumTrainEx);
 		try {trainDataBldFtrs = th_exec.invokeAll(trainDataBldrs);for(Future<Boolean> f: trainDataBldFtrs) { 			f.get(); 		}} catch (Exception e) { e.printStackTrace(); }			
 	}
 	
