@@ -1,6 +1,11 @@
 # SOM_GeometryProject
 A project demonstrating the uses of a SOM to find geometrical constructions such as lines, planes and spheres in a point cloud.  This project is an Eclipse project.
 
+A video illustrating some of the functionality of this project can be found here : 
+
+https://www.dropbox.com/s/fmaeocifryhva15/SOM_GeomDemo1.mov?dl=0
+
+
 This project is intended to illustrate the use of a SOM in isolating underlying geometric objects within a point cloud.  If we are given a cloud of points and told that there are some unknown quantity of lines (in 2D or 3D), planes or spheres that contain those points upon their surfaces (in the case of spheres) this project uses a SOM to determine the number and, more importantly, the nature of those underlying geometric primitives.
 
 Each of the primitives (lines, planes and spheres) can be represented in 2 ways, and both ways are used in the project for different purposes.  The first way is as some number of points - 2 unique points will identify a line, 3 unique non-colinear points are needed for a plane, and 4 unique, non-coplanar points for a sphere.  In this project, primitive objects are built by uniformly sampling the possible point space for the required number of points, making sure that the necessary object-related restrictions are met (uniqueness, non-colinarity or co-planarity).  The point set representing an object is then processed appropriate to synthesize a primitive shape.
