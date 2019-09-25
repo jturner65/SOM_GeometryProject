@@ -5,6 +5,7 @@ A video illustrating some of the functionality of this project can be found here
 
 https://www.dropbox.com/s/fmaeocifryhva15/SOM_GeomDemo1.mov?dl=0
 
+Note : this video is out of date; there have been substantial improvements and expanded analysis tools implemented since this video was made, as well as the addition of a 3D lines environment, but it at least serves as a reasonable introduction to the project.
 
 This project is intended to illustrate the use of a SOM in isolating underlying geometric objects within a point cloud.  If we are given a cloud of points and told that there are some unknown quantity of lines (in 2D or 3D), planes or spheres that contain those points upon their surfaces (in the case of spheres) this project uses a SOM to determine the number and, more importantly, the nature of those underlying geometric primitives.
 
