@@ -66,6 +66,12 @@ public class SOM_GeometryMain extends my_procApplet {
 		String[] appletArgs = new String[] { "SOM_GeometryProj_PKG.SOM_GeometryMain" };
 	    if (passedArgs != null) {PApplet.main(PApplet.concat(appletArgs, passedArgs)); } else {PApplet.main(appletArgs);		    }
 	}//main	
+	
+	@Override
+	protected void setSmoothing() {
+		smooth(4);	
+	}
+
 
 	@Override
 	protected int[] getDesiredAppDims() {return new int[] {(int)(getDisplayWidth()*.95f), (int)(getDisplayHeight()*.92f)};}
@@ -383,5 +389,6 @@ public class SOM_GeometryMain extends my_procApplet {
 //			popStyle();	popMatrix();						
 //		}
 //	}
+
 	
 }//class SOM_GeometryMain
