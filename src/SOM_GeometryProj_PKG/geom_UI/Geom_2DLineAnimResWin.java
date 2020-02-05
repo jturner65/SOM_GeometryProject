@@ -227,5 +227,4 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final myPoint getMsePtAs3DPt(myPoint mseLoc) {	return new myPoint(mseLoc.x, mseLoc.y, 0);}
 
-
 }//class Geom_LineSOMAnimResWin

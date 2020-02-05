@@ -1,21 +1,15 @@
 package SOM_GeometryProj_PKG;
 
-import processing.core.*;
-
 import java.io.File;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.geom_UI.Geom_2DLineAnimResWin;
-import SOM_GeometryProj_PKG.geom_UI.Geom_3DLineAnimResWin;
-import SOM_GeometryProj_PKG.geom_UI.Geom_PlaneAnimResWin;
-import SOM_GeometryProj_PKG.geom_UI.Geom_SphereAnimResWin;
-import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
-import base_SOM_Objects.som_geom.geom_UI.SOM_GeomMapUIWin;
-import base_SOM_Objects.som_geom.geom_UI.SOM_GeomSideBarMenu;
+import SOM_GeometryProj_PKG.geom_UI.*;
+import base_SOM_Objects.som_geom.geom_UI.*;
 import base_UI_Objects.*;
-import base_UI_Objects.windowUI.myDispWindow;
-import base_Utils_Objects.vectorObjs.myPoint;
-import base_Utils_Objects.vectorObjs.myVector;
+import base_UI_Objects.windowUI.base.myDispWindow;
+import base_UI_Objects.windowUI.sidebar.mySideBarMenu;
+import base_Utils_Objects.vectorObjs.*;
+
 /**
  * Experiment with self organizing maps in applications related to graphics and geometry
  * 
@@ -26,7 +20,7 @@ public class SOM_GeometryMain extends my_procApplet {
 	//project-specific variables
 	public String prjNmLong = "Building Animation Via SOM Interaction", prjNmShrt = "SOM_VisAnim";
 	
-	private int[] visFlags;
+	//protected int[] visFlags;
 	private final int
 		showUIMenu = 0,
 		show2DLineAnimRes = 1,
@@ -64,7 +58,7 @@ public class SOM_GeometryMain extends my_procApplet {
 	//needs main to run project - do not modify this code in any way
 	public static void main(String[] passedArgs) {		
 		String[] appletArgs = new String[] { "SOM_GeometryProj_PKG.SOM_GeometryMain" };
-	    if (passedArgs != null) {PApplet.main(PApplet.concat(appletArgs, passedArgs)); } else {PApplet.main(appletArgs);		    }
+		my_procApplet._invokedMain(appletArgs, passedArgs);		    
 	}//main	
 	
 	@Override
@@ -73,8 +67,16 @@ public class SOM_GeometryMain extends my_procApplet {
 	}
 
 
+	/**
+	 * whether or not we want to restrict window size on widescreen monitors
+	 * 
+	 * @return 0 - use monitor size regardless
+	 * 			1 - use smaller dim to be determine window 
+	 * 			2+ - TBD
+	 */
 	@Override
-	protected int[] getDesiredAppDims() {return new int[] {(int)(getDisplayWidth()*.95f), (int)(getDisplayHeight()*.92f)};}
+	protected int setAppWindowDimRestrictions() {	return 1;}	
+	
 	//instance-specific setup code
 	protected void setup_indiv() {
 		
@@ -117,7 +119,7 @@ public class SOM_GeometryMain extends my_procApplet {
 		buildInitMenuWin(showUIMenu);
 		//menu bar init
 		int wIdx = dispMenuIDX,fIdx=showUIMenu;
-		dispWinFrames[wIdx] = new SOM_GeomSideBarMenu(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);	
+		dispWinFrames[wIdx] = buildSideBarMenu(wIdx, fIdx, new String[]{"Load/Save Geometry Data","Functions 2","Functions 3","Functions 4"}, new int[] {3,4,4,4}, 5, true, true);//new SOM_GeomSideBarMenu(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);	
 		//instanced window dimensions when open and closed - only showing 1 open at a time
 		float[] _dimOpen  =  new float[]{menuWidth, 0, width-menuWidth, height}, _dimClosed  =  new float[]{menuWidth, 0, hideWinWidth, height};	
 		//setInitDispWinVals : use this to define the values of a display window
@@ -153,7 +155,7 @@ public class SOM_GeometryMain extends my_procApplet {
 			((SOM_AnimWorldWin)dispWinFrames[i]).setGeomMapUIWin(buildSOM_MapDispUIWin((SOM_AnimWorldWin)dispWinFrames[i],winTitles[i], -1));
 		}
 	}//	initVisOnce_Priv
-	
+		
 	private SOM_GeomMapUIWin buildSOM_MapDispUIWin(SOM_AnimWorldWin ownerWin, String owner, int fIdx) {
 		float popUpWinHeight = PopUpWinOpenFraction * height;
 		float[] _dimOpen  =  new float[]{menuWidth, popUpWinHeight, width-menuWidth, height-popUpWinHeight};
@@ -238,7 +240,7 @@ public class SOM_GeometryMain extends my_procApplet {
 	//these tie using the UI buttons to modify the window in with using the boolean tags - PITA but currently necessary
 	public void handleShowWin(int btn, int val, boolean callFlags){//display specific windows - multi-select/ always on if sel
 		if(!callFlags){//called from setflags - only sets button state in UI to avoid infinite loop
-			setMenuBtnState(SOM_GeomSideBarMenu.btnShowWinIdx,btn, val);
+			setMenuBtnState(mySideBarMenu.btnShowWinIdx,btn, val);
 		} else {//called from clicking on buttons in UI
 		
 			//val is btn state before transition 
@@ -278,17 +280,16 @@ public class SOM_GeometryMain extends my_procApplet {
 	//////////////////////////////////////////
 	/// graphics and base functionality utilities and variables
 	//////////////////////////////////////////
+	
+	/**
+	 * return the number of visible window flags for this application
+	 * @return
+	 */
 	@Override
-		//init boolean state machine flags for program
-	public void initVisFlags(){
-		visFlags = new int[1 + numVisFlags/32];for(int i =0; i<numVisFlags;++i){forceVisFlag(i,false);}	
-		((SOM_GeomSideBarMenu)dispWinFrames[dispMenuIDX]).initPFlagColors();			//init sidebar window flags
-	}		
+	public int getNumVisFlags() {return numVisFlags;}
 	@Override
 	//address all flag-setting here, so that if any special cases need to be addressed they can be
-	public void setVisFlag(int idx, boolean val ){
-		int flIDX = idx/32, mask = 1<<(idx%32);
-		visFlags[flIDX] = (val ?  visFlags[flIDX] | mask : visFlags[flIDX] & ~mask);
+	protected void setVisFlag_Indiv(int idx, boolean val ){
 		switch (idx){
 			case showUIMenu 	    : { dispWinFrames[dispMenuIDX].setFlags(myDispWindow.showIDX,val);    break;}											//whether or not to show the main ui window (sidebar)			
 			case show2DLineAnimRes	: {setDispAndModMapMgr(show2DLineAnimRes, disp2DLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
@@ -323,16 +324,7 @@ public class SOM_GeometryMain extends my_procApplet {
 //		}
 	}//setDispAndModMapMgr
 	
-	
-	@Override
-	//get vis flag
-	public boolean getVisFlag(int idx){int bitLoc = 1<<(idx%32);return (visFlags[idx/32] & bitLoc) == bitLoc;}	
-	@Override
-	public void forceVisFlag(int idx, boolean val) {
-		int flIDX = idx/32, mask = 1<<(idx%32);
-		visFlags[flIDX] = (val ?  visFlags[flIDX] | mask : visFlags[flIDX] & ~mask);
-		//doesn't perform any other ops - to prevent looping
-	}
+
 	@Override
 	/**
 	 * overridding main because handling 2d + 3d windows
@@ -389,6 +381,7 @@ public class SOM_GeometryMain extends my_procApplet {
 //			popStyle();	popMatrix();						
 //		}
 //	}
+
 
 	
 }//class SOM_GeometryMain
