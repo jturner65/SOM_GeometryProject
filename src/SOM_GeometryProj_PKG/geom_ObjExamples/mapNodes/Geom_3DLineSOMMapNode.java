@@ -2,11 +2,11 @@ package SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_3DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_3DLineMapMgr;
+import base_Math_Objects.vectorObjs.tuples.Tuple;
 import base_SOM_Objects.SOM_MapManager;
 import base_SOM_Objects.som_examples.SOM_FtrDataType;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
-import base_Utils_Objects.vectorObjs.Tuple;
 
 public class Geom_3DLineSOMMapNode extends SOM_GeomMapNode {
 

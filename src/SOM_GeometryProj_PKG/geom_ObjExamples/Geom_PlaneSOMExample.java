@@ -5,6 +5,8 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
+import base_Math_Objects.vectorObjs.floats.myPointf;
+import base_Math_Objects.vectorObjs.floats.myVectorf;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
@@ -14,8 +16,6 @@ import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import base_UI_Objects.my_procApplet;
 import base_UI_Objects.windowUI.base.myDispWindow;
-import base_Utils_Objects.vectorObjs.myPointf;
-import base_Utils_Objects.vectorObjs.myVectorf;
 import processing.core.PConstants;
 import processing.core.PShape;
 
@@ -527,8 +527,10 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		pa.stroke(0,0,255,255);
 		pa.strokeWeight(3.0f);
 		pa.line(planeOrigin, orthoFrame[2]);
-		planeOrigin.showMeSphere(pa, 5.0f);
-		for(int i=0;i<orthoFrame.length;++i) {	orthoFrame[i].showMeSphere(pa, 5.0f);}
+//		planeOrigin.showMeSphere(pa, 5.0f);
+//		for(int i=0;i<orthoFrame.length;++i) {	orthoFrame[i].showMeSphere(pa, 5.0f);}
+		pa.showPtAsSphere(planeOrigin, 5.0f);
+		for(int i=0;i<orthoFrame.length;++i) {	pa.showPtAsSphere(orthoFrame[i], 5.0f);}
 		pa.popStyle();pa.popMatrix();				
 	}//_drawOrthoFrame
 	

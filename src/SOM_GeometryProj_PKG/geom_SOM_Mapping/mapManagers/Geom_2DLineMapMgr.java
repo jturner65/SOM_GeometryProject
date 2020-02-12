@@ -7,6 +7,7 @@ import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_2DLineSOMMapNode;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_2DLineExManager;
 import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.runners.Geom_2DLineObjBldrRunner;
+import base_Math_Objects.vectorObjs.tuples.Tuple;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_examples.SOM_FtrDataType;
 import base_SOM_Objects.som_examples.SOM_MapNode;
@@ -19,7 +20,6 @@ import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBl
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
 import base_SOM_Objects.som_ui.SOM_MseOvrDisplay;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
-import base_Utils_Objects.vectorObjs.Tuple;
 
 public class Geom_2DLineMapMgr extends SOM_GeomMapManager {
 	
