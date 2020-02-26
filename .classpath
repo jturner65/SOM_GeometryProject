@@ -20,10 +20,10 @@
 	<classpathentry kind="lib" path="libs/processing/jogl-all-natives-windows-amd64.jar"/>
 	<classpathentry kind="lib" path="libs/processing/jogl-all-natives-windows-i586.jar"/>
 	<classpathentry kind="lib" path="libs/processing/jogl-all.jar"/>
-	<classpathentry kind="lib" path="libs/base_JavaProjTools_UI.jar"/>
 	<classpathentry kind="lib" path="libs/base_JavaProjTools_Math.jar"/>
 	<classpathentry kind="lib" path="libs/base_JavaProjTools_Utils.jar"/>
 	<classpathentry kind="lib" path="libs/base_JavaProjTools_IRender.jar"/>
+	<classpathentry kind="lib" path="libs/base_JavaProjTools_UI.jar"/>
 	<classpathentry kind="src" path="data"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -4,6 +4,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_2DLineMapMgr;
+import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
@@ -14,7 +15,6 @@ import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import base_UI_Objects.my_procApplet;
 
 public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	private static int IDGen = 0;
@@ -312,15 +312,15 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	// draw functionality
 	
 	@Override
-	protected final void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
-		pa.pushMatrix();pa.pushStyle();	
+	protected final void _drawMe_Geom(IRenderInterface pa, SOM_GeomObjDrawType drawType) {
+		pa.pushMatState();	
 		if((drawType.getVal() == 2) || (drawType.getVal() == 3)) {
-			pa.setStroke(new int[] {120, 120,120},150);
-			pa.strokeWeight(1.0f);
-			pa.line(dispEndPts[0],dispEndPts[1]);			
+			pa.setStroke(120, 120,120,150);
+			pa.setStrokeWt(1.0f);
+			pa.drawLine(dispEndPts[0],dispEndPts[1]);			
 		}  else {
-			pa.strokeWeight(2.0f);
-			pa.line(dispEndPts[0],dispEndPts[1]);			
+			pa.setStrokeWt(2.0f);
+			pa.drawLine(dispEndPts[0],dispEndPts[1]);			
 		}
 		
 		_drawPointAtLoc_2D(pa,dispEndPts[0], 5.0f);
@@ -328,33 +328,33 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 		_drawPointAtLoc_2D(pa,getSrcPts()[0], 5.0f);
 		_drawPointAtLoc_2D(pa,getSrcPts()[1], 5.0f);
 		_drawPointAtLoc_2D(pa,origin, 5.0f);			
-		pa.popStyle();pa.popMatrix();
+		pa.popMatState();
 	}
 
 	@Override
-	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin _notUsedIn2D) {
-		pa.pushMatrix();pa.pushStyle();		
+	public void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin _notUsedIn2D) {
+		pa.pushMatState();		
 		pa.setFill(labelClrAra,255);
 		pa.setStroke(labelClrAra,255);
-		pa.strokeWeight(2.0f);
+		pa.setStrokeWt(2.0f);
 		//(myPointf P, float r, String s, myVectorf D, int clr, boolean flat)
 		_drawLabelAtLoc_2D(pa,dispEndPts[0], 5.0f, dispLabel+dispAra[0], 0.0f);
 		_drawLabelAtLoc_2D(pa,dispEndPts[1], 5.0f, dispLabel+dispAra[1], 0.0f);
 		_drawLabelAtLoc_2D(pa,getSrcPts()[0], 5.0f, "pt a :"+getSrcPts()[0].toStrBrf(), 0.0f);
 		_drawLabelAtLoc_2D(pa,getSrcPts()[1], 5.0f, "pt b :"+getSrcPts()[1].toStrBrf(), 0.0f);
 		_drawLabelAtLoc_2D(pa,origin, 5.0f, dispLabel+"| Origin " + origin.toStrBrf() + " | Dir : " + dir.toStrBrf() +" | " +dispAra[0]+"->"+dispAra[1], 0.0f);
-		pa.popStyle();pa.popMatrix();	
+		pa.popMatState();	
 	}
 	
 	protected float modCnt = 0;//counter that will determine when the color should switch
 	
 	private final float blinkDist = 20.0f;
 	@Override
-	protected final void _drawMeSelected(my_procApplet pa, float animTmMod) {
+	protected final void _drawMeSelected(IRenderInterface pa, float animTmMod) {
 		modCnt += animTmMod*2.0f;
 		if(modCnt > 1.0){	modCnt = 0.0f;	}//blink every ~second
-		pa.line( myPointf._add(dispEndPts[0], blinkDist*modCnt, norm),  myPointf._add(dispEndPts[1], blinkDist*modCnt, norm));
-		pa.line( myPointf._add(dispEndPts[0], -blinkDist*modCnt, norm),  myPointf._add(dispEndPts[1], -blinkDist*modCnt, norm));
+		pa.drawLine( myPointf._add(dispEndPts[0], blinkDist*modCnt, norm),  myPointf._add(dispEndPts[1], blinkDist*modCnt, norm));
+		pa.drawLine( myPointf._add(dispEndPts[0], -blinkDist*modCnt, norm),  myPointf._add(dispEndPts[1], -blinkDist*modCnt, norm));
 		
 	}//_drawMeSelected
 

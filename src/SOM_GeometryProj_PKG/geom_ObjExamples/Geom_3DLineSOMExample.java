@@ -4,6 +4,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_3DLineMapMgr;
+import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
@@ -315,15 +316,15 @@ public class Geom_3DLineSOMExample extends SOM_GeomObj {
 	// draw functionality
 	
 	@Override
-	protected final void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
-		pa.pushMatrix();pa.pushStyle();	
+	protected final void _drawMe_Geom(IRenderInterface pa, SOM_GeomObjDrawType drawType) {
+		pa.pushMatState();	
 		if((drawType.getVal() == 2) || (drawType.getVal() == 3)) {
-			pa.setStroke(new int[] {120, 120,120},150);
-			pa.strokeWeight(1.0f);
-			pa.line(dispEndPts[0],dispEndPts[1]);			
+			pa.setStroke(120, 120,120,150);
+			pa.setStrokeWt(1.0f);
+			pa.drawLine(dispEndPts[0],dispEndPts[1]);			
 		}  else {
-			pa.strokeWeight(2.0f);
-			pa.line(dispEndPts[0],dispEndPts[1]);			
+			pa.setStrokeWt(2.0f);
+			pa.drawLine(dispEndPts[0],dispEndPts[1]);			
 		}
 		
 		_drawPointAtLoc_3D(pa,dispEndPts[0], 2.0f);
@@ -331,34 +332,34 @@ public class Geom_3DLineSOMExample extends SOM_GeomObj {
 		_drawPointAtLoc_3D(pa,getSrcPts()[0], 2.0f);
 		_drawPointAtLoc_3D(pa,getSrcPts()[1], 2.0f);
 		_drawPointAtLoc_3D(pa,origin, 2.0f);			
-		pa.popStyle();pa.popMatrix();
+		pa.popMatState();
 	}
 
 	@Override
-	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin) {
-		pa.pushMatrix();pa.pushStyle();		
+	public void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin animWin) {
+		pa.pushMatState();		
 		pa.setFill(labelClrAra,255);
 		pa.setStroke(labelClrAra,255);
-		pa.strokeWeight(2.0f);
+		pa.setStrokeWt(2.0f);
 		//(myPointf P, float r, String s, myVectorf D, int clr, boolean flat)
 		_drawLabelAtLoc_3D(pa,dispEndPts[0], animWin, dispLabel+dispAra[0], 1.5f, 2.5f);
 		_drawLabelAtLoc_3D(pa,dispEndPts[1], animWin, dispLabel+dispAra[1], 1.5f, 2.5f);
 		_drawLabelAtLoc_3D(pa,getSrcPts()[0], animWin, "pt a :"+getSrcPts()[0].toStrBrf(), 1.5f, 2.5f);
 		_drawLabelAtLoc_3D(pa,getSrcPts()[1], animWin, "pt b :"+getSrcPts()[1].toStrBrf(), 1.5f, 2.5f);
 		_drawLabelAtLoc_3D(pa, origin, animWin, dispLabel+"| Origin " + origin.toStrBrf() + " | Dir : " + dir.toStrBrf() +" | " +dispAra[0]+"->"+dispAra[1], 1.5f, 2.5f);
-		pa.popStyle();pa.popMatrix();	
+		pa.popMatState();	
 	}
 	
 	protected float modCnt = 0;//counter that will determine when the color should switch
 	
 	private final float blinkDist = 20.0f;
 	
-	protected final void cylinder(my_procApplet pa, myPointf A, myPointf B, float r, int[] c1, int[] c2) {
+	protected final void cylinder(IRenderInterface pa, myPointf A, myPointf B, float r, int[] c1, int[] c2) {
 		myVectorf V = new myVectorf(A,B);
 
 		float da = MyMathUtils.twoPi_f/36;
-		pa.pushMatrix();pa.pushStyle();	
-		pa.beginShape(PConstants.QUAD_STRIP);
+		pa.pushMatState();	
+		((my_procApplet)pa).beginShape(PConstants.QUAD_STRIP);
 			for(float a=0; a<=MyMathUtils.twoPi_f+da; a+=da) {
 				float rCosA = (float) (r*Math.cos(a));
 				float rSinA = (float) (r*Math.sin(a));
@@ -367,14 +368,14 @@ public class Geom_3DLineSOMExample extends SOM_GeomObj {
 				pa.gl_vertex(myPointf._add(A,rCosA,norm,rSinA,biNorm)); 
 				pa.setStroke(c2, 255);
 				pa.gl_vertex(myPointf._add(A,rCosA,norm,rSinA,biNorm, 1.0f, V));}
-		pa.endShape();
-		pa.popStyle();pa.popMatrix();	
+		((my_procApplet)pa).endShape();
+		pa.popMatState();	
 	}
 
 	
 	
 	@Override
-	protected final void _drawMeSelected(my_procApplet pa, float animTmMod) {
+	protected final void _drawMeSelected(IRenderInterface pa, float animTmMod) {
 		modCnt += animTmMod*2.0f;
 		if(modCnt > 1.0){	modCnt = 0.0f;	}//blink every ~second
 		

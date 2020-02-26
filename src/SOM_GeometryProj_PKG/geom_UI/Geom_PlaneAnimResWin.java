@@ -9,12 +9,13 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
+import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.doubles.myPoint;
 import base_Math_Objects.vectorObjs.doubles.myVector;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
-import base_UI_Objects.my_procApplet;
+import base_UI_Objects.GUI_AppManager;
 
 /**
  * @author john
@@ -32,14 +33,14 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	private final int numPrivFlags = numBaseAnimWinPrivFlags + 1;	
 	
 
-	public Geom_PlaneAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt) {
-		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.plane);
+	public Geom_PlaneAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt) {
+		super(_p, _AppMgr, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.plane);
 		super.initThisWin(false);
 	}
 
 	@Override
 	public SOM_GeomMapManager buildGeom_SOMMapManager() {
-		Geom_PlaneMapMgr _mgr = new Geom_PlaneMapMgr(somUIWin, this, pa.cubeBnds, ((SOM_GeometryMain)pa).argsMap);
+		Geom_PlaneMapMgr _mgr = new Geom_PlaneMapMgr(somUIWin, this, AppMgr.cubeBnds, ((SOM_GeometryMain)AppMgr).argsMap);
 		return _mgr;
 	}
 

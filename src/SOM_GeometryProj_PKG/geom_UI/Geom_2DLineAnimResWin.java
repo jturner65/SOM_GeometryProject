@@ -6,12 +6,14 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_2DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_2DLineMapMgr;
+import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.doubles.myPoint;
 import base_Math_Objects.vectorObjs.doubles.myVector;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
-import base_UI_Objects.my_procApplet;
+import base_UI_Objects.GUI_AppManager;
+//import base_UI_Objects.my_procApplet;
 
 public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	/**
@@ -35,8 +37,8 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	 * @param _canDrawTraj
 	 */	
 	private final float dispBrdr = 10.0f;
-	public Geom_2DLineAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt) {
-		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.line_2D);
+	public Geom_2DLineAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt) {
+		super(_p, _AppMgr, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.line_2D);
 		win2DMinsAndDiffs = new float[2][2];
 		win2DMinsAndDiffs[0]= new float[] {-.5f*rectDim[2] + dispBrdr, -.5f*rectDim[3] + dispBrdr};
 		win2DMinsAndDiffs[1] = new float[] {rectDim[2]-(2.0f*dispBrdr), rectDim[3]-(9.0f*dispBrdr)};
@@ -49,7 +51,7 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	public SOM_GeomMapManager buildGeom_SOMMapManager() {
 		//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
-		Geom_2DLineMapMgr _mgr = new Geom_2DLineMapMgr(somUIWin, this, win2DMinsAndDiffs, ((SOM_GeometryMain)pa).argsMap);
+		Geom_2DLineMapMgr _mgr = new Geom_2DLineMapMgr(somUIWin, this, win2DMinsAndDiffs, ((SOM_GeometryMain)AppMgr).argsMap);
 		return _mgr;
 	}
 	
@@ -160,11 +162,11 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	protected final void drawMeFirst_Indiv() {//need to translate by half the screen width to center coords
 		//msgObj.dispInfoMessage("Geom_LineAnimResWin", "drawMeFirst_Indiv", "here");
 		pa.translate(this.rectDim[0]+(this.rectDim[2]*.5f), (this.rectDim[1]+this.rectDim[3])*.5f);
-		pa.pushStyle();
+		pa.pushMatState();
 		pa.noStroke();
-		pa.setFill(new int[] {255,255,255}, 255);
-		pa.sphere(3.0f);
-		pa.popStyle();
+		pa.setFill(255,255,255, 255);
+		pa.drawSphere(3.0f);
+		pa.popMatState();
 	}
 	
 	/**

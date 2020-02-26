@@ -5,6 +5,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
+import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
@@ -219,7 +220,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 
 	
 	private PShape buildPlaneShape(boolean hasFill, int[] clr) {
-		PShape poly = myDispWindow.pa.createShape(); 
+		PShape poly = ((my_procApplet)myDispWindow.pa).createShape(); 
 		//all have lines to center
 		poly.beginShape(PConstants.TRIANGLE_FAN);
 		if(hasFill) {
@@ -242,7 +243,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @return
 	 */
 	private PShape buildSelectedPoly() {
-		PShape poly = myDispWindow.pa.createShape(); 
+		PShape poly = ((my_procApplet)myDispWindow.pa).createShape(); 
 		poly.beginShape(PConstants.TRIANGLE_FAN);
 		poly.noFill();				
 		poly.stroke(120,120,120,255);
@@ -490,67 +491,67 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * get an appropriate sample location to build sample sets, based on what kind of object is being built
 	 * @return
 	 */
-//_drawLabelAtLoc_3D(my_procApplet pa, myPointf pt, SOM_AnimWorldWin animWin, String label, float _off)
+//_drawLabelAtLoc_3D(IRenderInterface pa, myPointf pt, SOM_AnimWorldWin animWin, String label, float _off)
 	@Override
-	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin) {
-		pa.pushMatrix();pa.pushStyle();	
-		pa.setFill(this.labelClrAra, 255);
-		pa.setStroke(this.labelClrAra, 255);
-		pa.strokeWeight(2.0f);
+	public void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin animWin) {
+		pa.pushMatState();	
+		pa.setFill(labelClrAra, 255);
+		pa.setStroke(labelClrAra, 255);
+		pa.setStrokeWt(2.0f);
 		_drawLabelAtLoc_3D(pa, planeOrigin, animWin, dispLabel + " Origin : " + planeOrigin.toStrBrf() +" | Normal " + basisVecs[0].toStrBrf(), 1.5f, 2.5f);
 		for(int i=0;i<dispBoundPts.length;++i){
-			pa.line(planeOrigin, dispBoundPts[i]);
+			pa.drawLine(planeOrigin, dispBoundPts[i]);
 			_drawLabelAtLoc_3D(pa, dispBoundPts[i], animWin, dispLabel + " Bound " + i+" : " + dispBoundPts[i].toStrBrf(), 1.25f,  2.0f);
 		}
 		
-		pa.popStyle();pa.popMatrix();
+		pa.popMatState();
 	}//drawMyLabel
 
 	@Override
-	protected void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
+	protected void _drawMe_Geom(IRenderInterface pa, SOM_GeomObjDrawType drawType) {
 		if(planeObjs.length==0) {return;}
-		pa.pushMatrix();pa.pushStyle();			
-		pa.strokeWeight(2.0f);
+		pa.pushMatState();			
+		pa.setStrokeWt(2.0f);
 
-		pa.shape(planeObjs[drawType.getVal()]);		
-		pa.popStyle();pa.popMatrix();
+		((my_procApplet)pa).shape(planeObjs[drawType.getVal()]);		
+		pa.popMatState();
 	}
 
-	public void drawOrthoFrame(my_procApplet pa) {
-		pa.pushMatrix();pa.pushStyle();	
-		pa.strokeWeight(3.0f);
-		pa.stroke(255,0,0,255);
-		pa.line(planeOrigin, orthoFrame[0]);
-		pa.stroke(0,255,0,255);
-		pa.strokeWeight(3.0f);
-		pa.line(planeOrigin, orthoFrame[1]);
-		pa.stroke(0,0,255,255);
-		pa.strokeWeight(3.0f);
-		pa.line(planeOrigin, orthoFrame[2]);
+	public void drawOrthoFrame(IRenderInterface pa) {
+		pa.pushMatState();	
+		pa.setStrokeWt(3.0f);
+		pa.setColorValStroke(IRenderInterface.gui_Red, 255);//(new int[] {255,0,0},255);
+		pa.drawLine(planeOrigin, orthoFrame[0]);
+		pa.setColorValStroke(IRenderInterface.gui_Green,255);
+		pa.setStrokeWt(3.0f);
+		pa.drawLine(planeOrigin, orthoFrame[1]);
+		pa.setColorValStroke(IRenderInterface.gui_Blue,255);
+		pa.setStrokeWt(3.0f);
+		pa.drawLine(planeOrigin, orthoFrame[2]);
 //		planeOrigin.showMeSphere(pa, 5.0f);
 //		for(int i=0;i<orthoFrame.length;++i) {	orthoFrame[i].showMeSphere(pa, 5.0f);}
-		pa.showPtAsSphere(planeOrigin, 5.0f);
-		for(int i=0;i<orthoFrame.length;++i) {	pa.showPtAsSphere(orthoFrame[i], 5.0f);}
-		pa.popStyle();pa.popMatrix();				
+		pa.showPtAsSphere(planeOrigin, 5.0f, 5, -1, -1);
+		for(int i=0;i<orthoFrame.length;++i) {	pa.showPtAsSphere(orthoFrame[i], 5.0f, 5, -1, -1);}
+		pa.popMatState();				
 	}//_drawOrthoFrame
 	
 	protected float modCnt = 0;//counter that will determine when the color should switch
 
 	private static final int selIDX = SOM_GeomObjDrawType.selected.getVal();
 	@Override
-	protected final void _drawMeSelected(my_procApplet pa, float animTmMod) {
+	protected final void _drawMeSelected(IRenderInterface pa, float animTmMod) {
 		if(planeObjs.length==0) {return;}
 		modCnt += animTmMod;
 		if(modCnt > .5){	modCnt = 0;	}//blink every ~second
-		pa.pushMatrix();pa.pushStyle();			
-		pa.strokeWeight(2.0f);
+		pa.pushMatState();			
+		pa.setStrokeWt(2.0f);
 		pa.translate(planeOrigin);
 		pa.scale(1.0f + modCnt*.5f);
 		pa.translate(-planeOrigin.x,-planeOrigin.y,-planeOrigin.z);
 		
-		pa.shape(planeObjs[selIDX]);
+		((my_procApplet)pa).shape(planeObjs[selIDX]);
 		
-		pa.popStyle();pa.popMatrix();
+		pa.popMatState();
 	}
 
 	/**

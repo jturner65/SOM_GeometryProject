@@ -3,6 +3,7 @@ package SOM_GeometryProj_PKG.geom_ObjExamples;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
+import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
@@ -11,7 +12,6 @@ import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import base_UI_Objects.my_procApplet;
 
 /**
  * class to hold center location, radius, color and samples of sphere used to train SOM
@@ -298,35 +298,37 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	///////////////////////////
 	// draw functionality
 	@Override
-	protected void _drawMe_Geom(my_procApplet pa, SOM_GeomObjDrawType drawType) {
-		pa.pushMatrix();pa.pushStyle();	
-		pa.sphereDetail(sphrDet);
-		pa.translate(ctrLoc.x,ctrLoc.y,ctrLoc.z); 
-		pa.sphere(radius); 
-		pa.popStyle();pa.popMatrix();	
+	protected void _drawMe_Geom(IRenderInterface pa, SOM_GeomObjDrawType drawType) {
+		pa.pushMatState();	
+		pa.drawSphere(ctrLoc, radius, sphrDet);
+//		pa.sphereDetail(sphrDet);
+//		pa.translate(ctrLoc.x,ctrLoc.y,ctrLoc.z); 
+//		pa.sphere(radius); 
+		pa.popMatState();	
 	}
 
 	protected float modCnt = 0;//counter that will determine when the color should switch
 	
 	@Override
-	protected final void _drawMeSelected(my_procApplet pa,float animTmMod){//animTmMod is time since last frame
+	protected final void _drawMeSelected(IRenderInterface pa,float animTmMod){//animTmMod is time since last frame
 		modCnt += animTmMod;
 		if(modCnt > 1.0){	modCnt = 0;	}//blink every ~second
-		pa.pushMatrix();pa.pushStyle();	
-		pa.noFill();//fill(255*modCnt,255);			
-		pa.stroke(255*modCnt, 255);		
+		pa.pushMatState();	
+		pa.noFill();//fill(255*modCnt,255);
+		int _v = (int) (255*modCnt);		
+		pa.setStroke(_v,_v,_v, 255);		
 		pa.translate(ctrLoc); 
-		pa.sphere(radius*(modCnt + 1.0f)); 
-		pa.popStyle();pa.popMatrix();
+		pa.drawSphere(radius*(modCnt + 1.0f)); 
+		pa.popMatState();
 	}
 	
 	@Override
-	public void drawMyLabel(my_procApplet pa, SOM_AnimWorldWin animWin){
-		pa.pushMatrix();pa.pushStyle();		
+	public void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin animWin){
+		pa.pushMatState();		
 		pa.setFill(this.labelClrAra, 255);
 		pa.setStroke(this.labelClrAra, 255);		
 		_drawLabelAtLoc_3D(pa, ctrLoc, animWin, dispLabel + " Origin : " + ctrLoc.toStrBrf() +" | Radius " + String.format("%.4f", radius), 1.0f, .71f*radius);
-		pa.popStyle();pa.popMatrix();
+		pa.popMatState();
 	}
 	
 	

@@ -6,12 +6,13 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_3DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_3DLineMapMgr;
+import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.doubles.myPoint;
 import base_Math_Objects.vectorObjs.doubles.myVector;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
-import base_UI_Objects.my_procApplet;
+import base_UI_Objects.GUI_AppManager;
 
 public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	/**
@@ -30,8 +31,8 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	 * @param _winTxt
 	 * @param _canDrawTraj
 	 */	
-	public Geom_3DLineAnimResWin(my_procApplet _p, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt) {
-		super(_p, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.line_3D);
+	public Geom_3DLineAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt) {
+		super(_p, _AppMgr, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.line_3D);
 		super.initThisWin(false);
 	}
 
@@ -41,7 +42,7 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	public SOM_GeomMapManager buildGeom_SOMMapManager() {
 		//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
-		Geom_3DLineMapMgr _mgr = new Geom_3DLineMapMgr(somUIWin, this, pa.cubeBnds, ((SOM_GeometryMain)pa).argsMap);
+		Geom_3DLineMapMgr _mgr = new Geom_3DLineMapMgr(somUIWin, this, AppMgr.cubeBnds, ((SOM_GeometryMain)AppMgr).argsMap);
 		return _mgr;
 	}
 	
