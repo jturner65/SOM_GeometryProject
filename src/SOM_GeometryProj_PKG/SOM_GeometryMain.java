@@ -125,7 +125,8 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		int wIdx = dispMenuIDX,fIdx=showUIMenu;
 		dispWinFrames[wIdx] = buildSideBarMenu(wIdx, fIdx, new String[]{"Load/Save Geometry Data","Functions 2","Functions 3","Functions 4"}, new int[] {3,4,4,4}, 5, true, true);//new SOM_GeomSideBarMenu(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);	
 		//instanced window dimensions when open and closed - only showing 1 open at a time
-		float[] _dimOpen  =  new float[]{menuWidth, 0, pa.getWidth()-menuWidth, pa.getHeight()}, _dimClosed  =  new float[]{menuWidth, 0, hideWinWidth, pa.getHeight()};	
+		float[] _dimOpen  =  new float[]{menuWidth, 0, pa.getWidth()-menuWidth, pa.getHeight()}, 
+				_dimClosed  =  new float[]{menuWidth, 0, hideWinWidth, pa.getHeight()};	
 		//setInitDispWinVals : use this to define the values of a display window
 		//int _winIDX, 
 		//float[] _dimOpen, float[] _dimClosed  : dimensions opened or closed

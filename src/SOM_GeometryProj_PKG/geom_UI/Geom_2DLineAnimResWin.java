@@ -160,7 +160,7 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	 * instance-specific drawing setup before objects are actually drawn 
 	 */
 	protected final void drawMeFirst_Indiv() {//need to translate by half the screen width to center coords
-		//msgObj.dispInfoMessage("Geom_LineAnimResWin", "drawMeFirst_Indiv", "here");
+		//msgObj.dispInfoMessage(className, "drawMeFirst_Indiv", "here");
 		pa.translate(this.rectDim[0]+(this.rectDim[2]*.5f), (this.rectDim[1]+this.rectDim[3])*.5f);
 		pa.pushMatState();
 		pa.noStroke();

@@ -262,10 +262,10 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	@Override
 	protected final void buildFeaturesMap_Indiv() {
 		//set sphere center and radius as features
-		ftrMaps[rawftrMapTypeKey].put(0,ctrLoc.x);
-		ftrMaps[rawftrMapTypeKey].put(1,ctrLoc.y);
-		ftrMaps[rawftrMapTypeKey].put(2,ctrLoc.z);
-		ftrMaps[rawftrMapTypeKey].put(3,radius);
+		ftrMaps[unNormFtrMapTypeKey].put(0,ctrLoc.x);
+		ftrMaps[unNormFtrMapTypeKey].put(1,ctrLoc.y);
+		ftrMaps[unNormFtrMapTypeKey].put(2,ctrLoc.z);
+		ftrMaps[unNormFtrMapTypeKey].put(3,radius);
 	}
 	
 	/**

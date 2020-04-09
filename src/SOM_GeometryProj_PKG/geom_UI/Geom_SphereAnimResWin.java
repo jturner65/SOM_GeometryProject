@@ -118,11 +118,11 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final long getNumTrainingExamples(int objs, int smplPerObj) {		
 		long ttlNumSamples = objs * smplPerObj;
-		//this.msgObj.dispInfoMessage("Geom_SphereAnimResWin", "getNumTrainingExamples", "Start ttlNumSamples : " + ttlNumSamples);
+		//this.msgObj.dispInfoMessage(className, "getNumTrainingExamples", "Start ttlNumSamples : " + ttlNumSamples);
 //		long tmpEx = MyMathUtils.choose( ttlNumSamples, 4);
-//		this.msgObj.dispInfoMessage("Geom_SphereAnimResWin", "getNumTrainingExamples", "Choose function :  " +tmpEx );
+//		this.msgObj.dispInfoMessage(className, "getNumTrainingExamples", "Choose function :  " +tmpEx );
 		long tmpEx2 = (ttlNumSamples *(ttlNumSamples-1L)*(ttlNumSamples-2L)*(ttlNumSamples-3L))/24L;
-		//this.msgObj.dispInfoMessage("Geom_SphereAnimResWin", "getNumTrainingExamples", "Manual calc : " + tmpEx2);
+		//this.msgObj.dispInfoMessage(className, "getNumTrainingExamples", "Manual calc : " + tmpEx2);
 		return tmpEx2;
 	}
 	/**

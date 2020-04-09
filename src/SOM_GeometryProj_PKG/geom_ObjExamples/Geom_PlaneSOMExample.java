@@ -451,13 +451,13 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	@Override
 	protected final void buildFeaturesMap_Indiv() {
 		//describe plane as normal and planar origin
-		ftrMaps[rawftrMapTypeKey].put(0,basisVecs[0].x);
-		ftrMaps[rawftrMapTypeKey].put(1,basisVecs[0].y);
-		ftrMaps[rawftrMapTypeKey].put(2,basisVecs[0].z);
+		ftrMaps[unNormFtrMapTypeKey].put(0,basisVecs[0].x);
+		ftrMaps[unNormFtrMapTypeKey].put(1,basisVecs[0].y);
+		ftrMaps[unNormFtrMapTypeKey].put(2,basisVecs[0].z);
 
-		ftrMaps[rawftrMapTypeKey].put(3,planeOrigin.x);
-		ftrMaps[rawftrMapTypeKey].put(4,planeOrigin.y);
-		ftrMaps[rawftrMapTypeKey].put(5,planeOrigin.z);
+		ftrMaps[unNormFtrMapTypeKey].put(3,planeOrigin.x);
+		ftrMaps[unNormFtrMapTypeKey].put(4,planeOrigin.y);
+		ftrMaps[unNormFtrMapTypeKey].put(5,planeOrigin.z);
 
 	}//buildFeaturesMap_Indiv
 	
