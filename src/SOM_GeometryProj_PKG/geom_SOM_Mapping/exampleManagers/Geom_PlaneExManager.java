@@ -22,13 +22,11 @@ import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
 
 public class Geom_PlaneExManager extends SOM_GeomExampleManager {
-
 	
 	public Geom_PlaneExManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName, SOM_ExDataType _curDataType, boolean _shouldValidate, String _exMgrName) {
 		super(_mapMgr, _exName, _longExampleName, _curDataType, _shouldValidate, _exMgrName);
 	}
-	
-	
+		
 	@Override
 	protected SOM_Example[] noValidateBuildExampleArray() {return (Geom_PlaneSOMExample[])(exampleMap.values().toArray(new Geom_PlaneSOMExample[0]));		}
 	@Override
@@ -38,20 +36,17 @@ public class Geom_PlaneExManager extends SOM_GeomExampleManager {
 	protected void buildAllEx_MT(SOM_GeomSamplePointf[] allSamples, int numThdCallables, int ttlNumTrainEx, SOM_GeomTrainingExUniqueID[] _idxsToUse) {
 		List<Future<Boolean>> trainDataBldFtrs = new ArrayList<Future<Boolean>>();
 		List<SOM_GeomTrainExBuilder> trainDataBldrs = new ArrayList<SOM_GeomTrainExBuilder>();
-		
-		//SOM_GeomMapManager _mapMgr, SOM_GeomExampleManager _exMgr,SOM_GeomSamplePointf[] _allExs, int[] _intVals
-		//for (int i=0; i<numThdCallables;++i) {	trainDataBldrs.add(new Geom_PlaneTrainDatBuilder((Geom_PlaneMapMgr) mapMgr, this, allSamples, new int[] {0,allSamples.length,i, numTtlToBuild, numThdCallables}));}
-		//int numVals, int numThds
+
 		int numPerThd = calcNumPerThd(ttlNumTrainEx, numThdCallables);
-		//SOM_GeomMapManager _mapMgr, SOM_GeomExampleManager _exMgr,SOM_GeomSamplePointf[] _allExs, int[] _intVals
-		int stIDX = 0, endIDX = numPerThd;
-		
+		int stIDX = 0, endIDX = numPerThd;		
 		for (int i=0; i<numThdCallables-1;++i) {				
 			trainDataBldrs.add(new Geom_PlaneTrainDatBuilder((Geom_PlaneMapMgr) mapMgr, this, allSamples, new int[] {stIDX,endIDX,i, ttlNumTrainEx, numThdCallables},_idxsToUse));
 			stIDX =endIDX;
 			endIDX += numPerThd;
 		}
-		trainDataBldrs.add(new Geom_PlaneTrainDatBuilder((Geom_PlaneMapMgr) mapMgr, this, allSamples, new int[] {stIDX,ttlNumTrainEx,numThdCallables-1, ttlNumTrainEx, numThdCallables},_idxsToUse));		
+		if (stIDX < ttlNumTrainEx -1) {
+			trainDataBldrs.add(new Geom_PlaneTrainDatBuilder((Geom_PlaneMapMgr) mapMgr, this, allSamples, new int[] {stIDX,ttlNumTrainEx,numThdCallables-1, ttlNumTrainEx, numThdCallables},_idxsToUse));
+		}
 		try {trainDataBldFtrs = th_exec.invokeAll(trainDataBldrs);for(Future<Boolean> f: trainDataBldFtrs) { 			f.get(); 		}} catch (Exception e) { e.printStackTrace(); }			
 	}
 	

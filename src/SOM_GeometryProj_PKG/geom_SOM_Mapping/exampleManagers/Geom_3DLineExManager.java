@@ -25,7 +25,6 @@ public class Geom_3DLineExManager extends SOM_GeomExampleManager {
 		super(_mapMgr, _exName, _longExampleName,  _curDataType,  _shouldValidate, _exMgrName);
 	}
 	
-
 	@Override
 	protected SOM_Example[] noValidateBuildExampleArray() {return (Geom_3DLineSOMExample[])(exampleMap.values().toArray(new Geom_3DLineSOMExample[0]));		}
 	@Override
@@ -35,17 +34,17 @@ public class Geom_3DLineExManager extends SOM_GeomExampleManager {
 	protected void buildAllEx_MT(SOM_GeomSamplePointf[] allSamples, int numThdCallables, int ttlNumTrainEx,SOM_GeomTrainingExUniqueID[] _idxsToUse) {
 		List<Future<Boolean>> trainDataBldFtrs = new ArrayList<Future<Boolean>>();
 		List<SOM_GeomTrainExBuilder> trainDataBldrs = new ArrayList<SOM_GeomTrainExBuilder>();
-		//int numVals, int numThds
-		int numPerThd = calcNumPerThd(ttlNumTrainEx, numThdCallables);
-		//SOM_GeomMapManager _mapMgr, SOM_GeomExampleManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals
-		int stIDX = 0, endIDX = numPerThd;
 		
+		int numPerThd = calcNumPerThd(ttlNumTrainEx, numThdCallables);
+		int stIDX = 0, endIDX = numPerThd;		
 		for (int i=0; i<numThdCallables-1;++i) {				
 			trainDataBldrs.add(new Geom_3DLineTrainDatBuilder((Geom_3DLineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,endIDX,i, ttlNumTrainEx, numThdCallables},_idxsToUse));
 			stIDX =endIDX;
 			endIDX += numPerThd;
 		}
-		trainDataBldrs.add(new Geom_3DLineTrainDatBuilder((Geom_3DLineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,ttlNumTrainEx,numThdCallables-1, ttlNumTrainEx, numThdCallables},_idxsToUse));
+		if (stIDX < ttlNumTrainEx -1) {
+			trainDataBldrs.add(new Geom_3DLineTrainDatBuilder((Geom_3DLineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,ttlNumTrainEx,numThdCallables-1, ttlNumTrainEx, numThdCallables},_idxsToUse));
+		}
 		try {trainDataBldFtrs = th_exec.invokeAll(trainDataBldrs);for(Future<Boolean> f: trainDataBldFtrs) { 			f.get(); 		}} catch (Exception e) { e.printStackTrace(); }			
 	}
 	

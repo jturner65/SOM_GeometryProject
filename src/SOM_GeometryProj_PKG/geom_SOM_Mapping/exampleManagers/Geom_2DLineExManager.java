@@ -23,8 +23,7 @@ public class Geom_2DLineExManager extends SOM_GeomExampleManager {
 	
 	public Geom_2DLineExManager(SOM_MapManager _mapMgr, String _exName, String _longExampleName,  SOM_ExDataType _curDataType, boolean _shouldValidate, String _exMgrName) {
 		super(_mapMgr, _exName, _longExampleName,  _curDataType,  _shouldValidate, _exMgrName);
-	}
-	
+	}	
 
 	@Override
 	protected SOM_Example[] noValidateBuildExampleArray() {return (Geom_2DLineSOMExample[])(exampleMap.values().toArray(new Geom_2DLineSOMExample[0]));		}
@@ -35,16 +34,17 @@ public class Geom_2DLineExManager extends SOM_GeomExampleManager {
 	protected void buildAllEx_MT(SOM_GeomSamplePointf[] allSamples, int numThdCallables, int ttlNumTrainEx, SOM_GeomTrainingExUniqueID[] _idxsToUse) {
 		List<Future<Boolean>> trainDataBldFtrs = new ArrayList<Future<Boolean>>();
 		List<SOM_GeomTrainExBuilder> trainDataBldrs = new ArrayList<SOM_GeomTrainExBuilder>();
-		//int numVals, int numThds
+
 		int numPerThd = calcNumPerThd(ttlNumTrainEx, numThdCallables);
-		//SOM_GeomMapManager _mapMgr, SOM_GeomExampleManager _exMgr,SOM_GeomSmplDataForEx[] _allExs, int[] _intVals
 		int stIDX = 0, endIDX = numPerThd;
 		for (int i=0; i<numThdCallables-1;++i) {				
 			trainDataBldrs.add(new Geom_2DLineTrainDatBuilder((Geom_2DLineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,endIDX,i, ttlNumTrainEx, numThdCallables},_idxsToUse));
 			stIDX =endIDX;
 			endIDX += numPerThd;
 		}
-		trainDataBldrs.add(new Geom_2DLineTrainDatBuilder((Geom_2DLineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,ttlNumTrainEx,numThdCallables-1, ttlNumTrainEx, numThdCallables},_idxsToUse));
+		if (stIDX < ttlNumTrainEx -1) {
+			trainDataBldrs.add(new Geom_2DLineTrainDatBuilder((Geom_2DLineMapMgr) mapMgr, this, allSamples, new int[] {stIDX,ttlNumTrainEx,numThdCallables-1, ttlNumTrainEx, numThdCallables},_idxsToUse));
+		}
 		//msgObj.dispInfoMessage("Geom_2DLineExManager", "buildAllEx_MT", "Building : " + ttlNumTrainEx + " examples among :"+numThdCallables+" threads with final thread starting at :"+ stIDX + " and ending at :"+ttlNumTrainEx);
 		try {trainDataBldFtrs = th_exec.invokeAll(trainDataBldrs);for(Future<Boolean> f: trainDataBldFtrs) { 			f.get(); 		}} catch (Exception e) { e.printStackTrace(); }			
 	}
