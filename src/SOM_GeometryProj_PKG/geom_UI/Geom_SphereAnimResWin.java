@@ -100,10 +100,16 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 		tmpUIObjArray.put(gIDX_MinRadius,new Object[] {new double[]{20,500,1}, (double)minSphRad, "Min sphere radius", new boolean[]{false, false, true}});   				//gIDX_MinRadius	                                                                        
 		tmpUIObjArray.put(gIDX_MaxRadius,new Object[] {new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius", new boolean[]{false, false, true}});  				//gIDX_MaxRadius	                                                                        	
 	}
+	@Override
+	protected void buildUIUpdateStruct_SubwindowIndiv(TreeMap<Integer, Integer> intValues, TreeMap<Integer, Float> floatValues,
+			TreeMap<Integer, Boolean> boolValues) {
+		//2 float values added for this window
+		floatValues.put(gIDX_MinRadius, (float) guiObjs[gIDX_MinRadius].getVal());	
+		floatValues.put(gIDX_MaxRadius, (float) guiObjs[gIDX_MaxRadius].getVal());	
+	}
 	
 	@Override
-	protected final String[] setUI_GeomObjFeatureListVals() {	return Geom_SphereSOMExample.ftrNames;};
-	
+	protected final String[] setUI_GeomObjFeatureListVals() {	return Geom_SphereSOMExample.ftrNames;};	
 	@Override
 	protected final int getMinNumObjs() {	return 1;}
 	@Override

@@ -93,6 +93,10 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	protected void setupGUIObjsAras_Indiv(TreeMap<Integer, Object[]> tmpUIObjArray ,TreeMap<Integer, String[]> tmpListObjVals) {
 				
 	}
+	@Override
+	protected void buildUIUpdateStruct_SubwindowIndiv(TreeMap<Integer, Integer> intValues, TreeMap<Integer, Float> floatValues,
+			TreeMap<Integer, Boolean> boolValues) {}
+	
 	
 	/**
 	 * send all instance-specific values from UI to map manager
