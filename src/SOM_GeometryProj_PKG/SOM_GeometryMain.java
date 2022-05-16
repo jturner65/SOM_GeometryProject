@@ -85,7 +85,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	
 	//instance-specific setup code
 	@Override
-	protected void setup_indiv() {		setBkgrnd();	}	
+	protected void setup_Indiv() {		setBkgrnd();	}	
 	@Override
 	public void setBkgrnd(){((my_procApplet)pa).background(bground[0],bground[1],bground[2],bground[3]);}//setBkgrnd	
 	/**
@@ -123,7 +123,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		buildInitMenuWin(showUIMenu);
 		//menu bar init
 		int wIdx = dispMenuIDX,fIdx=showUIMenu;
-		dispWinFrames[wIdx] = buildSideBarMenu(wIdx, fIdx, new String[]{"Load/Save Geometry Data","Functions 2","Functions 3","Functions 4"}, new int[] {3,4,4,4}, 5, true, true);//new SOM_GeomSideBarMenu(this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);	
+		dispWinFrames[wIdx] = buildSideBarMenu(wIdx, fIdx, new String[]{"Load/Save Geometry Data","Functions 2","Functions 3","Functions 4"}, new int[] {3,4,4,4}, 5, true, true);	
 		//instanced window dimensions when open and closed - only showing 1 open at a time
 		float[] _dimOpen  =  new float[]{menuWidth, 0, pa.getWidth()-menuWidth, pa.getHeight()}, 
 				_dimClosed  =  new float[]{menuWidth, 0, hideWinWidth, pa.getHeight()};	
@@ -137,7 +137,8 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		//int _trajFill, int _trajStrk)			: trajectory fill and stroke colors, if these objects can be drawn in window (used as alt color otherwise)
 		//specify windows that cannot be shown simultaneously here
 		initXORWins(new int[]{show2DLineAnimRes,show3DLineAnimRes,showPlaneAnimRes,showSpereAnimRes},new int[]{disp2DLineAnimResIDX,disp3DLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX});
-
+		
+		//Initialize all SOM anim worlds
 		wIdx = disp2DLineAnimResIDX; fIdx= show2DLineAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,true,false}, new int[]{0,0,0,255},new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
 		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(pa, this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);		
@@ -154,13 +155,15 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,245,255,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
 		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(pa, this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);		
 		
-		
+		//build SOM sub-windows for each anim res window
 		for(int i=1;i<dispWinFrames.length;++i) {
 			curFocusWin = i;
 			((SOM_AnimWorldWin)dispWinFrames[i]).setGeomMapUIWin(buildSOM_MapDispUIWin((SOM_AnimWorldWin)dispWinFrames[i],winTitles[i], -1));
 		}
 	}//	initVisOnce_Indiv
 		
+	
+	//Individual SOM map window for each anim world.
 	private SOM_GeomMapUIWin buildSOM_MapDispUIWin(SOM_AnimWorldWin ownerWin, String owner, int fIdx) {
 		float height = pa.getHeight();
 		float width = pa.getWidth();
@@ -330,31 +333,20 @@ public class SOM_GeometryMain extends GUI_AppManager {
 //		}
 	}//setDispAndModMapMgr
 	
-
-	@Override
+	
 	/**
-	 * Overriding main because handling 2d + 3d windows
+	 * Individual extending Application Manager post-drawMe functions
+	 * @param modAmtMillis
+	 * @param is3DDraw
 	 */
-	public final void drawMe(float modAmtMillis){
-																//initialize camera, lights and scene orientation and set up eye movement		
-		if((curFocusWin == -1) || (curDispWinIs3D())){	//allow for single window to have focus, but display multiple windows	
-			//if refreshing screen, this clears screen, sets background		
-			setBkgrnd();				
-			draw3D_solve3D(modAmtMillis,-c.getViewDimW()/2.0f+40);
-			if(curDispWinCanShow3dbox()){drawBoxBnds();}		
-			
-		} //else {	//either/or 2d window
-		//2d windows paint window box so background is always cleared
-		c.buildCanvas();
-		c.drawMseEdge(dispWinFrames[curFocusWin]);
-		pa.popMatState(); 
-		for(int i =1; i<numDispWins; ++i){if (isShowingWindow(i) && !(dispWinFrames[i].getFlags(myDispWindow.is3DWin))){dispWinFrames[i].draw2D(modAmtMillis);}}
+	@Override
+	protected void drawMePost_Indiv(float modAmtMillis, boolean is3DDraw) {
 		//draw SOM window in current window if active/displayed
 		pa.pushMatState();
 		((SOM_AnimWorldWin) dispWinFrames[curFocusWin]).drawSOMWinUI(modAmtMillis);
-		pa.popMatState();
-	}//draw	
-
+		pa.popMatState();		
+	}
+	
 	@Override
 	public int[] getClr_Custom(int colorVal, int alpha) {	return new int[] {255,255,255,alpha};}
 //	/**
