@@ -102,7 +102,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	
 	@Override
 	//build windows here
-	protected void initVisOnce_Indiv() {
+	protected void initAllDispWindows() {
 		//including strings for default directories specific to current project setup
 		argsMap = new TreeMap<String,Object>();
 		//provide default values used by program
@@ -160,7 +160,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 			curFocusWin = i;
 			((SOM_AnimWorldWin)dispWinFrames[i]).setGeomMapUIWin(buildSOM_MapDispUIWin((SOM_AnimWorldWin)dispWinFrames[i],winTitles[i], -1));
 		}
-	}//	initVisOnce_Indiv
+	}//	initAllDispWindows
 		
 	
 	//Individual SOM map window for each anim world.
