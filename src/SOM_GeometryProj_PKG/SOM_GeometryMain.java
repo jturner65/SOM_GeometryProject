@@ -7,13 +7,11 @@ import SOM_GeometryProj_PKG.geom_UI.Geom_2DLineAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_3DLineAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_PlaneAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_SphereAnimResWin;
-//import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.doubles.myPoint;
 import base_Math_Objects.vectorObjs.doubles.myVector;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_UI.SOM_GeomMapUIWin;
 import base_UI_Objects.GUI_AppManager;
-import base_UI_Objects.my_procApplet;
 import base_UI_Objects.windowUI.base.myDispWindow;
 import base_UI_Objects.windowUI.sidebar.mySideBarMenu;
 
@@ -65,7 +63,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	//needs main to run project - do not modify this code in any way
 	public static void main(String[] passedArgs) {		
 		SOM_GeometryMain me = new SOM_GeometryMain();
-		my_procApplet._invokedMain(me, passedArgs);		    
+		SOM_GeometryMain.invokeProcessingMain(me, passedArgs);		    
 	}//main	
 	
 	public SOM_GeometryMain() {super();}
@@ -87,7 +85,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	@Override
 	protected void setup_Indiv() {		setBkgrnd();	}	
 	@Override
-	public void setBkgrnd(){((my_procApplet)pa).background(bground[0],bground[1],bground[2],bground[3]);}//setBkgrnd	
+	public void setBkgrnd(){pa.setRenderBackground(bground[0],bground[1],bground[2],bground[3]);}//setBkgrnd	
 	/**
 	 * determine which main flags to show at upper left of menu 
 	 */
