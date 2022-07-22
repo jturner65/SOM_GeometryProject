@@ -245,8 +245,8 @@ public class Geom_3DLineSOMExample extends SOM_GeomObj {
 		//pt  == origin  + t * dir
 		// -> t = (pt.x - origin.x)/dir.x 
 		float t = 0.0f;
-		if(Math.abs(dir.x)> MyMathUtils.eps) {			t = (pt.x - getSrcPts()[0].x)/dir.x;} 
-		else if(Math.abs(dir.y)> MyMathUtils.eps) {		t = (pt.y - getSrcPts()[0].y)/dir.y;}	
+		if(Math.abs(dir.x)> MyMathUtils.EPS) {			t = (pt.x - getSrcPts()[0].x)/dir.x;} 
+		else if(Math.abs(dir.y)> MyMathUtils.EPS) {		t = (pt.y - getSrcPts()[0].y)/dir.y;}	
 		else {											t = (pt.z - getSrcPts()[0].z)/dir.z;}	//line along z axis				
 		return t;
 	}
@@ -357,10 +357,10 @@ public class Geom_3DLineSOMExample extends SOM_GeomObj {
 	protected final void cylinder(IRenderInterface pa, myPointf A, myPointf B, float r, int[] c1, int[] c2) {
 		myVectorf V = new myVectorf(A,B);
 
-		float da = MyMathUtils.twoPi_f/36;
+		float da = MyMathUtils.TWO_PI_F/36;
 		pa.pushMatState();	
 		((my_procApplet)pa).beginShape(PConstants.QUAD_STRIP);
-			for(float a=0; a<=MyMathUtils.twoPi_f+da; a+=da) {
+			for(float a=0; a<=MyMathUtils.TWO_PI_F+da; a+=da) {
 				float rCosA = (float) (r*Math.cos(a));
 				float rSinA = (float) (r*Math.sin(a));
 				pa.setStroke(c1, 255); 

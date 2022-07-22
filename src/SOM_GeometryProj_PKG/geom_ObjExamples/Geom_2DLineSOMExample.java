@@ -243,7 +243,7 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 		//pt  == origin  + t * dir
 		// -> t = (pt.x - origin.x)/dir.x 
 		float t = 0.0f;
-		if(Math.abs(dir.x)> MyMathUtils.eps) {	t = (pt.x - getSrcPts()[0].x)/dir.x;} 
+		if(Math.abs(dir.x)> MyMathUtils.EPS) {	t = (pt.x - getSrcPts()[0].x)/dir.x;} 
 		else {									t = (pt.y - getSrcPts()[0].y)/dir.y;}//vertical line			
 		return t;
 	}
