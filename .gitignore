@@ -2,3 +2,4 @@
 bin
 src/base_SOM_Objects/
 GeometryProject/ProposalReports/
+GeometryProject/PreprocData/preprocData_*

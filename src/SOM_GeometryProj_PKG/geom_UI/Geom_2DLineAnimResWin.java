@@ -13,7 +13,6 @@ import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_UI_Objects.GUI_AppManager;
-//import base_UI_Objects.my_procApplet;
 
 public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	/**
