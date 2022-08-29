@@ -121,7 +121,16 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		buildInitMenuWin(showUIMenu);
 		//menu bar init
 		int wIdx = dispMenuIDX,fIdx=showUIMenu;
-		dispWinFrames[wIdx] = buildSideBarMenu(wIdx, fIdx, new String[]{"Load/Save Geometry Data","Functions 2","Functions 3","Functions 4"}, new int[] {3,4,4,4}, 5, true, true);	
+		//application-wide menu button bar titles and button names
+		String[] menuBtnTitles = new String[]{"Load/Save Geometry Data","Training Data","SOM Building/Display","Functions 4"};
+		String[][] menuBtnNames = new String[][] { // each must have literals for every button defined in side bar menu, or ignored
+			{ "Load Geometry Data", "Save Geometry Data", "---" }, 				// row 1
+			{ "Calc Opt # Ex.", "Build Training Data", "Save Train Data" },		// row 2
+			{ "Show SOM Win", "LD SOM Config", "Build Map", "---" }, 			// row 3
+			{ "---", "---", "---", "---" }};
+		String[] dbgBtnNames = new String[] {"Debug 0","Debug 1","Debug 2","Debug 3","Debug 4"};
+		dispWinFrames[wIdx] = buildSideBarMenu(wIdx, fIdx,menuBtnTitles, menuBtnNames, dbgBtnNames, true, true);
+		
 		//instanced window dimensions when open and closed - only showing 1 open at a time
 		float[] _dimOpen  =  new float[]{menuWidth, 0, pa.getWidth()-menuWidth, pa.getHeight()}, 
 				_dimClosed  =  new float[]{menuWidth, 0, hideWinWidth, pa.getHeight()};	
