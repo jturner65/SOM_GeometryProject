@@ -35,10 +35,10 @@ SOM_ProposalDir, "ProposalReports"
 #	sub-subdir to put ftr IDX propsals
 SOM_FtrMappingsSubDir, "FeatureWeightMappings"
 #
-#	sub-subdir to put per-class(order jps mapped to map nodes) proposals
+#	sub-subdir to put per-class proposals
 SOM_ClassMappingsSubDir,"ClassMappings"
 #
-#	sub-subdir to put per-category(order jpgroups mapped to map nodes) proposals
+#	sub-subdir to put per-category proposals
 SOM_CategoryMappingsSubDir,"CategoryMappings"
 #
 #	sub-sub-dir to put prospect to bmu mappings
@@ -59,7 +59,6 @@ useSparseTestingData,"false"
 #
 #
 #Directory for prebuilt map : 
-#all the following use the new data as of 5/1/19
 #
 #	specify map directories containing prebuilt maps - default is first listed unless otherwise specified below
 #	add as many entries as desired, all using same prefix "preBuiltMapDir"
