@@ -74,13 +74,11 @@ public class Geom_2DLineMapMgr extends SOM_GeomMapManager {
 
 	@Override
 	public String getClassSegmentTitleString(int classID) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getCategorySegmentTitleString(int catID) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

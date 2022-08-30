@@ -23,9 +23,8 @@ import base_UI_Objects.windowUI.sidebar.mySideBarMenu;
  */
 public class SOM_GeometryMain extends GUI_AppManager {
 	//project-specific variables
-	public String prjNmLong = "Building Animation Via SOM Interaction", prjNmShrt = "SOM_VisAnim";
-	
-	//protected int[] visFlags;
+	public String prjNmLong = "Reconstructing Meshes Via SOM Interaction", prjNmShrt = "SOM_VisAnim";
+	//Flags corresponding to each window to show
 	private final int
 		showUIMenu = 0,
 		show2DLineAnimRes = 1,
@@ -42,8 +41,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		dispPlaneAnimResIDX = 3,
 		dispSphereAnimResIDX = 4
 		;
-																		//set array of vector values (sceneFcsVals) based on application
-	//private boolean cyclModCmp;										//comparison every draw of cycleModDraw			
+	//set array of vector values (sceneFcsVals) based on application		
 	private final int[] bground = new int[]{244,244,244,255};		//bground color	
 	
 	/**
@@ -75,7 +73,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	 * whether or not we want to restrict window size on widescreen monitors
 	 * 
 	 * @return 0 - use monitor size regardless
-	 * 			1 - use smaller dim to be determine window 
+	 * 			1 - set window size to meet reasonable disp ratio 
 	 * 			2+ - TBD
 	 */
 	@Override
@@ -165,22 +163,22 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		//build SOM sub-windows for each anim res window
 		for(int i=1;i<dispWinFrames.length;++i) {
 			curFocusWin = i;
-			((SOM_AnimWorldWin)dispWinFrames[i]).setGeomMapUIWin(buildSOM_MapDispUIWin((SOM_AnimWorldWin)dispWinFrames[i],winTitles[i], -1));
+			((SOM_AnimWorldWin)dispWinFrames[i]).setGeomMapUIWin(buildSOM_MapDispUIWin((SOM_AnimWorldWin)dispWinFrames[i], -1));
 		}
 	}//	initAllDispWindows
 		
 	
 	//Individual SOM map window for each anim world.
-	private SOM_GeomMapUIWin buildSOM_MapDispUIWin(SOM_AnimWorldWin ownerWin, String owner, int fIdx) {
+	private SOM_GeomMapUIWin buildSOM_MapDispUIWin(SOM_AnimWorldWin ownerWin, int fIdx) {
 		float height = pa.getHeight();
 		float width = pa.getWidth();
 		float popUpWinHeight = PopUpWinOpenFraction * height;
 		float[] _dimOpen  =  new float[]{menuWidth, popUpWinHeight, width-menuWidth, height-popUpWinHeight};
 		//hidden
-		float[] _dimClosed  =  new float[]{menuWidth, height-hidWinHeight, width-menuWidth, hidWinHeight};
-		
+		float[] _dimClosed  =  new float[]{menuWidth, height-hideWinHeight, width-menuWidth, hideWinHeight};
+		String owner = ownerWin.getName();
 		//(int _winIDX, float[] _dimOpen, float[] _dimClosed, boolean[] _dispFlags, int[] _fill, int[] _strk, int[] _trajFill, int[] _trajStrk)
-		SOM_GeomMapUIWin resWin = new SOM_GeomMapUIWin(pa, this, "SOM Map UI for " + owner, fIdx, new int[]{20,40,50,200}, new int[]{255,255,255,255}, _dimOpen, _dimClosed, "Visualize SOM Node location for "+owner,argsMap,ownerWin);	
+		SOM_GeomMapUIWin resWin = new SOM_GeomMapUIWin(pa, this, "Map UI for " + owner, fIdx, new int[]{20,40,50,200}, new int[]{255,255,255,255}, _dimOpen, _dimClosed, "Visualize SOM Node location for "+owner,argsMap,ownerWin);	
 		resWin.finalInit(false,false, false, new myPoint(-gridDimX/2.0,-gridDimY/2.0,-gridDimZ/2.0), new myVector(0,0,0));
 		resWin.setTrajColors(new int[]{180,180,180,255},new int[]{100,100,100,255});
 		resWin.setRtSideUIBoxClrs(new int[]{0,0,0,200},new int[]{255,255,255,255});
