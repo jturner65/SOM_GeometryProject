@@ -1,5 +1,10 @@
 *.class
 bin
 src/base_SOM_Objects/
+src/base_Utils_Objects/
+src/base_UI_Objects/
+
+GeometryProject/SOM/*/
+GeometryProject/Logs/
 GeometryProject/ProposalReports/
 GeometryProject/PreprocData/preprocData_*

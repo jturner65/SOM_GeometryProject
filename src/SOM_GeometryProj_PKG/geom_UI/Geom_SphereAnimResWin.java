@@ -3,7 +3,6 @@ package SOM_GeometryProj_PKG.geom_UI;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
@@ -41,7 +40,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	public final SOM_GeomMapManager buildGeom_SOMMapManager() {
-		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(somUIWin, this, AppMgr.cubeBnds, ((SOM_GeometryMain)AppMgr).argsMap);
+		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(somUIWin, this, AppMgr.cubeBnds,  AppMgr.getArgsMap());
 		return _mgr;
 	}
 

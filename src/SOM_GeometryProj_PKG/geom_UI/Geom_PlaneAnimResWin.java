@@ -6,7 +6,6 @@ package SOM_GeometryProj_PKG.geom_UI;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
@@ -40,7 +39,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	public SOM_GeomMapManager buildGeom_SOMMapManager() {
-		Geom_PlaneMapMgr _mgr = new Geom_PlaneMapMgr(somUIWin, this, AppMgr.cubeBnds, ((SOM_GeometryMain)AppMgr).argsMap);
+		Geom_PlaneMapMgr _mgr = new Geom_PlaneMapMgr(somUIWin, this, AppMgr.cubeBnds,  AppMgr.getArgsMap());
 		return _mgr;
 	}
 

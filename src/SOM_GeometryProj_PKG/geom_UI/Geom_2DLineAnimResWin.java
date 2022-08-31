@@ -3,7 +3,6 @@ package SOM_GeometryProj_PKG.geom_UI;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_2DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_2DLineMapMgr;
 import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
@@ -50,7 +49,7 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	public SOM_GeomMapManager buildGeom_SOMMapManager() {
 		//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
-		Geom_2DLineMapMgr _mgr = new Geom_2DLineMapMgr(somUIWin, this, win2DMinsAndDiffs, ((SOM_GeometryMain)AppMgr).argsMap);
+		Geom_2DLineMapMgr _mgr = new Geom_2DLineMapMgr(somUIWin, this, win2DMinsAndDiffs, AppMgr.getArgsMap());
 		return _mgr;
 	}
 	

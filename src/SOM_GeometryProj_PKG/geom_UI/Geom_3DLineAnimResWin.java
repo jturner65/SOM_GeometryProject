@@ -3,7 +3,6 @@ package SOM_GeometryProj_PKG.geom_UI;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import SOM_GeometryProj_PKG.SOM_GeometryMain;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_3DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_3DLineMapMgr;
 import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
@@ -42,7 +41,7 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	public SOM_GeomMapManager buildGeom_SOMMapManager() {
 		//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
-		Geom_3DLineMapMgr _mgr = new Geom_3DLineMapMgr(somUIWin, this, AppMgr.cubeBnds, ((SOM_GeometryMain)AppMgr).argsMap);
+		Geom_3DLineMapMgr _mgr = new Geom_3DLineMapMgr(somUIWin, this, AppMgr.cubeBnds, AppMgr.getArgsMap());
 		return _mgr;
 	}
 	

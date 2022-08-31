@@ -50,9 +50,10 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	public final float PopUpWinOpenFraction = .20f;
 	
 	/**
-	 * default args for SOM Map UI Window (passed to SOM Project config)
+	 * Labels for buttons that describe what mouse-over on the SOM displays
 	 */
-	public TreeMap<String, Object> argsMap;
+	public static final String[] MseOvrLblsAra = new String[] { "Loc", "Dist", "Pop", "Ftr", "Class", "Cat", "None" };
+	
 ///////////////
 //CODE STARTS
 ///////////////	
@@ -65,6 +66,20 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	}//main	
 	
 	public SOM_GeometryMain() {super();}
+	
+	/**
+	 * Set various relevant runtime arguments in argsMap
+	 * @param _passedArgs command-line arguments
+	 */
+	@Override
+	protected void setRuntimeArgsVals(String[] _passedArgs) {
+		TreeMap<String, Object> argsMap = new TreeMap<String, Object>();
+		//provide default values used by SOM program
+		argsMap.put("configDir", "GeometryProject" + File.separator+"config" + File.separator);
+		argsMap.put("dataDir", "GeometryProject" + File.separator);
+		argsMap.put("logLevel",2);//0 is console alone,1 is log file alone, 2 is both
+		setArgsMap(argsMap);
+	}
 	
 	@Override
 	protected void setSmoothing() {		pa.setSmoothing(4);		}
@@ -99,14 +114,6 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	@Override
 	//build windows here
 	protected void initAllDispWindows() {
-		//including strings for default directories specific to current project setup
-		argsMap = new TreeMap<String,Object>();
-		//provide default values used by program
-		argsMap.put("configDir", "GeometryProject" + File.separator+"config" + File.separator);
-		argsMap.put("dataDir", "GeometryProject" + File.separator);
-		argsMap.put("logLevel",0);//0 is console alone,1 is log file alone, 2 is both
-
-		
 		showInfo = true;
 		//drawnTrajEditWidth = 10;
 		//includes 1 for menu window (never < 1) - always have same # of visFlags as myDispWindows
@@ -178,7 +185,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		float[] _dimClosed  =  new float[]{menuWidth, height-hideWinHeight, width-menuWidth, hideWinHeight};
 		String owner = ownerWin.getName();
 		//(int _winIDX, float[] _dimOpen, float[] _dimClosed, boolean[] _dispFlags, int[] _fill, int[] _strk, int[] _trajFill, int[] _trajStrk)
-		SOM_GeomMapUIWin resWin = new SOM_GeomMapUIWin(pa, this, "Map UI for " + owner, fIdx, new int[]{20,40,50,200}, new int[]{255,255,255,255}, _dimOpen, _dimClosed, "Visualize SOM Node location for "+owner,argsMap,ownerWin);	
+		SOM_GeomMapUIWin resWin = new SOM_GeomMapUIWin(pa, this, "Map UI for " + owner, fIdx, new int[]{20,40,50,200}, new int[]{255,255,255,255}, _dimOpen, _dimClosed, "Visualize SOM Node location for "+owner,getArgsMap(),ownerWin);	
 		resWin.finalInit(false,false, false, new myPoint(-gridDimX/2.0,-gridDimY/2.0,-gridDimZ/2.0), new myVector(0,0,0));
 		resWin.setTrajColors(new int[]{180,180,180,255},new int[]{100,100,100,255});
 		resWin.setRtSideUIBoxClrs(new int[]{0,0,0,200},new int[]{255,255,255,255});
@@ -217,7 +224,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	 */
 	@Override
 	public String[] getMouseOverSelBtnNames() {
-		return SOM_AnimWorldWin.MseOvrLblsAra;
+		return MseOvrLblsAra;
 	}
 	
 	//////////////////////////////////////////////////////
