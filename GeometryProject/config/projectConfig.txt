@@ -72,7 +72,7 @@ useSparseTestingData,"false"
 #	specify map directories containing prebuilt maps - default is first listed unless otherwise specified below
 #	add as many entries as desired, all using same prefix "preBuiltMapDir"
 #	UI currently will allow interaction with first 4
-preBuiltMapDir,"SphereSOM_2022_08_30_13_45"
+# preBuiltMapDir,"SphereSOM_2022_08_30_18_57"
 #
 #	default preBuiltMap index to use (of those listed above)
 dfltPreBuiltMapIDX, 0
