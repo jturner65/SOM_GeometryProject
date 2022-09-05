@@ -77,17 +77,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 */
 	protected PShape[] planeObjs;	
 	
-	
-//	/**
-//	 * angle between normal and "up" - use this for display
-//	 */
-//	protected final float rotAngle;
-//	
-//	/**
-//	 * normalized axis between normal and "up" - use this to rotate for display
-//	 */
-//	protected final myVectorf rotAxis;
-	
 	/**
 	 * Constructor for plane object
 	 * @param _mapMgr owning som map manager
@@ -98,12 +87,9 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
 		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane, true, _shouldBuildSamples);	
 		buildBasisOriginAndEq();
+		//build new point location for color, squaring the distance from the origin to provide more diversity
 		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), _numSmplPts);
-		if(_shouldBuildSamples) {
-			buildPlanePShapes();
-		} else {
-			planeObjs = new PShape[0];
-		}
+		buildPlanePShapes();
 	}//ctor
 	
 	/**
@@ -467,7 +453,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 */
 	@Override
 	protected final String getPreProcDescrForCSV_Indiv() {
-		// TODO Auto-generated method stub
 		return "";
 	}
 	
@@ -509,10 +494,9 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 
 	@Override
 	protected void _drawMe_Geom(IRenderInterface pa, SOM_GeomObjDrawType drawType) {
-		if(planeObjs.length==0) {return;}
+		if(planeObjs.length==0) {	return;}
 		pa.pushMatState();			
 		pa.setStrokeWt(2.0f);
-
 		((my_procApplet)pa).shape(planeObjs[drawType.getVal()]);		
 		pa.popMatState();
 	}

@@ -26,7 +26,6 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	
 	public static final int numFlags = numGeomBaseFlags;	
 	
-
 	//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
 	public Geom_PlaneMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
 		super(_win, _dispWin, _worldBounds, _argsMap,SOM_GeomObjTypes.plane, Geom_PlaneSOMExample._numFtrs);
@@ -71,25 +70,16 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
 
 	@Override
-	protected void buildValidationDataAra() {
-		// TODO Auto-generated method stub
-
-	}
+	protected void buildValidationDataAra() {	}
 
 	@Override
 	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {return new Geom_PlaneSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);}	
 
 	@Override
-	public String getClassSegmentTitleString(int classID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getClassSegmentTitleString(int classID) {		return null;}
 
 	@Override
-	public String getCategorySegmentTitleString(int catID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getCategorySegmentTitleString(int catID) {	return null;}
 
 	@Override
 	protected final int getNumGeomFlags_Indiv() {	return numFlags;}
