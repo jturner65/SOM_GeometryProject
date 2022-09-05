@@ -101,6 +101,8 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	protected final int getMinNumSmplsPerObj() {return 3;}
 	@Override
 	protected final int getMaxNumSmplsPerObj() {return 100;}
+	@Override
+	protected final int getModNumSmplsPerObj() {return 10;}
 	/**
 	 * calculate the max # of examples for this type object - clique of object description degree 
 	 */

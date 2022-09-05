@@ -216,7 +216,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	protected String getPrjNmLong() {return prjNmLong;}
 
 	@Override
-	protected String getPrjNmShrt() {		return prjNmShrt;	}
+	protected String getPrjNmShrt() {return prjNmShrt;}
 
 	/**
 	 * present an application-specific array of mouse over btn names 
@@ -274,11 +274,10 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	@Override
 	//get the ui rect values of the "master" ui region (another window) -> this is so ui objects of one window can be made, clicked, and shown displaced from those of the parent windwo
 	public float[] getUIRectVals(int idx){
-		//this.pr("In getUIRectVals for idx : " + idx);
 		switch(idx){
 		case dispMenuIDX 				: { return new float[0];}			//idx 0 is parent menu sidebar
-		case disp2DLineAnimResIDX			: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
-		case disp3DLineAnimResIDX			: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
+		case disp2DLineAnimResIDX		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
+		case disp3DLineAnimResIDX		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
 		case dispPlaneAnimResIDX 		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
 		case dispSphereAnimResIDX		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
 		//case dispSOMMapIDX 				: {	return getMaxUIClkCoords();}
@@ -361,19 +360,5 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	
 	@Override
 	public int[] getClr_Custom(int colorVal, int alpha) {	return new int[] {255,255,255,alpha};}
-//	/**
-//	 * display the SOM window's UI objects
-//	 */
-//	public void drawSOMUIObjs() {
-//		if(getVisFlag(showSOMMapUI)){
-//			pushMatrix();pushStyle();			
-//			dispWinFrames[dispSOMMapIDX].drawGUIObjs();					//draw what user-modifiable fields are currently available
-//			dispWinFrames[dispSOMMapIDX].drawClickableBooleans();					//draw what user-modifiable fields are currently available
-//			//dispWinFrames[curFocusWin].drawCustMenuObjs();					//customizable menu objects for each window
-//			popStyle();	popMatrix();						
-//		}
-//	}
 
-
-	
 }//class SOM_GeometryMain

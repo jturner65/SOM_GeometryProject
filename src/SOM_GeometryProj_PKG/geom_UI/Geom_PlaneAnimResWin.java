@@ -118,6 +118,8 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	protected final int getMinNumSmplsPerObj() {return 20;}
 	@Override
 	protected final int getMaxNumSmplsPerObj() {return 1000;}
+	@Override
+	protected final int getModNumSmplsPerObj() {return 100;}
 	/**
 	 * calculate the max # of examples for this type object - clique of object description degree 
 	 */
@@ -136,16 +138,10 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	}
 
 	@Override
-	protected void getAllUIValsForPreProcSave_Indiv(TreeMap<String, String> vals) {
-		// TODO Auto-generated method stub
-		
-	}
+	protected void getAllUIValsForPreProcSave_Indiv(TreeMap<String, String> vals) {}
 
 	@Override
-	protected void setAllUIValsFromPreProcLoad_Indiv(TreeMap<String, String> uiVals) {
-		// TODO Auto-generated method stub
-		
-	}
+	protected void setAllUIValsFromPreProcLoad_Indiv(TreeMap<String, String> uiVals) {}
 	
 	//////////////////////////////
 	// instance-based draw handling

@@ -117,14 +117,14 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	protected final int getMinNumSmplsPerObj() {return 10;}
 	@Override
 	protected final int getMaxNumSmplsPerObj() {return 500;}
+	@Override
+	protected final int getModNumSmplsPerObj() {return 100;}
 	/**
 	 * calculate the max # of examples for this type object : n choose k where k is degree
 	 */
 	@Override
 	protected final long getNumTrainingExamples(int objs, int smplPerObj) {		
 		long ttlNumSamples = objs * smplPerObj;
-		//this.msgObj.dispInfoMessage(className, "getNumTrainingExamples", "Start ttlNumSamples : " + ttlNumSamples);
-//		long tmpEx = MyMathUtils.choose( ttlNumSamples, 4);
 //		this.msgObj.dispInfoMessage(className, "getNumTrainingExamples", "Choose function :  " +tmpEx );
 		long tmpEx2 = (ttlNumSamples *(ttlNumSamples-1L)*(ttlNumSamples-2L)*(ttlNumSamples-3L))/24L;
 		//this.msgObj.dispInfoMessage(className, "getNumTrainingExamples", "Manual calc : " + tmpEx2);
