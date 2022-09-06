@@ -5,7 +5,6 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_SphereSOMMapNode;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_SphereExManager;
-import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.runners.Geom_SphereObjBldrRunner;
 import base_Math_Objects.vectorObjs.tuples.Tuple;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
@@ -15,6 +14,7 @@ import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomExampleManager;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.Geom_SOMMseOvrDisp;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
@@ -68,7 +68,6 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	}
 	public final int getNumSamplesToBuildObject() {return Geom_SphereSOMExample._numSrcPts;}
 
-
 	/**
 	 * build the example that represents the SOM data where the mouse is
 	 */
@@ -79,29 +78,22 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	 * call from UI to set min and max radius
 	 */
 	public final void setMinMaxRad(float min, float max) {minRad = min; maxRad=max;}
-
-
 	@Override
-	protected void buildValidationDataAra() {
-		// TODO Auto-generated method stub
-
-	}
-	
+	protected void buildValidationDataAra() {}	
 	@Override
-	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {return new Geom_SphereSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);}	
-
+	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {
+		return new Geom_SphereSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);
+	}	
 	@Override
-	public String getClassSegmentTitleString(int classID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	public String getClassSegmentTitleString(int classID) {		return null;	}
 	@Override
-	public String getCategorySegmentTitleString(int catID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	public String getCategorySegmentTitleString(int catID) {	return null;	}
+	/**
+	 * The maximum number of training examples to draw to prevent lag/crashing/overflow. 
+	 * The purpose of showing these is to illustrate the random distribution of examples.
+	 */
+	@Override
+	public int getMaxNumExsToShow() {return 1000;}
 	@Override
 	protected final int getNumGeomFlags_Indiv() {	return numFlags;}
 	@Override
@@ -110,9 +102,5 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 			default : {break;}
 		}
 	}
-	////////////////////////
-	// draw functions
-	
-
 
 }//class Geom_SphereMapMgr

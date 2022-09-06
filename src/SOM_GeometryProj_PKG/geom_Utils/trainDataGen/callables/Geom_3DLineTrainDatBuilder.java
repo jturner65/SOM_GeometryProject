@@ -33,9 +33,7 @@ public class Geom_3DLineTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	@Override
 	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSamplePointf[] exAra, int idx) {
 		String ID = "3D_Line_Train_"+getObjID(idx);
-		Geom_3DLineSOMExample line = new Geom_3DLineSOMExample(((Geom_3DLineMapMgr)mapMgr),_exDataType, ID, exAra, numExPerObj, false);
-		return line;
-		
+		return new Geom_3DLineSOMExample(((Geom_3DLineMapMgr)mapMgr),_exDataType, ID, exAra, numExPerObj, false, idx < mapMgr.getMaxNumExsToShow());		
 	}
 
 }

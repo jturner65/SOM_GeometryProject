@@ -33,9 +33,7 @@ public class Geom_2DLineTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	@Override
 	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSamplePointf[] exAra, int idx) {
 		String ID = "2D_Line_Train_"+getObjID(idx);
-		Geom_2DLineSOMExample line = new Geom_2DLineSOMExample(((Geom_2DLineMapMgr)mapMgr),_exDataType, ID, exAra, numExPerObj, false);
-		return line;
-		
+		return new Geom_2DLineSOMExample(((Geom_2DLineMapMgr)mapMgr),_exDataType, ID, exAra, numExPerObj, false, idx < mapMgr.getMaxNumExsToShow());		
 	}
 
 }

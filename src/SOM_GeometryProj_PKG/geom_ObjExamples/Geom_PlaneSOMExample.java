@@ -84,12 +84,16 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param _numSmplPts : # of sample points to build for this object
 	 * @param _worldBnds 4 points that bound the plane for display purposes
 	 */	
-	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
+	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples, boolean _shouldBuildVisRep) {
 		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane, true, _shouldBuildSamples);	
 		buildBasisOriginAndEq();
 		//build new point location for color, squaring the distance from the origin to provide more diversity
 		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), _numSmplPts);
-		buildPlanePShapes();
+		if(_shouldBuildVisRep) {
+			buildPlanePShapes();
+		} else {
+			planeObjs = new PShape[0];
+		}
 	}//ctor
 	
 	/**
@@ -476,7 +480,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * get an appropriate sample location to build sample sets, based on what kind of object is being built
 	 * @return
 	 */
-//_drawLabelAtLoc_3D(IRenderInterface pa, myPointf pt, SOM_AnimWorldWin animWin, String label, float _off)
 	@Override
 	public void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin animWin) {
 		pa.pushMatState();	
@@ -512,8 +515,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		pa.setColorValStroke(IRenderInterface.gui_Blue,255);
 		pa.setStrokeWt(3.0f);
 		pa.drawLine(planeOrigin, orthoFrame[2]);
-//		planeOrigin.showMeSphere(pa, 5.0f);
-//		for(int i=0;i<orthoFrame.length;++i) {	orthoFrame[i].showMeSphere(pa, 5.0f);}
 		pa.showPtAsSphere(planeOrigin, 5.0f, 5, -1, -1);
 		for(int i=0;i<orthoFrame.length;++i) {	pa.showPtAsSphere(orthoFrame[i], 5.0f, 5, -1, -1);}
 		pa.popMatState();				

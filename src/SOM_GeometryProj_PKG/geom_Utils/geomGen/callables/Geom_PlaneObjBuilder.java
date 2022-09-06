@@ -37,7 +37,7 @@ public class Geom_PlaneObjBuilder extends SOM_GeomObjBuilder {
 		
 		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, SOM_GeomSmplForSOMExample[] _srcSmpls, int _numSmplPts, float[][] _worldBounds)
 		//animWin, _exDataType, ID, _srcSmpls, numSmplsPerObj, worldBounds);
-		return new Geom_PlaneSOMExample(((Geom_PlaneMapMgr)mapMgr), _exDataType, ID, pts, numSmplsPerObj, true);
+		return new Geom_PlaneSOMExample(((Geom_PlaneMapMgr)mapMgr), _exDataType, ID, pts, numSmplsPerObj, true, true);
 	}
 
 }//class Geom_PlaneObjBuilder

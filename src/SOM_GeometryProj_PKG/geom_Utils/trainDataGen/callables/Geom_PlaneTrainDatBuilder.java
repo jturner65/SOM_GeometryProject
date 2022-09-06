@@ -51,7 +51,7 @@ public class Geom_PlaneTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	@Override
 	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSamplePointf[] exAra, int idx) {
 		String ID = "Plane_Train_"+getObjID(idx);
-		return new Geom_PlaneSOMExample(((Geom_PlaneMapMgr)mapMgr), _exDataType, ID, exAra, numExPerObj, false);
+		return new Geom_PlaneSOMExample(((Geom_PlaneMapMgr)mapMgr), _exDataType, ID, exAra, numExPerObj, false, idx < mapMgr.getMaxNumExsToShow());
 	}
 
 }

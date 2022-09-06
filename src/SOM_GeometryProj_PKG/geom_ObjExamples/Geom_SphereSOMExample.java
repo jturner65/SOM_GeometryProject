@@ -60,7 +60,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * @param _numSmplPts : # of sample points to build for this object TODO move to post-construction process
 	 * @param _worldBounds : bounds within which the points/samples of this object should remain constrained
 	 */
-	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
+	public Geom_SphereSOMExample(Geom_SphereMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples, boolean _shouldBuildVisRep) {
 		super(_mapMgr, _exType, _id, _srcSmpls,  SOM_GeomObjTypes.sphere, true,_shouldBuildSamples);
 		//with 4 srcPts, find center of sphere
 		//String res = "";

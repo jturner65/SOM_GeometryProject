@@ -5,7 +5,6 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_PlaneSOMMapNode;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_PlaneExManager;
-import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.runners.Geom_PlaneObjBldrRunner;
 import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.tuples.Tuple;
@@ -16,6 +15,7 @@ import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomExampleManager;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.Geom_SOMMseOvrDisp;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
@@ -68,19 +68,23 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	 */
 	@Override
 	protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
-
 	@Override
 	protected void buildValidationDataAra() {	}
-
 	@Override
-	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {return new Geom_PlaneSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);}	
-
+	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {
+		return new Geom_PlaneSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);
+	}	
 	@Override
 	public String getClassSegmentTitleString(int classID) {		return null;}
-
 	@Override
-	public String getCategorySegmentTitleString(int catID) {	return null;}
-
+	public String getCategorySegmentTitleString(int catID) {	return null;}	
+	
+	/**
+	 * The maximum number of training examples to draw to prevent lag/crashing/overflow. 
+	 * The purpose of showing these is to illustrate the random distribution of examples.
+	 */
+	@Override
+	public int getMaxNumExsToShow() {return 1000;}
 	@Override
 	protected final int getNumGeomFlags_Indiv() {	return numFlags;}
 	@Override

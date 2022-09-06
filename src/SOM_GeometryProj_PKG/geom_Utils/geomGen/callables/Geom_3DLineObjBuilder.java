@@ -34,7 +34,7 @@ public class Geom_3DLineObjBuilder extends SOM_GeomObjBuilder {
 		SOM_GeomSamplePointf[] pts = new SOM_GeomSamplePointf[] {new SOM_GeomSamplePointf(a, ID+"_gen_pt_0",null),new SOM_GeomSamplePointf(b, ID+"_gen_pt_1", null)};
 		//SOM_GeomSamplePointf[] _srcSmpls = buildSrcGeomSmplAra(null, pts);
 		
-		Geom_3DLineSOMExample line = new Geom_3DLineSOMExample(((Geom_3DLineMapMgr)mapMgr), _exDataType, ID, pts, numSmplsPerObj, true);
+		Geom_3DLineSOMExample line = new Geom_3DLineSOMExample(((Geom_3DLineMapMgr)mapMgr), _exDataType, ID, pts, numSmplsPerObj, true, true);
 		return line;
 	}
 

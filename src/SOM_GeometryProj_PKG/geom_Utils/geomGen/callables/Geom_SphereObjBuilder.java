@@ -42,7 +42,7 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 		//SOM_GeomSmplDataForEx[] _srcSmpls = buildSrcGeomSmplAra(null, pts);
 		
 		//(SOM_GeomMapManager _mapMgr, SOM_AnimWorldWin _animWin, SOM_ExDataType _exType, String _id, Geom_SmplDataForSOMExample[] _srcSmpls, myPointf _ctr, float _rad, int _numSmplPts, float[][] _worldBounds)
-		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, pts, numSmplsPerObj, true);
+		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, pts, numSmplsPerObj, true, true);
 		//boolean passed = 
 		obj.testSphereConstruction(ctr, rad, 1.0f);
 		

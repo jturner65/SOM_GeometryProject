@@ -77,29 +77,27 @@ public class Geom_SphereExManager extends SOM_GeomExampleManager {
 		SOM_GeomSamplePointf c,d;
 		int cIDX,dIDX;
 		do {
-			cIDX = firstIDX;
-			while((cIDX == firstIDX) || (cIDX == scndIDX)){	cIDX = rnd.nextInt(0,allSamples.length);}		
+			do{	
+				cIDX = rnd.nextInt(0,allSamples.length);
+			}while((cIDX == firstIDX) || (cIDX == scndIDX));		
 			c = allSamples[cIDX];
 			ac = new myVectorf(a,c);
 			ac._normalize();			
 		}while (Math.abs(ab._dot(ac))==1.0f);
 		//3rd points is non-coplanar with first 2
 		idxs.add(cIDX);
-		
-		
+				
 		myVectorf planeNorm = ab._cross(ac)._normalize();
 		//now find d so that it does not line in plane of abc - vector from ab
-		do {
-			dIDX = firstIDX;
-			while((dIDX==firstIDX) || (dIDX==scndIDX) || (dIDX==cIDX)){	dIDX =rnd.nextInt(0,allSamples.length);}				
+		do {			
+			do {	
+				dIDX = rnd.nextInt(0,allSamples.length);
+			}while((dIDX==firstIDX) || (dIDX==scndIDX) || (dIDX==cIDX));			
 			d = allSamples[dIDX];
 			ad = new myVectorf(a,d);
 			ad._normalize();
 		} while (ad._dot(planeNorm) == 0.0f);//if 0 then in plane (ortho to normal)
 		idxs.add(dIDX);
-//		if(idxs.size()<4) {
-//			this.msgObj.dispErrorMessage("Geom_SphereExManager", "genUniqueObjIDXs", " Error!!! somehow did not generate 4 unique sphere points : " + idxs.size() + " firstIDX : " + firstIDX + " scndIDX : " + scndIDX + " cIDX : "+ cIDX+ " dIDX : "+ dIDX);
-//		}
 		return idxs.toArray(new Integer[0]);
 	}//genUniqueObjIDXs	
 	

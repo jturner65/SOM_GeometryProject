@@ -153,9 +153,9 @@ public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSamplePointf[] exAra, int idx) {
 		String ID = "Sphere_Train_"+getObjID(idx);
 		//_dbgDispSphere(exAra, idx);
-		Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, exAra, numExPerObj, false);
+		//Geom_SphereSOMExample obj = new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, exAra, numExPerObj, false, idx < mapMgr.getMaxNumExsToShow());
 		//boolean passed = obj.testSphereConstruction(ctr, rad, 1.0f);
-		return obj;
+		return new Geom_SphereSOMExample(((Geom_SphereMapMgr)mapMgr), _exDataType, ID, exAra, numExPerObj, false, idx < mapMgr.getMaxNumExsToShow());
 	}
 
 }

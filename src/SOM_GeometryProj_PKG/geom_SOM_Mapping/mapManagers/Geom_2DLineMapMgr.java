@@ -5,7 +5,6 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_2DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_2DLineSOMMapNode;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_2DLineExManager;
-import SOM_GeometryProj_PKG.geom_Utils.Geom_SOMMseOvrDisp;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.runners.Geom_2DLineObjBldrRunner;
 import base_Math_Objects.vectorObjs.tuples.Tuple;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
@@ -15,6 +14,7 @@ import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomExampleManager;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
+import base_SOM_Objects.som_geom.geom_utils.Geom_SOMMseOvrDisp;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
@@ -36,7 +36,6 @@ public class Geom_2DLineMapMgr extends SOM_GeomMapManager {
 	protected final SOM_GeomObjBldrRunner buildObjRunner() {
 		return new Geom_2DLineObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, SOM_GeomObjBldrTasks.buildBaseObj);		
 	}
-
 	@Override
 	protected SOM_GeomObj[] buildEmptyObjArray() {		return new Geom_2DLineSOMExample[numObjsToBuild];}
 	
@@ -66,22 +65,21 @@ public class Geom_2DLineMapMgr extends SOM_GeomMapManager {
 	protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
 
 	@Override
-	protected void buildValidationDataAra() {
-	}
-
+	protected void buildValidationDataAra() {}
 	@Override
-	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {return new Geom_2DLineSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);}	
-
+	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {
+		return new Geom_2DLineSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);
+	}	
 	@Override
-	public String getClassSegmentTitleString(int classID) {
-		return null;
-	}
-
+	public String getClassSegmentTitleString(int classID) {		return null;	}
 	@Override
-	public String getCategorySegmentTitleString(int catID) {
-		return null;
-	}
-
+	public String getCategorySegmentTitleString(int catID) {	return null;	}
+	/**
+	 * The maximum number of training examples to draw to prevent lag/crashing/overflow. 
+	 * The purpose of showing these is to illustrate the random distribution of examples.
+	 */
+	@Override
+	public int getMaxNumExsToShow() {return 10000;}
 	@Override
 	protected final int getNumGeomFlags_Indiv() {	return numFlags;}
 	@Override
