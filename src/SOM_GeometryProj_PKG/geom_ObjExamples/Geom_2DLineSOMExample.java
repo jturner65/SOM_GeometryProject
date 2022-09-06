@@ -1,7 +1,6 @@
 package SOM_GeometryProj_PKG.geom_ObjExamples;
 
 import java.util.TreeMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_2DLineMapMgr;
 import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
@@ -9,16 +8,16 @@ import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
+import base_SOM_Objects.som_geom.geom_examples.SOM_GeomLineObj;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
-import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 
-public class Geom_2DLineSOMExample extends SOM_GeomObj {
-	private static int IDGen = 0;
-	
+public class Geom_2DLineSOMExample extends SOM_GeomLineObj {
+	private static int IDGen = 0;	
 	/**
 	 * string array denoting names of features
 	 */
@@ -27,42 +26,6 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	 * feature vector size for this object : 3d point + 3d line
 	 */
 	public static final int _numFtrs = ftrNames.length;
-	
-	/**
-	 * # of source points used to build object
-	 */
-	public static final int _numSrcPts = 2;
-
-	/**
-	 * direction vector for this line
-	 */
-	public myVectorf dir;
-	/**
-	 * 2d normal to this line
-	 */
-	public myVectorf norm;
-	/**
-	 * point closest to 0,0 for this line
-	 */
-	public myPointf origin;
-	/**
-	 * display points for this line to draw maximally based on world bounds
-	 */
-	public myPointf[] dispEndPts;
-	
-	/**
-	 * coordinate bounds in world for line - static across all line objects
-	 * 		first idx : 0 is min; 1 is diff
-	 * 		2nd idx : 0 is x, 1 is y, 2 is z
-	 */
-	protected static float[][] worldBounds=null;
-	
-	/**
-	 * an object to restrict the bounds on this line - min,max, diff s,t value within which to sample plane
-	 */
-	private float[][] worldTBounds;
-	
-	private String[] dispAra;
 	
 	/**
 	 * Constructor for line object
@@ -74,18 +37,12 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	 * 		first idx 	: 0 is min; 1 is diff
 	 * 		2nd idx 	: 0 is x, 1 is y
 	 */
-	public Geom_2DLineSOMExample(Geom_2DLineMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples) {
-		super(_mapMgr, _exType, _id, _srcSmpls, SOM_GeomObjTypes.line_2D, false, _shouldBuildSamples);
-		buildDirOriginAndDispPts("");		
-		super.buildLocClrInitObjAndSamples(origin, _numSmplPts);
-			
-		boundOriginWithinLine();
+	public Geom_2DLineSOMExample(Geom_2DLineMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples, boolean _shouldBuildVisRep) {
+		super(_mapMgr, _exType, _id, _srcSmpls, SOM_GeomObjTypes.line_2D, _numSmplPts, false, _shouldBuildSamples);
 	}//ctor		
 	
 	public Geom_2DLineSOMExample(Geom_2DLineMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
-		super(_mapMgr, _exType, _oid, _csvDat, SOM_GeomObjTypes.line_2D, _numSrcPts, false);
-		buildDirOriginAndDispPts("");		
-		super.buildLocClrAndSamplesFromCSVStr(origin, _csvDat);
+		super(_mapMgr, _exType, _oid, _csvDat, SOM_GeomObjTypes.line_2D, false);
 	}//csv ctor
 	
 	/**
@@ -95,50 +52,23 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	 */
 	public Geom_2DLineSOMExample(Geom_2DLineMapMgr _mapMgr, SOM_GeomMapNode _mapNode) {
 		super(_mapMgr, _mapNode, SOM_GeomObjTypes.line_2D, false);
-		buildDirOriginAndDispPts("BMU");
-		super.buildLocClrInitObjAndSamples(origin, _numSrcPts);
-		
-		boundOriginWithinLine();
 	}//bmu ctor
 	
+	
+	@SuppressWarnings("static-access")
+	public Geom_2DLineSOMExample(Geom_2DLineSOMExample _otr) {
+		super(_otr);
+	}//copy ctor
+		
 	/**
-	 * build object-specific values for this object
-	 * @param endPtPrefix whether the display string should include "bmu" or not
+	 * build the normal to this line
+	 * @return
 	 */
-	private void buildDirOriginAndDispPts(String endPtPrefix) {
-		getSrcPts()[0].z = 0.0f;
-		getSrcPts()[1].z = 0.0f;
-		//z is always 0 - making this in 2 d
-		dir=_buildDir();	
-		//get normal to line
+	protected void buildNorm() {
 		norm = new myVectorf(dir.y, -dir.x, 0.0f);
-		//origin is closest point to 0,0 on line
-		origin = findClosestPointOnLine(myPointf.ZEROPT);
-		origin.z = 0;
-		
-		//build bounds on s and t, if appropriate - by here equations define objects should be built
-		worldTBounds = calcTBounds();
-		dispEndPts = new myPointf[2];
-		dispAra = new String[2];
-		dispEndPts[0] = getPointOnLine(worldTBounds[0][0]);
-		dispEndPts[1] = getPointOnLine(worldTBounds[0][0] + worldTBounds[1][0]);
-		
-		dispAra[0] = endPtPrefix + "End pt 0 w/min t : " + worldTBounds[0][0] + " | "+dispEndPts[0].toStrBrf();
-		dispAra[1] = endPtPrefix + "End pt 1 w/max t : " + (worldTBounds[0][0]+worldTBounds[1][0])+ " | "+dispEndPts[1].toStrBrf();			
 	}
 	
-	/**
-	 * make sure that point chosen as closest to origin is bounded within the allowable bounds of the line - if not use one of the extremal points
-	 */
-	private void boundOriginWithinLine() {
-		float low_t = worldTBounds[0][0], hi_t = worldTBounds[0][0] + worldTBounds[1][0];
-		float ctr_t = this.getTForPointOnLine(origin);
-		if(ctr_t < low_t) {			origin.set(dispEndPts[0]);}
-		else if (ctr_t > hi_t) {	origin.set(dispEndPts[1]);}
-	
-	}
-	
-	private myVectorf _buildDir() {
+	protected myVectorf _buildDir() {
 		myVectorf _dir = new myVectorf(getSrcPts()[0],getSrcPts()[1]);
 		//z is always 0 - making this in 2 d
 		_dir.z = 0;
@@ -147,61 +77,22 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 		return _dir;
 	}
 	
-	
-	@SuppressWarnings("static-access")
-	public Geom_2DLineSOMExample(Geom_2DLineSOMExample _otr) {
-		super(_otr);
-		dir = _otr.dir;
-		origin = _otr.origin;
-		dispEndPts = _otr.dispEndPts;
-		worldBounds = _otr.worldBounds;
-	}//copy ctor
-	
-
-	/**
-	 * call from ctor of base class, but set statically for each instancing class type
-	 * @param _worldBounds
-	 */
-	protected final void setWorldBounds(float[][]_worldBounds) {
-		if(null!=worldBounds) {return;}
-		worldBounds = new float[_worldBounds.length][];
-		for(int i=0;i<worldBounds.length;++i) {
-			float[] tmp = new float[_worldBounds[i].length];
-			for(int j=0;j<tmp.length;++j) {	tmp[j]=_worldBounds[i][j];}
-			worldBounds[i]=tmp;
-		}
-	}//setWorldBounds
-
 	/**
 	 * convert a world location within the bounded cube region to be a 4-int color array
 	 */
-	public final int[] getClrFromWorldLoc(myPointf pt){return getClrFromWorldLoc_2D(pt, dir,worldBounds);}//getClrFromWorldLoc
+	@Override
+	public final int[] getClrFromWorldLoc(myPointf pt){return getClrFromWorldLoc_2D(pt, dir,((SOM_GeomMapManager) mapMgr).getWorldBounds());}//getClrFromWorldLoc
 
-	
 	/**
-	 * calculate the bounds on s and t (if appropriate) for parametric formulation of object equation
-	 * worldBounds is 
-	 * 		first idx 	: 0 is min; 1 is diff
-	 * 		2nd idx 	: 0 is x, 1 is y
-	 * result is
-	 * 		first idx 	: 0==min, 1==diff
-	 * 		2nd idx 	: 0==t (only 1 value)
-	 * @return result array
+	 * For every bound in line's space, set t value in bound's ortho dim
+	 * @return
 	 */
-	protected final float[][] calcTBounds(){
-		float[] ptA_ara = getSrcPts()[0].asArray(), dirAra = dir.asArray();
-		//eq  pt = pta + t * dir -> t = (pt-pta)/dir for each dof
-		//mins has location for each dof
-		float[] mins = worldBounds[0];		
-		float[][] res = new float[2][mins.length-1];
-		for(int i=0;i<mins.length-1;++i) {
-			res[0][i]=100000000.0f;			
-		}
-		//for every bound, set t value in bound's ortho dim
-		//float[] tAtBounds = new float[worldBounds[0].length * worldBounds.length];
+	@Override
+	protected final TreeMap<Float, Integer> buildWorldBounds(float[] mins){
 		TreeMap<Float, Integer> tmpBnds = new TreeMap<Float, Integer>();
 		float curMax;
-	
+		float[] ptA_ara = getSrcPts()[0].asArray(), dirAra = dir.asArray();
+		float [][] worldBounds = ((SOM_GeomMapManager) mapMgr).getWorldBounds();
 		for(int i=0;i<mins.length;++i) {
 			tmpBnds.put((mins[i] - ptA_ara[i])/dirAra[i], 2*i);
 			curMax=worldBounds[0][i] + worldBounds[1][i];
@@ -210,35 +101,16 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 		//want 2 points closest to 0 - 2 will be negative, and 2 will be positive if a is within bounds
 		tmpBnds.remove(tmpBnds.firstKey());
 		tmpBnds.remove(tmpBnds.lastKey());
-		float a = tmpBnds.firstKey();
-		float b = tmpBnds.lastKey();
-		if(a < b) {
-			res[0][0] = a;
-			res[1][0] = b-a;			
-		} else {			
-			res[0][0] = b;
-			res[1][0] = a-b;
-		}	
-		return res;
-	}//calcTBounds()
-
-	public final myPointf findClosestPointOnLine(myPointf p) {
-		//find projection t of vector ap (from a to p) on dir, then find a + t * dir
-		myVectorf proj = new myVectorf(getSrcPts()[0],p);
-		return myVectorf._add(getSrcPts()[0], proj._dot(dir), dir);
+		return tmpBnds;
 	}
-	/**
-	 * return a point on the line 
-	 * @param t
-	 * @return
-	 */
-	public final myPointf getPointOnLine(float t) {return myVectorf._add(getSrcPts()[0], t, dir);}
+	
 	
 	/**
 	 * find t value for point on line - expects point to be on line!
 	 * @param pt
 	 * @return
 	 */
+	@Override
 	public final float getTForPointOnLine(myPointf pt) {
 		//pt  == origin  + t * dir
 		// -> t = (pt.x - origin.x)/dir.x 
@@ -248,14 +120,7 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 		return t;
 	}
 	
-	/**
-	 * return a random point on this object
-	 */
-	@Override
-	public final myPointf getRandPointOnObj() {
-		float t = ((float) ThreadLocalRandom.current().nextFloat() *worldTBounds[1][0])+worldTBounds[0][0];
-		return getPointOnLine(t);
-	}
+
 	
 	////////////////////////////
 	// feature functionality (inherited from SOM_Example
@@ -287,26 +152,6 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 		ftrMaps[unNormFtrMapTypeKey].put(2,origin.x);
 		ftrMaps[unNormFtrMapTypeKey].put(3,origin.y);
 	}
-	/**
-	 * Instance-class specific required info for this example to build feature data - use this so we don't have to reload and rebuilt from data every time
-	 * @return
-	 */
-	@Override
-	protected final String getPreProcDescrForCSV_Indiv() {return "";}	
-	/**
-	 * Instance-class specific column names of rawDescrForCSV data
-	 * @return
-	 */
-	@Override
-	protected String getRawDescColNamesForCSV_Indiv() {	return "";}
-	
-
-	@Override
-	public final TreeMap<Integer, Integer> getTrainingLabels() {
-		TreeMap<Integer, Integer> res = new TreeMap<Integer, Integer>();
-		// TODO Auto-generated method stub
-		return res;
-	}	
 	
 	///////////////////////////
 	// draw functionality
@@ -332,7 +177,7 @@ public class Geom_2DLineSOMExample extends SOM_GeomObj {
 	}
 
 	@Override
-	public void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin _notUsedIn2D) {
+	public final void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin _notUsedIn2D) {
 		pa.pushMatState();		
 		pa.setFill(labelClrAra,255);
 		pa.setStroke(labelClrAra,255);

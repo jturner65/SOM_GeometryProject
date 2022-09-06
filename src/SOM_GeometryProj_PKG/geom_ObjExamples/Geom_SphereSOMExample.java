@@ -6,6 +6,7 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
@@ -41,12 +42,6 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	
 	public final int sphrDet;
 	public final float radius;
-	/**
-	 * coordinate bounds in world for sphere - static across all sphere objects
-	 * 		first idx : 0 is min; 1 is diff
-	 * 		2nd idx : 0 is x, 1 is y, 2 is z
-	 */
-	protected static float[][] worldBounds=null;
 	
 	private static final String csvSphereTag = "SPHR,";
 	
@@ -103,13 +98,11 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		super.buildLocClrInitObjAndSamples(ctrLoc, _numSrcPts);		
 	}
 	
-	@SuppressWarnings("static-access")
 	public Geom_SphereSOMExample(Geom_SphereSOMExample _otr) {
 		super(_otr);
 		ctrLoc = _otr.ctrLoc;
 		radius = _otr.radius;
 		sphrDet = _otr.sphrDet;
-		worldBounds = _otr.worldBounds;
 	}//copy ctor
 
 	/**
@@ -214,25 +207,6 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		_ctr.set(Float.parseFloat(ptsAsStr[1].trim()),Float.parseFloat(ptsAsStr[2].trim()),Float.parseFloat(ptsAsStr[3].trim()));
 		return Float.parseFloat(ptsAsStr[0].trim());
 	}
-	
-	/**
-	 * call from ctor of base class, but set statically for each instancing class type
-	 * @param _worldBounds
-	 */
-	protected final void setWorldBounds(float[][]_worldBounds) {
-		if(null!=worldBounds) {return;}
-		worldBounds = new float[_worldBounds.length][];
-		for(int i=0;i<worldBounds.length;++i) {
-			float[] tmp = new float[_worldBounds[i].length];
-			for(int j=0;j<tmp.length;++j) {	tmp[j]=_worldBounds[i][j];}
-			worldBounds[i]=tmp;
-		}
-	}//setWorldBounds
-	/**
-	 * convert a world location within the bounded cube region to be a 4-int color array
-	 */
-	public final int[] getClrFromWorldLoc(myPointf pt){return getClrFromWorldLoc_3D(pt,worldBounds);}//getClrFromWorldLoc
-
 	
 	/**
 	 * return a random point on this object

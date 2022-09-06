@@ -9,6 +9,7 @@ import base_JavaProjTools_IRender.base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
 import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
@@ -64,12 +65,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * use this with origin point to display
 	 */
 	protected myPointf[] orthoFrame;
-	/**
-	 * coordinate bounds in world for plane - static across all plane objects
-	 * 		first idx : 0 is min; 1 is diff
-	 * 		2nd idx : 0 is x, 1 is y, 2 is z
-	 */
-	protected static float[][] worldBounds=null;
 	
 	protected final static float frameLen = 100.0f;
 	/**
@@ -165,8 +160,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		}
 	}//buildBasisOriginAndEq
 	
-
-	@SuppressWarnings("static-access")
 	public Geom_PlaneSOMExample(Geom_PlaneSOMExample _otr) {
 		super(_otr);	
 		planeOrigin = _otr.planeOrigin;
@@ -177,7 +170,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		dispBoundPts = _otr.dispBoundPts;
 		minMaxDiffValAra = _otr.minMaxDiffValAra;
 		orthoFrame = _otr.orthoFrame;
-		worldBounds = _otr.worldBounds;
 		planeObjs = _otr.planeObjs;		
 	}
 	
@@ -245,26 +237,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		poly.endShape(PConstants.CLOSE);
 		return poly;
 	}
-		
-	/**
-	 * call from ctor of base class, but set statically for each instancing class type
-	 * @param _worldBounds
-	 */
-	protected final void setWorldBounds(float[][]_worldBounds) {
-		if(null!=worldBounds) {return;}
-		worldBounds = new float[_worldBounds.length][];
-		for(int i=0;i<worldBounds.length;++i) {
-			float[] tmp = new float[_worldBounds[i].length];
-			for(int j=0;j<tmp.length;++j) {	tmp[j]=_worldBounds[i][j];}
-			worldBounds[i]=tmp;
-		}
-	}//setWorldBounds
-	/**
-	 * convert a world location within the bounded cube region to be a 4-int color array
-	 */
-	public final int[] getClrFromWorldLoc(myPointf pt){return getClrFromWorldLoc_3D(pt,worldBounds);}//getClrFromWorldLoc
-	
-	
+			
 	/**
 	 * Find intersection of plane with ray
 	 * @param RayOrig
@@ -294,6 +267,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	protected myPointf[] calc_plane_WBBox_IntersectPoints(){
 	    ArrayList<myPointf> ptsAra = new ArrayList<myPointf>();
 	    // Test edges along X axis
+	    float [][] worldBounds = ((SOM_GeomMapManager) mapMgr).getWorldBounds();
 	    myVectorf dir = new myVectorf(worldBounds[1][0], 0.f, 0.f); 
 	    
 	    myPointf[] origAra = new myPointf[] {
@@ -304,7 +278,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	    };    
 	    
 	    _checkEachDir(ptsAra, dir, origAra);
-
 
 	    // Test edges along Y axis
 	    dir.set(0.0f, worldBounds[1][1], 0.0f);
@@ -317,7 +290,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	    
 	    _checkEachDir(ptsAra, dir, origAra);
 
-
 	    // Test edges along Z axis
 	    dir.set(0.0f, 0.f, worldBounds[1][2]);
 	    origAra = new myPointf[] {
@@ -328,7 +300,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	    };    
 	    
 	    _checkEachDir(ptsAra, dir, origAra);
-
 	    
 	    if(ptsAra.size() == 0) {
 	    	msgObj.dispErrorMessage("Geom_PlaneSOMExample", "calc_plane_WBBox_IntersectPoints", "ID : " + this.dispLabel + " : Plane doesn't intersect with enclosing box somehow.");
@@ -337,11 +308,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	    }//no intersection
 	    //sort in cw order around normal
 	    TreeMap<Float, myPointf> ptsMap = sortBoundPoints(ptsAra);
-//	    System.out.println("Map : ");
-//	    for(Float key : ptsMap.keySet()) {
-//	    	myPointf pt = ptsMap.get(key);
-//	    	System.out.println("key : "+ key + " : " + pt.toStrBrf()  );
-//	    }
 	    return ptsMap.values().toArray(new myPointf[0]);
 	}	
 	
