@@ -28,43 +28,49 @@ public class Geom_2DLineSOMExample extends SOM_GeomLineObj {
 	public static final int _numFtrs = ftrNames.length;
 	
 	/**
-	 * Constructor for line object
-	 * @param _mapMgr owning som map manager
- 	 * @param _a, _b : 2 points on line
- 	 * @param _numSmplPts : # of points to build
-	 * @param _locClrAra color based on location
-	 * @param _worldBounds 2d array of bounds for where reasonable points should be generated
-	 * 		first idx 	: 0 is min; 1 is diff
-	 * 		2nd idx 	: 0 is x, 1 is y
+	 * Constructor for 2d line object shared functionality
+	 * 	
+	 * @param _mapMgr : owning map manager
+	 * @param _exType : whether this is training/testing/validation etc.
+	 * @param _oid : pre-defined string ID put in SOM_Example OID field
+	 * @param _srcSmpls : the points and owning objects that make up the minimally defining set of points for this object.  If src objects are null, then this object is a foundation/source object
+	 * @param _numSmplPts : # of sample points to build for this object TODO move to post-construction process
+	 * @param _shouldBuildSamples : whether we should build samples for this object
+	 * @param _shouldBuildVisRep : whether we should pre-build a mesh representation of this object
 	 */
 	public Geom_2DLineSOMExample(Geom_2DLineMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples, boolean _shouldBuildVisRep) {
-		super(_mapMgr, _exType, _id, _srcSmpls, SOM_GeomObjTypes.line_2D, _numSmplPts, false, _shouldBuildSamples);
+		super(_mapMgr, _exType, _id, _srcSmpls, SOM_GeomObjTypes.line_2D, _numSmplPts, _shouldBuildSamples,_shouldBuildVisRep);
 	}//ctor		
 	
+	/**
+	 * Constructor to build a 2d line based on csv data
+	 * @param _mapMgr : owning map manager
+	 * @param _exType : whether this is training/testing/validation etc.
+	 * @param _oid : pre-defined string ID put in SOM_Example OID field
+	 * @param _csvDat : String from CSV describing object
+	 */
 	public Geom_2DLineSOMExample(Geom_2DLineMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
-		super(_mapMgr, _exType, _oid, _csvDat, SOM_GeomObjTypes.line_2D, false);
+		super(_mapMgr, _exType, _oid, _csvDat, SOM_GeomObjTypes.line_2D);
 	}//csv ctor
 	
 	/**
-	 * ctor to build object corresponding to bmu geometric object
+	 * ctor to build a 2d line corresponding to a map node
 	 * @param _mapMgr
 	 * @param _mapNode
 	 */
 	public Geom_2DLineSOMExample(Geom_2DLineMapMgr _mapMgr, SOM_GeomMapNode _mapNode) {
-		super(_mapMgr, _mapNode, SOM_GeomObjTypes.line_2D, false);
+		super(_mapMgr, _mapNode, SOM_GeomObjTypes.line_2D);
 	}//bmu ctor
 	
-	
-	@SuppressWarnings("static-access")
 	public Geom_2DLineSOMExample(Geom_2DLineSOMExample _otr) {
 		super(_otr);
 	}//copy ctor
 		
 	/**
-	 * build the normal to this line
+	 * build the normal to this line from dir vector
 	 * @return
 	 */
-	protected void buildNorm() {
+	protected void buildNormFromDir() {
 		norm = new myVectorf(dir.y, -dir.x, 0.0f);
 	}
 	
@@ -119,8 +125,6 @@ public class Geom_2DLineSOMExample extends SOM_GeomLineObj {
 		else {									t = (pt.y - getSrcPts()[0].y)/dir.y;}//vertical line			
 		return t;
 	}
-	
-
 	
 	////////////////////////////
 	// feature functionality (inherited from SOM_Example

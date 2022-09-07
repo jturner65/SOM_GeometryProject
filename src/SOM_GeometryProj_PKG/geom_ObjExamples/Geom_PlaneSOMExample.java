@@ -73,35 +73,72 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	protected PShape[] planeObjs;	
 	
 	/**
-	 * Constructor for plane object
-	 * @param _mapMgr owning som map manager
-	 * @param _ptsOnPlane : non-colinear points on plane
-	 * @param _numSmplPts : # of sample points to build for this object
-	 * @param _worldBnds 4 points that bound the plane for display purposes
-	 */	
-	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _id, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples, boolean _shouldBuildVisRep) {
-		super(_mapMgr,  _exType, _id, _srcSmpls, SOM_GeomObjTypes.plane, true, _shouldBuildSamples);	
+	 * Constructor for plane object to render and use as a training example,
+	 * @param _mapMgr : owning map manager
+	 * @param _exType : whether this is training/testing/validation etc.
+	 * @param _oid : pre-defined string ID put in SOM_Example OID field
+	 * @param _srcSmpls : the points and owning objects that make up the minimally defining set of points for this object.  If src objects are null, then this object is a foundation/source object
+	 * @param _numSmplPts : # of sample points to build for this object TODO move to post-construction process
+	 * @param _shouldBuildSamples : whether we should build samples for this object
+	 * @param _shouldBuildVisRep : whether we should pre-build a mesh representation of this object
+	 */
+	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, SOM_GeomSamplePointf[] _srcSmpls, int _numSmplPts, boolean _shouldBuildSamples, boolean _shouldBuildVisRep) {
+		super(_mapMgr,  _exType, _oid, _srcSmpls, SOM_GeomObjTypes.plane, _numSmplPts,  true, _shouldBuildSamples, _shouldBuildVisRep);
+	}//ctor
+	
+	/**
+	 * Constructor to build a plane based on csv data
+	 * @param _mapMgr : owning map manager
+	 * @param _exType : whether this is training/testing/validation etc.
+	 * @param _oid : pre-defined string ID put in SOM_Example OID field
+	 * @param _csvDat : String from CSV describing object
+	 */
+	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
+		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.plane, _numSrcPts, true);
+	}
+	
+	/**
+	 * ctor to build object corresponding to bmu's geometric object
+	 * @param _mapMgr : owning map manager
+	 * @param _mapNode : the map node being represented
+	 */
+	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_GeomMapNode _mapNode) {
+		super(_mapMgr, _mapNode, SOM_GeomObjTypes.plane, true);
+	}//ctor from bmu
+		
+	public Geom_PlaneSOMExample(Geom_PlaneSOMExample _otr) {
+		super(_otr);	
+		planeOrigin = _otr.planeOrigin;
+		eq = _otr.eq;
+		basisVecs = _otr.basisVecs;
+		dispBoundPts = _otr.dispBoundPts;
+		minMaxDiffValAra = _otr.minMaxDiffValAra;
+		orthoFrame = _otr.orthoFrame;
+		planeObjs = _otr.planeObjs;		
+	}
+	
+	/**
+	 * Object-type specific ctor init
+	 * @param _numSmplPts # of sample points to derive
+	 */
+	@Override
+	protected final void initObjVals(int _numSmplPts) { 
 		buildBasisOriginAndEq();
-		//build new point location for color, squaring the distance from the origin to provide more diversity
 		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), _numSmplPts);
-		if(_shouldBuildVisRep) {
+	
+		if(getGeomFlag(buildVisRepOfObjIDX)) {
 			buildPlanePShapes();
 		} else {
 			planeObjs = new PShape[0];
 		}
-	}//ctor
+	}
 	
 	/**
-	 * ctor from csv - only srcpts needs to be built from csv
-	 * @param _mapMgr
-	 * @param _animWin
-	 * @param _exType
-	 * @param _oid
-	 * @param _csvDat
-	 * @param _worldBounds
+	 * Object-type-specific ctor init for CSV-derived nodes
+	 * @param _csvDat string of CSV data
 	 */
-	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat) {
-		super(_mapMgr, _exType, _oid, _csvDat,  SOM_GeomObjTypes.plane, _numSrcPts, true);
+	@Override
+	protected final void initObjValsFromCSV( String _csvDat) {
 		buildBasisOriginAndEq();
 		//build new point location for color, squaring the distance from the origin to provide more diversity
 		super.buildLocClrAndSamplesFromCSVStr(buildLocForColor(planeOrigin, basisVecs[0]), _csvDat);
@@ -109,12 +146,11 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	}
 	
 	/**
-	 * ctor to build object corresponding to bmu's geometric object
-	 * @param _mapMgr
+	 * Object-type-specific ctor init for map node-based object 
 	 * @param _mapNode
 	 */
-	public Geom_PlaneSOMExample(Geom_PlaneMapMgr _mapMgr, SOM_GeomMapNode _mapNode) {
-		super(_mapMgr, _mapNode, SOM_GeomObjTypes.plane, true);
+	@Override
+	protected final void initObjValsForMapNode(SOM_GeomMapNode _mapNode) { 
 		buildBasisOriginAndEq();	
 		super.buildLocClrInitObjAndSamples(buildLocForColor(planeOrigin, basisVecs[0]), _numSrcPts);
 		if(dispBoundPts.length > 0) {	buildPlanePShapes();	} 
@@ -125,7 +161,8 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 			}
 			
 		}
-	}//ctor from bmu
+	}
+	
 	
 	/**
 	 * all planar defining components - called from constructors
@@ -159,32 +196,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 			orthoFrame[i]= myPointf._add(planeOrigin, frameLen, basisVecs[i]);
 		}
 	}//buildBasisOriginAndEq
-	
-	public Geom_PlaneSOMExample(Geom_PlaneSOMExample _otr) {
-		super(_otr);	
-		planeOrigin = _otr.planeOrigin;
-		eq = _otr.eq;
-		basisVecs = _otr.basisVecs;
-//		rotAngle = _otr.rotAngle;
-//		rotAxis = _otr.rotAxis;
-		dispBoundPts = _otr.dispBoundPts;
-		minMaxDiffValAra = _otr.minMaxDiffValAra;
-		orthoFrame = _otr.orthoFrame;
-		planeObjs = _otr.planeObjs;		
-	}
-	
-	
-	/**
-	 * build rotational quantities for this plane - how to rotate a horizontal plane to match the orientation of this plane
-	 * using axis-angle
-	 */
-//	private void buildRotVecs() {
-//		//axis and angle to rotate simple plane for display to coincide with orienation of this plane's normal
-//		rotAxis = myVectorf.UP._cross(basisVecs[0]);
-//		rotAxis._normalize();		
-//		rotAngle = (float) Math.acos(basisVecs[0]._dot(myVectorf.UP));
-//	}
-	
 	
 	/**
 	 * build pshapes representing planes for different colors, to speed up rendering
