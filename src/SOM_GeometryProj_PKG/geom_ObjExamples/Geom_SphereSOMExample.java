@@ -107,7 +107,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	@Override
 	protected final void initObjValsFromCSV( String _csvDat) {
 		ctrLoc = new myPointf();
-  		radius = buildCenterAndRadFromCSVStr(ctrLoc, _csvDat);
+  		radius = buildCenterAndRadFromCSVStr(_csvDat, ctrLoc);
       	sphrDet = (int)(Math.sqrt(radius) + 10);
   		super.buildLocClrAndSamplesFromCSVStr(ctrLoc, _csvDat);
 	}
@@ -225,7 +225,13 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 		return(sum); //returns determinant value. once stack is finished, returns final determinant.
 	}//detMat
 	
-	private final float buildCenterAndRadFromCSVStr(myPointf _ctr, String _csvDat) {
+	/**
+	 * Build the sphere with the data parsed from the csv file
+	 * @param _csvDat source data
+	 * @param _ctr (out) receiver for sphere center
+	 * @return radius of sphere
+	 */
+	private final float buildCenterAndRadFromCSVStr(String _csvDat, myPointf _ctr) {
 		String[] datAra = _csvDat.trim().split(csvSphereTag);
 		//idx 1 is sphere data
 		String[] ptsAsStr = datAra[1].trim().split(",");
@@ -273,7 +279,6 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 */
 	@Override
 	protected String getRawDescColNamesForCSV_Indiv() {
-		// TODO Auto-generated method stub
 		return "TAG, radius, center x, center y, center z, TAG, ";
 	}
 	/**
@@ -300,9 +305,6 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	protected void _drawMe_Geom(IRenderInterface pa, SOM_GeomObjDrawType drawType) {
 		pa.pushMatState();	
 		pa.drawSphere(ctrLoc, radius, sphrDet);
-//		pa.sphereDetail(sphrDet);
-//		pa.translate(ctrLoc.x,ctrLoc.y,ctrLoc.z); 
-//		pa.sphere(radius); 
 		pa.popMatState();	
 	}
 

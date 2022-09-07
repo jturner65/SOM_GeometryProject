@@ -429,7 +429,8 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	}//buildFeaturesMap_Indiv
 	
 	/**
-	 * Instance-class specific required info for this example to build feature data - use this so we don't have to reload and rebuilt from data every time
+	 * Instance-class specific required info for this example to build feature data - use 
+	 * this so we don't have to reload and rebuilt from data every time
 	 * @return
 	 */
 	@Override
