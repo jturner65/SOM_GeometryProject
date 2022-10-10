@@ -153,19 +153,19 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		//Initialize all SOM anim worlds
 		wIdx = disp2DLineAnimResIDX; fIdx= show2DLineAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,true,false}, new int[]{0,0,0,255},new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(pa, this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);		
+		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(pa, this, wIdx, fIdx);		
 		
 		wIdx = disp3DLineAnimResIDX; fIdx= show3DLineAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_3DLineAnimResWin(pa, this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);		
+		dispWinFrames[wIdx] = new Geom_3DLineAnimResWin(pa, this, wIdx, fIdx);		
 		
 		wIdx = dispPlaneAnimResIDX; fIdx= showPlaneAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_PlaneAnimResWin(pa, this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);		
+		dispWinFrames[wIdx] = new Geom_PlaneAnimResWin(pa, this, wIdx, fIdx);		
 
 		wIdx = dispSphereAnimResIDX; fIdx= showSpereAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,245,255,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(pa, this, winTitles[wIdx], fIdx, winFillClrs[wIdx], winStrkClrs[wIdx], winRectDimOpen[wIdx], winRectDimClose[wIdx], winDescr[wIdx]);		
+		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(pa, this, wIdx, fIdx);		
 		
 		//build SOM sub-windows for each anim res window
 		for(int i=1;i<dispWinFrames.length;++i) {

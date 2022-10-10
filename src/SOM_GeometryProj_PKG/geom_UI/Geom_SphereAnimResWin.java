@@ -30,8 +30,8 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	public float minSphRad = 50, maxSphRad = 100;
 	
 
-	public Geom_SphereAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd, float[] rdClosed,String _winTxt) {
-		super(_p, _AppMgr,_n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.sphere);
+	public Geom_SphereAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx, int _flagIdx) {
+		super(_p, _AppMgr, _winIdx, _flagIdx,  SOM_GeomObjTypes.sphere);
 		super.initThisWin(false);
 	}
 

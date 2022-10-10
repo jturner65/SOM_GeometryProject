@@ -35,8 +35,8 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	 * @param _canDrawTraj
 	 */	
 	private final float dispBrdr = 10.0f;
-	public Geom_2DLineAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, String _n, int _flagIdx, int[] fc, int[] sc, float[] rd,float[] rdClosed, String _winTxt) {
-		super(_p, _AppMgr, _n, _flagIdx, fc, sc, rd, rdClosed, _winTxt, SOM_GeomObjTypes.line_2D);
+	public Geom_2DLineAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx, int _flagIdx) {
+		super(_p, _AppMgr, _winIdx, _flagIdx, SOM_GeomObjTypes.line_2D);
 		win2DMinsAndDiffs = new float[2][2];
 		win2DMinsAndDiffs[0]= new float[] {-.5f*rectDim[2] + dispBrdr, -.5f*rectDim[3] + dispBrdr};
 		win2DMinsAndDiffs[1] = new float[] {rectDim[2]-(2.0f*dispBrdr), rectDim[3]-(9.0f*dispBrdr)};
