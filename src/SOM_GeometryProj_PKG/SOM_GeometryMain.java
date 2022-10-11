@@ -263,7 +263,6 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		if(!callFlags){//called from setflags - only sets button state in UI to avoid infinite loop
 			setMenuBtnState(mySideBarMenu.btnShowWinIdx,btn, val);
 		} else {//called from clicking on buttons in UI
-		
 			//val is btn state before transition 
 			boolean bVal = (val == 1?  false : true);
 			//each entry in this array should correspond to a clickable window, not counting menu
