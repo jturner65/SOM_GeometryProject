@@ -139,28 +139,53 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 		
 	};
 	
-	/**
-	 * For instance-class specific ui values
-	 * @param UIidx
-	 */
+//	/**
+//	 * For instance-class specific ui values
+//	 * @param UIidx
+//	 */
+//	@Override
+//	protected final void setUIWinVals_Indiv(int UIidx, float val) {
+//
+//		switch(UIidx){		
+//			case gIDX_MinRadius : {
+//				if(val != minSphRad){
+//					minSphRad = val;
+//					if(minSphRad >= maxSphRad) { maxSphRad = minSphRad + 1;setWinToUIVals(gIDX_MaxRadius, maxSphRad);   }
+//					rebuildSourceGeomObjs();}
+//				break;}
+//			case gIDX_MaxRadius	: {
+//				if(val != maxSphRad){
+//					maxSphRad = val;
+//					if(minSphRad >= maxSphRad)  { minSphRad = maxSphRad - 1;setWinToUIVals(gIDX_MinRadius, minSphRad);   }				
+//					rebuildSourceGeomObjs();}
+//				break;}
+//			default : {break;}
+//		}	
+//	}
 	@Override
-	protected final void setUIWinVals_Indiv(int UIidx, float val) {
+	protected boolean setUI_IntValsCustom_Indiv(int UIidx, int ival, int oldVal) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
+	@Override
+	protected boolean setUI_FloatValsCustom_Indiv(int UIidx, float val, float oldVal) {
 		switch(UIidx){		
 			case gIDX_MinRadius : {
 				if(val != minSphRad){
 					minSphRad = val;
 					if(minSphRad >= maxSphRad) { maxSphRad = minSphRad + 1;setWinToUIVals(gIDX_MaxRadius, maxSphRad);   }
 					rebuildSourceGeomObjs();}
-				break;}
+					return true;}
 			case gIDX_MaxRadius	: {
 				if(val != maxSphRad){
 					maxSphRad = val;
 					if(minSphRad >= maxSphRad)  { minSphRad = maxSphRad - 1;setWinToUIVals(gIDX_MinRadius, minSphRad);   }				
 					rebuildSourceGeomObjs();}
-				break;}
+					return true;}
 			default : {break;}
-		}	
+		}
+		return false;
 	}
 	
 
@@ -214,9 +239,8 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	//  manage menu button selections and setup
 
 	@Override
-	protected final void setCustMenuBtnNames() {
-		// TODO Auto-generated method stub
-		
+	protected final void setCustMenuBtnLabels() {
+		// TODO Auto-generated method stub		
 	}
 	
 	//////////////////////////////

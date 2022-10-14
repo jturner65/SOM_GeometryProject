@@ -128,13 +128,16 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 		long ttlNumSamples = objs * smplPerObj;
 		return (ttlNumSamples *(ttlNumSamples-1L)*(ttlNumSamples-2L))/6L;
 	}
+	@Override
+	protected boolean setUI_IntValsCustom_Indiv(int UIidx, int ival, int oldVal) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	@Override
-	protected final void setUIWinVals_Indiv(int UIidx, float val) {
-		//int ival = (int)val;
-		switch(UIidx){		
-			default : {break;}
-		}	
+	protected boolean setUI_FloatValsCustom_Indiv(int UIidx, float ival, float oldVal) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
@@ -177,7 +180,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	//  manage menu button selections and setup
 
 	@Override
-	protected final void setCustMenuBtnNames() {
+	protected final void setCustMenuBtnLabels() {
 		// TODO Auto-generated method stub
 		
 	}

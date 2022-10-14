@@ -94,7 +94,17 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected void buildUIUpdateStruct_SubwindowIndiv(TreeMap<Integer, Integer> intValues, TreeMap<Integer, Float> floatValues,
 			TreeMap<Integer, Boolean> boolValues) {}
-	
+	@Override
+	protected boolean setUI_IntValsCustom_Indiv(int UIidx, int ival, int oldVal) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	protected boolean setUI_FloatValsCustom_Indiv(int UIidx, float ival, float oldVal) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	/**
 	 * send all instance-specific values from UI to map manager
@@ -123,14 +133,6 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 		return (ttlNumSamples *(ttlNumSamples-1L))/2L;
 	}
 	
-	
-	@Override
-	protected final void setUIWinVals_Indiv(int UIidx, float val) {
-		switch(UIidx){	
-		default : {break;}
-		}
-	}
-
 	@Override
 	protected void getAllUIValsForPreProcSave_Indiv(TreeMap<String, String> vals) {
 		// TODO Auto-generated method stub
@@ -184,7 +186,7 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	//  manage menu button selections and setup
 
 	@Override
-	protected final void setCustMenuBtnNames() {
+	protected final void setCustMenuBtnLabels() {
 	}
 	
 	//////////////////////////////
