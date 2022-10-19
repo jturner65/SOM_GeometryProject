@@ -92,9 +92,6 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 				
 	}
 	@Override
-	protected void buildUIUpdateStruct_SubwindowIndiv(TreeMap<Integer, Integer> intValues, TreeMap<Integer, Float> floatValues,
-			TreeMap<Integer, Boolean> boolValues) {}
-	@Override
 	protected boolean setUI_IntValsCustom_Indiv(int UIidx, int ival, int oldVal) {
 		// TODO Auto-generated method stub
 		return false;

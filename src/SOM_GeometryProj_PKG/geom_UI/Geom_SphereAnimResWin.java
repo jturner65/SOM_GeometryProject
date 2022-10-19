@@ -100,13 +100,6 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 		tmpUIObjArray.put(gIDX_MinRadius,new Object[] {new double[]{20,500,1}, (double)minSphRad, "Min sphere radius", GUIObj_Type.FloatVal, new boolean[]{true}});   				//gIDX_MinRadius	                                                                        
 		tmpUIObjArray.put(gIDX_MaxRadius,new Object[] {new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius", GUIObj_Type.FloatVal, new boolean[]{true}});  				//gIDX_MaxRadius	                                                                        	
 	}
-	@Override
-	protected void buildUIUpdateStruct_SubwindowIndiv(TreeMap<Integer, Integer> intValues, TreeMap<Integer, Float> floatValues,
-			TreeMap<Integer, Boolean> boolValues) {
-		//2 float values added for this window
-		floatValues.put(gIDX_MinRadius, (float) guiObjs[gIDX_MinRadius].getVal());	
-		floatValues.put(gIDX_MaxRadius, (float) guiObjs[gIDX_MaxRadius].getVal());	
-	}
 	
 	@Override
 	protected final String[] setUI_GeomObjFeatureListVals() {	return Geom_SphereSOMExample.ftrNames;};	
@@ -138,33 +131,9 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 		((Geom_SphereMapMgr) mapMgr).setMinMaxRad(minSphRad, maxSphRad);
 		
 	};
-	
-//	/**
-//	 * For instance-class specific ui values
-//	 * @param UIidx
-//	 */
-//	@Override
-//	protected final void setUIWinVals_Indiv(int UIidx, float val) {
-//
-//		switch(UIidx){		
-//			case gIDX_MinRadius : {
-//				if(val != minSphRad){
-//					minSphRad = val;
-//					if(minSphRad >= maxSphRad) { maxSphRad = minSphRad + 1;setWinToUIVals(gIDX_MaxRadius, maxSphRad);   }
-//					rebuildSourceGeomObjs();}
-//				break;}
-//			case gIDX_MaxRadius	: {
-//				if(val != maxSphRad){
-//					maxSphRad = val;
-//					if(minSphRad >= maxSphRad)  { minSphRad = maxSphRad - 1;setWinToUIVals(gIDX_MinRadius, minSphRad);   }				
-//					rebuildSourceGeomObjs();}
-//				break;}
-//			default : {break;}
-//		}	
-//	}
+
 	@Override
 	protected boolean setUI_IntValsCustom_Indiv(int UIidx, int ival, int oldVal) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
