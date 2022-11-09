@@ -12,8 +12,8 @@ import base_Math_Objects.vectorObjs.doubles.myVector;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_UI.SOM_GeomMapUIWin;
 import base_UI_Objects.GUI_AppManager;
-import base_UI_Objects.windowUI.base.myDispWindow;
-import base_UI_Objects.windowUI.sidebar.mySideBarMenu;
+import base_UI_Objects.windowUI.base.Base_DispWindow;
+import base_UI_Objects.windowUI.sidebar.SidebarMenu;
 
 /**
  * Experiment with self organizing maps in applications related to graphics and geometry
@@ -116,7 +116,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	protected void initAllDispWindows() {
 		showInfo = true;
 		//drawnTrajEditWidth = 10;
-		//includes 1 for menu window (never < 1) - always have same # of visFlags as myDispWindows
+		//includes 1 for menu window (never < 1) - always have same # of visFlags as Base_DispWindows
 		int numWins = numVisFlags;		
 		//titles and descs, need to be set before sidebar menu is defined
 		String[] _winTitles = new String[]{"","2D Lines","3D Lines","3D Planes","3D Spheres"},//,"SOM Map UI"},
@@ -261,7 +261,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	//these tie using the UI buttons to modify the window in with using the boolean tags - PITA but currently necessary
 	public void handleShowWin(int btn, int val, boolean callFlags){//display specific windows - multi-select/ always on if sel
 		if(!callFlags){//called from setflags - only sets button state in UI to avoid infinite loop
-			setMenuBtnState(mySideBarMenu.btnShowWinIdx,btn, val);
+			setMenuBtnState(SidebarMenu.btnShowWinIdx,btn, val);
 		} else {//called from clicking on buttons in UI
 			//val is btn state before transition 
 			boolean bVal = (val == 1?  false : true);
@@ -310,13 +310,13 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	//address all flag-setting here, so that if any special cases need to be addressed they can be
 	protected void setVisFlag_Indiv(int idx, boolean val ){
 		switch (idx){
-			case showUIMenu 	    : { dispWinFrames[dispMenuIDX].setFlags(myDispWindow.showIDX,val);    break;}											//whether or not to show the main ui window (sidebar)			
+			case showUIMenu 	    : { dispWinFrames[dispMenuIDX].setFlags(Base_DispWindow.showIDX,val);    break;}											//whether or not to show the main ui window (sidebar)			
 			case show2DLineAnimRes	: {setDispAndModMapMgr(show2DLineAnimRes, disp2DLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
 			case show3DLineAnimRes	: {setDispAndModMapMgr(show3DLineAnimRes, disp3DLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
 			case showPlaneAnimRes	: {setDispAndModMapMgr(showPlaneAnimRes, dispPlaneAnimResIDX, val);break;}//{setWinFlagsXOR(dispPlaneAnimResIDX, val); break;}
 			case showSpereAnimRes	: {setDispAndModMapMgr(showSpereAnimRes, dispSphereAnimResIDX, val);break;}//{setWinFlagsXOR(dispSphereAnimResIDX, val); break;}
 //			case showSOMMapUI 		: {		//set active map manager based on currently displayed window
-//				dispWinFrames[dispSOMMapIDX].setFlags(myDispWindow.showIDX,val); 
+//				dispWinFrames[dispSOMMapIDX].setFlags(Base_DispWindow.showIDX,val); 
 //				if(val) {
 //					System.out.println("Sending window map mgr from setVisFlag : " + dispWinFrames[curFocusWin].name);
 //					SOM_MapManager mapMgr = ((SOM_AnimWorldWin)dispWinFrames[curFocusWin]).getMapMgr();

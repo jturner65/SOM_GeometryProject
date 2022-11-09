@@ -17,7 +17,7 @@ import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import base_UI_Objects.my_procApplet;
-import base_UI_Objects.windowUI.base.myDispWindow;
+import base_UI_Objects.windowUI.base.Base_DispWindow;
 import processing.core.PConstants;
 import processing.core.PShape;
 
@@ -213,7 +213,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 
 	
 	private PShape buildPlaneShape(boolean hasFill, int[] clr) {
-		PShape poly = ((my_procApplet)myDispWindow.pa).createShape(); 
+		PShape poly = ((my_procApplet)Base_DispWindow.pa).createShape(); 
 		//all have lines to center
 		poly.beginShape(PConstants.TRIANGLE_FAN);
 		if(hasFill) {
@@ -236,7 +236,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @return
 	 */
 	private PShape buildSelectedPoly() {
-		PShape poly = ((my_procApplet)myDispWindow.pa).createShape(); 
+		PShape poly = ((my_procApplet)Base_DispWindow.pa).createShape(); 
 		poly.beginShape(PConstants.TRIANGLE_FAN);
 		poly.noFill();				
 		poly.stroke(120,120,120,255);
