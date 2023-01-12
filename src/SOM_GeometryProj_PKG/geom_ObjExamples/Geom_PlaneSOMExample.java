@@ -456,7 +456,6 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	// draw functionality
 	/**
 	 * get an appropriate sample location to build sample sets, based on what kind of object is being built
-	 * @return
 	 */
 	@Override
 	public void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin animWin) {

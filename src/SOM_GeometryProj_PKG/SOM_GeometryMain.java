@@ -1,6 +1,7 @@
 package SOM_GeometryProj_PKG;
 
 import java.io.File;
+import java.util.Map;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_UI.Geom_2DLineAnimResWin;
@@ -23,7 +24,9 @@ import base_UI_Objects.windowUI.sidebar.SidebarMenu;
  */
 public class SOM_GeometryMain extends GUI_AppManager {
 	//project-specific variables
-	public String prjNmLong = "Reconstructing Meshes Via SOM Interaction", prjNmShrt = "SOM_VisAnim";
+	public String prjNmShrt = "SOM_VisAnim",
+			prjNmLong = "Reconstructing Meshes Via SOM Interaction", 
+			projDesc = "Reconstruct 2d lines, 3d lines, planes or spheres given surface point clouds using SOM clustering.";
 	//Flags corresponding to each window to show
 	private final int
 		showUIMenu = 0,
@@ -72,13 +75,14 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	 * @param _passedArgs command-line arguments
 	 */
 	@Override
-	protected void setRuntimeArgsVals(String[] _passedArgs) {
+	protected TreeMap<String,Object> setRuntimeArgsVals(Map<String, Object> _passedArgsMap) {
+		//ignore passed map, build new map
 		TreeMap<String, Object> argsMap = new TreeMap<String, Object>();
 		//provide default values used by SOM program
 		argsMap.put("configDir", "GeometryProject" + File.separator+"config" + File.separator);
 		argsMap.put("dataDir", "GeometryProject" + File.separator);
 		argsMap.put("logLevel",2);//0 is console alone,1 is log file alone, 2 is both
-		setArgsMap(argsMap);
+		return argsMap;
 	}
 	
 	@Override
@@ -93,6 +97,13 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	 */
 	@Override
 	protected int setAppWindowDimRestrictions() {	return 1;}	
+
+	@Override
+	public String getPrjNmShrt() {return prjNmShrt;}
+	@Override
+	public String getPrjNmLong() {return prjNmLong;}
+	@Override
+	public String getPrjDescr() {return projDesc;}
 	
 	//instance-specific setup code
 	@Override
@@ -210,13 +221,6 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	protected void initProgram_Indiv(){	}//initProgram	
 	@Override
 	protected void initVisProg_Indiv() {}		
-
-
-	@Override
-	protected String getPrjNmLong() {return prjNmLong;}
-
-	@Override
-	protected String getPrjNmShrt() {return prjNmShrt;}
 
 	/**
 	 * present an application-specific array of mouse over btn names 
