@@ -114,12 +114,12 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	 * determine which main flags to show at upper left of menu 
 	 */
 	@Override
-	protected void initMainFlags_Indiv() {
-		setMainFlagToShow_debugMode(false);
-		setMainFlagToShow_saveAnim(true); 
-		setMainFlagToShow_runSim(false);
-		setMainFlagToShow_singleStep(false);
-		setMainFlagToShow_showRtSideMenu(true);
+	protected void initBaseFlags_Indiv() {
+		setBaseFlagToShow_debugMode(false);
+		setBaseFlagToShow_saveAnim(true); 
+		setBaseFlagToShow_runSim(false);
+		setBaseFlagToShow_singleStep(false);
+		setBaseFlagToShow_showRtSideMenu(true);
 	}
 	
 	@Override
@@ -134,7 +134,10 @@ public class SOM_GeometryMain extends GUI_AppManager {
 				_winDescr = new String[] {"","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
 		initWins(numWins,_winTitles, _winDescr);
 		//call for menu window
-		buildInitMenuWin(showUIMenu);
+		buildInitMenuWin();
+		//instanced window dimensions when open and closed - only showing 1 open at a time
+		float[] _dimOpen  = getDefaultWinDimOpen(), 
+				_dimClosed  = getDefaultWinDimClosed();	
 		//menu bar init
 		int wIdx = dispMenuIDX,fIdx=showUIMenu;
 		//application-wide menu button bar titles and button names
@@ -146,10 +149,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 			{ "---", "---", "---", "---" }};
 		String[] dbgBtnNames = new String[] {"Debug 0","Debug 1","Debug 2","Debug 3","Debug 4"};
 		dispWinFrames[wIdx] = buildSideBarMenu(wIdx, fIdx,menuBtnTitles, menuBtnNames, dbgBtnNames, true, true);
-		
-		//instanced window dimensions when open and closed - only showing 1 open at a time
-		float[] _dimOpen  =  new float[]{menuWidth, 0, pa.getWidth()-menuWidth, pa.getHeight()}, 
-				_dimClosed  =  new float[]{menuWidth, 0, hideWinWidth, pa.getHeight()};	
+
 		//setInitDispWinVals : use this to define the values of a display window
 		//int _winIDX, 
 		//float[] _dimOpen, float[] _dimClosed  : dimensions opened or closed
