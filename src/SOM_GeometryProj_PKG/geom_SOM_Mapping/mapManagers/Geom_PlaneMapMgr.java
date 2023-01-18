@@ -1,6 +1,6 @@
 package SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers;
 
-import java.util.TreeMap;
+import java.util.Map;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_PlaneSOMMapNode;
@@ -27,7 +27,7 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	public static final int numFlags = numGeomBaseFlags;	
 	
 	//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
-	public Geom_PlaneMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
+	public Geom_PlaneMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[][] _worldBounds, Map<String, Object> _argsMap) {
 		super(_win, _dispWin, _worldBounds, _argsMap,SOM_GeomObjTypes.plane, Geom_PlaneSOMExample._numFtrs);
 	}
 

@@ -1,8 +1,7 @@
 package SOM_GeometryProj_PKG;
 
 import java.io.File;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 import SOM_GeometryProj_PKG.geom_UI.Geom_2DLineAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_3DLineAnimResWin;
@@ -75,9 +74,9 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	 * @param _passedArgs command-line arguments
 	 */
 	@Override
-	protected TreeMap<String,Object> setRuntimeArgsVals(Map<String, Object> _passedArgsMap) {
+	protected HashMap<String,Object> setRuntimeArgsVals(HashMap<String, Object> _passedArgsMap) {
 		//ignore passed map, build new map
-		TreeMap<String, Object> argsMap = new TreeMap<String, Object>();
+		HashMap<String, Object> argsMap = new HashMap<String, Object>();
 		//provide default values used by SOM program
 		argsMap.put("configDir", "GeometryProject" + File.separator+"config" + File.separator);
 		argsMap.put("dataDir", "GeometryProject" + File.separator);
@@ -219,8 +218,6 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	@Override
 	//called multiple times, whenever re-initing
 	protected void initProgram_Indiv(){	}//initProgram	
-	@Override
-	protected void initVisProg_Indiv() {}		
 
 	/**
 	 * present an application-specific array of mouse over btn names 

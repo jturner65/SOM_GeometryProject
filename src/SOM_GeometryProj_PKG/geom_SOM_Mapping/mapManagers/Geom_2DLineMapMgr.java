@@ -1,6 +1,6 @@
 package SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers;
 
-import java.util.TreeMap;
+import java.util.Map;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_2DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_2DLineSOMMapNode;
@@ -25,7 +25,7 @@ public class Geom_2DLineMapMgr extends SOM_GeomMapManager {
 	
 	public static final int numFlags = numGeomBaseFlags;	
 	//SOM_GeomMapManager(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap, String _geomObjType)
-	public Geom_2DLineMapMgr(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
+	public Geom_2DLineMapMgr(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[][] _worldBounds, Map<String, Object> _argsMap) {
 		super(_win, _dispWin, _worldBounds, _argsMap, SOM_GeomObjTypes.line_2D, Geom_2DLineSOMExample._numFtrs);
 	}
 

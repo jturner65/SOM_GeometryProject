@@ -1,6 +1,6 @@
 package SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers;
 
-import java.util.TreeMap;
+import java.util.Map;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_SphereSOMMapNode;
@@ -30,7 +30,7 @@ public class Geom_SphereMapMgr extends SOM_GeomMapManager {
 	 */
 	protected float minRad, maxRad;
 
-	public Geom_SphereMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[][] _worldBounds, TreeMap<String, Object> _argsMap) {
+	public Geom_SphereMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[][] _worldBounds, Map<String, Object> _argsMap) {
 		super(_win, _dispWin, _worldBounds, _argsMap, SOM_GeomObjTypes.sphere, Geom_SphereSOMExample._numFtrs);
 	}
 
