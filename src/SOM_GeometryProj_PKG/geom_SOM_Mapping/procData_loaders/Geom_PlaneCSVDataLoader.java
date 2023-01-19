@@ -4,8 +4,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
-import base_SOM_Objects.som_examples.SOM_ExDataType;
-import base_SOM_Objects.som_examples.SOM_Example;
+import base_SOM_Objects.som_examples.base.SOM_Example;
+import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_fileIO.SOM_ExCSVDataLoader;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 

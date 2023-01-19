@@ -3,7 +3,7 @@ package SOM_GeometryProj_PKG.geom_Utils.geomGen.callables;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_2DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_2DLineMapMgr;
 import base_Math_Objects.vectorObjs.floats.myPointf;
-import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;

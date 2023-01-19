@@ -12,14 +12,14 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.procData_loaders.Geom_SphereCSVData
 import SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables.Geom_SphereTrainDatBuilder;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
-import base_SOM_Objects.SOM_MapManager;
-import base_SOM_Objects.som_examples.SOM_ExDataType;
-import base_SOM_Objects.som_examples.SOM_Example;
+import base_SOM_Objects.som_examples.base.SOM_Example;
+import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_fileIO.SOM_ExCSVDataLoader;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomExampleManager;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomTrainingExUniqueID;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
+import base_SOM_Objects.som_managers.SOM_MapManager;
 
 public class Geom_SphereExManager extends SOM_GeomExampleManager {
 

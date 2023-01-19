@@ -10,14 +10,14 @@ import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_3DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_3DLineMapMgr;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.procData_loaders.Geom_3DLineCSVDataLoader;
 import SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables.Geom_3DLineTrainDatBuilder;
-import base_SOM_Objects.SOM_MapManager;
-import base_SOM_Objects.som_examples.SOM_ExDataType;
-import base_SOM_Objects.som_examples.SOM_Example;
+import base_SOM_Objects.som_examples.base.SOM_Example;
+import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_fileIO.SOM_ExCSVDataLoader;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomExampleManager;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomTrainingExUniqueID;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_GeomTrainExBuilder;
+import base_SOM_Objects.som_managers.SOM_MapManager;
 
 public class Geom_3DLineExManager extends SOM_GeomExampleManager {
 	

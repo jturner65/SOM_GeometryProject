@@ -7,7 +7,7 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_SphereExManage
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
-import base_SOM_Objects.som_examples.SOM_ExDataType;
+import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomTrainingExUniqueID;

@@ -7,9 +7,8 @@ import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_2DLineSOMMapNode;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_2DLineExManager;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.runners.Geom_2DLineObjBldrRunner;
 import base_Math_Objects.vectorObjs.tuples.Tuple;
-import base_SOM_Objects.som_examples.SOM_ExDataType;
-import base_SOM_Objects.som_examples.SOM_FtrDataType;
-import base_SOM_Objects.som_examples.SOM_MapNode;
+import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
+import base_SOM_Objects.som_examples.enums.SOM_FtrDataType;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomExampleManager;
@@ -18,13 +17,13 @@ import base_SOM_Objects.som_geom.geom_utils.Geom_SOMMseOvrDisp;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrRunner;
 import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBldrTasks;
+import base_SOM_Objects.som_mapnodes.base.SOM_MapNode;
 import base_SOM_Objects.som_ui.SOM_MseOvrDisplay;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 
 public class Geom_2DLineMapMgr extends SOM_GeomMapManager {
 	
 	public static final int numFlags = numGeomBaseFlags;	
-	//SOM_GeomMapManager(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap, String _geomObjType)
 	public Geom_2DLineMapMgr(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[][] _worldBounds, Map<String, Object> _argsMap) {
 		super(_win, _dispWin, _worldBounds, _argsMap, SOM_GeomObjTypes.line_2D, Geom_2DLineSOMExample._numFtrs);
 	}
