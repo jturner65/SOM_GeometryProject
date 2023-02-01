@@ -12,7 +12,6 @@ import base_Math_Objects.vectorObjs.doubles.myVector;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_UI.SOM_GeomMapUIWin;
 import base_UI_Objects.GUI_AppManager;
-import base_UI_Objects.windowUI.base.Base_DispWindow;
 import base_UI_Objects.windowUI.sidebar.SidebarMenu;
 import base_Utils_Objects.io.messaging.MsgCodes;
 
@@ -325,7 +324,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	//address all flag-setting here, so that if any special cases need to be addressed they can be
 	protected void setVisFlag_Indiv(int idx, boolean val ){
 		switch (idx){
-			case showUIMenu 	    : { dispWinFrames[dispMenuIDX].setFlags(Base_DispWindow.showIDX,val);    break;}											//whether or not to show the main ui window (sidebar)			
+			case showUIMenu 	: { dispWinFrames[dispMenuIDX].dispFlags.setShowWin(val);    break;}											//whether or not to show the main ui window (sidebar)			
 			case show2DLineAnimRes	: {setDispAndModMapMgr(show2DLineAnimRes, disp2DLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
 			case show3DLineAnimRes	: {setDispAndModMapMgr(show3DLineAnimRes, disp3DLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
 			case showPlaneAnimRes	: {setDispAndModMapMgr(showPlaneAnimRes, dispPlaneAnimResIDX, val);break;}//{setWinFlagsXOR(dispPlaneAnimResIDX, val); break;}
