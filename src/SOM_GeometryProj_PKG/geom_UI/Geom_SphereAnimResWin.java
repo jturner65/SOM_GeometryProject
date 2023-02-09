@@ -44,6 +44,12 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(somUIWin, this, AppMgr.cubeBnds,  AppMgr.getArgsMap());
 		return _mgr;
 	}
+	
+	/**
+	 * Initialize any UI control flags appropriate for specific instanced SOM Animation window
+	 */
+	@Override
+	protected final void initDispFlags_Indiv() {}
 
 	@Override
 	protected final void initMe_Indiv() {	

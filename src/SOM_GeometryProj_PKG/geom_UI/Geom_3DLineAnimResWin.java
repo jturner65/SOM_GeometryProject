@@ -43,7 +43,13 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 		//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
 		Geom_3DLineMapMgr _mgr = new Geom_3DLineMapMgr(somUIWin, this, AppMgr.cubeBnds, AppMgr.getArgsMap());
 		return _mgr;
-	}
+	}	
+	
+	/**
+	 * Initialize any UI control flags appropriate for specific instanced SOM Animation window
+	 */
+	@Override
+	protected final void initDispFlags_Indiv() {}
 	
 	@Override
 	protected void initMe_Indiv() {	

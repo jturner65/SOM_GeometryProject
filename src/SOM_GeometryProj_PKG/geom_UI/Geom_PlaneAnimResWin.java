@@ -42,6 +42,12 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 		Geom_PlaneMapMgr _mgr = new Geom_PlaneMapMgr(somUIWin, this, AppMgr.cubeBnds,  AppMgr.getArgsMap());
 		return _mgr;
 	}
+	
+	/**
+	 * Initialize any UI control flags appropriate for specific instanced SOM Animation window
+	 */
+	@Override
+	protected final void initDispFlags_Indiv() {}
 
 	@Override
 	protected final void initMe_Indiv() {	

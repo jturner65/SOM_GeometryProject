@@ -53,6 +53,12 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 		return _mgr;
 	}
 	
+	/**
+	 * Initialize any UI control flags appropriate for specific instanced SOM Animation window
+	 */
+	@Override
+	protected final void initDispFlags_Indiv() {}
+	
 	@Override
 	protected void initMe_Indiv() {	
 	}
