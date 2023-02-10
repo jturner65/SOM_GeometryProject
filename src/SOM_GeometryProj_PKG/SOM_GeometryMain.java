@@ -7,10 +7,7 @@ import SOM_GeometryProj_PKG.geom_UI.Geom_2DLineAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_3DLineAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_PlaneAnimResWin;
 import SOM_GeometryProj_PKG.geom_UI.Geom_SphereAnimResWin;
-import base_Math_Objects.vectorObjs.doubles.myPoint;
-import base_Math_Objects.vectorObjs.doubles.myVector;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
-import base_SOM_Objects.som_geom.geom_UI.SOM_GeomMapUIWin;
 import base_UI_Objects.GUI_AppManager;
 import base_UI_Objects.windowUI.sidebar.SidebarMenu;
 import base_Utils_Objects.io.messaging.MsgCodes;
@@ -45,11 +42,6 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		;
 	//set array of vector values (sceneFcsVals) based on application		
 	private final int[] bground = new int[]{244,244,244,255};		//bground color	
-	
-	/**
-	 * fraction of height popup som win should use
-	 */
-	public final float PopUpWinOpenFraction = .20f;
 	
 	/**
 	 * Labels for buttons that describe what mouse-over on the SOM displays
@@ -170,8 +162,11 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		//   flags controlling display of window :  idxs : 0 : canDrawInWin; 1 : canShow3dbox; 2 : canMoveView; 3 : dispWinIs3d
 		//int[] _fill, int[] _strk, 			: window fill and stroke colors
 		//int _trajFill, int _trajStrk)			: trajectory fill and stroke colors, if these objects can be drawn in window (used as alt color otherwise)
+		
 		//specify windows that cannot be shown simultaneously here
-		initXORWins(new int[]{show2DLineAnimRes,show3DLineAnimRes,showPlaneAnimRes,showSpereAnimRes},new int[]{disp2DLineAnimResIDX,disp3DLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX});
+		initXORWins(
+				new int[]{show2DLineAnimRes,show3DLineAnimRes,showPlaneAnimRes,showSpereAnimRes},
+				new int[]{disp2DLineAnimResIDX,disp3DLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX});
 		
 		//Initialize all SOM anim worlds
 		wIdx = disp2DLineAnimResIDX; fIdx= show2DLineAnimRes;
@@ -193,27 +188,9 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		//build SOM sub-windows for each anim res window
 		for(int i=1;i<dispWinFrames.length;++i) {
 			curFocusWin = i;
-			((SOM_AnimWorldWin)dispWinFrames[i]).setGeomMapUIWin(buildSOM_MapDispUIWin((SOM_AnimWorldWin)dispWinFrames[i], -1));
+			((SOM_AnimWorldWin)dispWinFrames[i]).buildAndSetSOM_MapDispUIWin( -1);
 		}
 	}//	initAllDispWindows
-		
-	
-	//Individual SOM map window for each anim world.
-	private SOM_GeomMapUIWin buildSOM_MapDispUIWin(SOM_AnimWorldWin ownerWin, int fIdx) {
-		float height = pa.getHeight();
-		float width = pa.getWidth();
-		float popUpWinHeight = PopUpWinOpenFraction * height;
-		float[] _dimOpen  =  new float[]{menuWidth, popUpWinHeight, width-menuWidth, height-popUpWinHeight};
-		//hidden
-		float[] _dimClosed  =  new float[]{menuWidth, height-hideWinHeight, width-menuWidth, hideWinHeight};
-		String owner = ownerWin.getName();
-		//(int _winIDX, float[] _dimOpen, float[] _dimClosed, boolean[] _dispFlags, int[] _fill, int[] _strk, int[] _trajFill, int[] _trajStrk)
-		SOM_GeomMapUIWin resWin = new SOM_GeomMapUIWin(pa, this, "Map UI for " + owner, fIdx, new int[]{20,40,50,200}, new int[]{255,255,255,255}, _dimOpen, _dimClosed, "Visualize SOM Node location for "+owner,getArgsMap(),ownerWin);	
-		resWin.finalInit(false,false, false, new myPoint(-gridDimX/2.0,-gridDimY/2.0,-gridDimZ/2.0), new myVector(0,0,0));
-		resWin.setTrajColors(new int[]{180,180,180,255},new int[]{100,100,100,255});
-		resWin.setRtSideUIBoxClrs(new int[]{0,0,0,200},new int[]{255,255,255,255});
-		return resWin;
-	}
 	
 	public SOM_AnimWorldWin getLinesWindow() {return (SOM_AnimWorldWin) dispWinFrames[disp2DLineAnimResIDX];}
 	public SOM_AnimWorldWin getPlanesWindow() {return (SOM_AnimWorldWin) dispWinFrames[dispPlaneAnimResIDX];}
@@ -324,39 +301,14 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	//address all flag-setting here, so that if any special cases need to be addressed they can be
 	protected void setVisFlag_Indiv(int idx, boolean val ){
 		switch (idx){
-			case showUIMenu 	: { dispWinFrames[dispMenuIDX].dispFlags.setShowWin(val);    break;}											//whether or not to show the main ui window (sidebar)			
-			case show2DLineAnimRes	: {setDispAndModMapMgr(show2DLineAnimRes, disp2DLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
-			case show3DLineAnimRes	: {setDispAndModMapMgr(show3DLineAnimRes, disp3DLineAnimResIDX, val);break;}//{setWinFlagsXOR(dispLineAnimResIDX, val); break;}
-			case showPlaneAnimRes	: {setDispAndModMapMgr(showPlaneAnimRes, dispPlaneAnimResIDX, val);break;}//{setWinFlagsXOR(dispPlaneAnimResIDX, val); break;}
-			case showSpereAnimRes	: {setDispAndModMapMgr(showSpereAnimRes, dispSphereAnimResIDX, val);break;}//{setWinFlagsXOR(dispSphereAnimResIDX, val); break;}
-//			case showSOMMapUI 		: {		//set active map manager based on currently displayed window
-//				dispWinFrames[dispSOMMapIDX].setFlags(Base_DispWindow.showIDX,val); 
-//				if(val) {
-//					System.out.println("Sending window map mgr from setVisFlag : " + dispWinFrames[curFocusWin].name);
-//					SOM_MapManager mapMgr = ((SOM_AnimWorldWin)dispWinFrames[curFocusWin]).getMapMgr();
-//					if(null != mapMgr) {			((SOM_MapUIWin)dispWinFrames[dispSOMMapIDX]).setMapMgr(mapMgr);			}
-//				}
-//				setWinsHeight(dispSOMMapIDX); break;}
+			case showUIMenu 	: { dispWinFrames[dispMenuIDX].dispFlags.setShowWin(val);    break;}			//whether or not to show the main ui window (sidebar)			
+			case show2DLineAnimRes	: {setWinFlagsXOR(disp2DLineAnimResIDX, val);break;}
+			case show3DLineAnimRes	: {setWinFlagsXOR(disp3DLineAnimResIDX, val);break;}
+			case showPlaneAnimRes	: {setWinFlagsXOR(dispPlaneAnimResIDX, val);break;}
+			case showSpereAnimRes	: {setWinFlagsXOR(dispSphereAnimResIDX, val);break;}
 			default : {break;}
 		}
 	}//setFlags  
-	/**
-	 * send appropriate map manager to map manager window
-	 * @param flagIDX
-	 * @param dispIDX
-	 * @param val
-	 */
-	private void setDispAndModMapMgr(int flagIDX, int dispIDX, boolean val) {
-		setWinFlagsXOR(dispIDX, val);
-//		if(dispIDX != curFocusWin) {
-//		//if(val) {//(val) && (getVisFlag(showSOMMapUI))) {
-//			System.out.println("Sending window map mgr from setDispAndModMapMgr : " + dispWinFrames[curFocusWin].name);
-//			SOM_MapManager mapMgr = ((SOM_AnimWorldWin)dispWinFrames[curFocusWin]).getMapMgr();
-//			if(null != mapMgr) {			((SOM_MapUIWin)dispWinFrames[dispSOMMapIDX]).setMapMgr(mapMgr);			}		
-//		//}
-//		}
-	}//setDispAndModMapMgr
-	
 	
 	/**
 	 * Individual extending Application Manager post-drawMe functions
