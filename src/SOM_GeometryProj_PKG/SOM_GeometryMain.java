@@ -76,8 +76,30 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		return argsMap;
 	}
 	
+	/**
+	 * Called in pre-draw initial setup, before first init
+	 * potentially override setup variables on per-project basis.
+	 * Do not use for setting background color or Skybox anymore.
+	 *  	(Current settings in my_procApplet) 	
+	 *  	strokeCap(PROJECT);
+	 *  	textSize(txtSz);
+	 *  	textureMode(NORMAL);			
+	 *  	rectMode(CORNER);	
+	 *  	sphereDetail(4);	 * 
+	 */
 	@Override
-	protected void setSmoothing() {		pa.setSmoothing(4);		}
+	protected void setupAppDims_Indiv() {}
+	@Override
+	protected boolean getUseSkyboxBKGnd(int winIdx) {	return false;}
+	@Override
+	protected String getSkyboxFilename(int winIdx) {	return "";}
+	@Override
+	protected int[] getBackgroundColor(int winIdx) {return bground;}
+	@Override
+	protected int getNumDispWindows() {	return numVisFlags;	}	
+	
+	@Override
+	protected void setSmoothing() {		ri.setSmoothing(4);		}
 
 	/**
 	 * whether or not we want to restrict window size on widescreen monitors
@@ -108,12 +130,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	 */
 	@Override
 	protected final MsgCodes getMinLogMsgCodes() {return null;}
-	
-	//instance-specific setup code
-	@Override
-	protected void setup_Indiv() {		setBkgrnd();	}	
-	@Override
-	public void setBkgrnd(){pa.setRenderBackground(bground[0],bground[1],bground[2],bground[3]);}//setBkgrnd	
+
 	/**
 	 * determine which main flags to show at upper left of menu 
 	 */
@@ -129,14 +146,11 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	@Override
 	//build windows here
 	protected void initAllDispWindows() {
-		showInfo = true;
-		//drawnTrajEditWidth = 10;
-		//includes 1 for menu window (never < 1) - always have same # of visFlags as Base_DispWindows
-		int numWins = numVisFlags;		
+		showInfo = true;	
 		//titles and descs, need to be set before sidebar menu is defined
 		String[] _winTitles = new String[]{"","2D Lines","3D Lines","3D Planes","3D Spheres"},//,"SOM Map UI"},
 				_winDescr = new String[] {"","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
-		initWins(numWins,_winTitles, _winDescr);
+		setWinTitlesAndDescs(_winTitles, _winDescr);
 		//call for menu window
 		buildInitMenuWin();
 		//instanced window dimensions when open and closed - only showing 1 open at a time
@@ -171,19 +185,19 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		//Initialize all SOM anim worlds
 		wIdx = disp2DLineAnimResIDX; fIdx= show2DLineAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,true,false}, new int[]{0,0,0,255},new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(pa, this, wIdx, fIdx);		
+		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(ri, this, wIdx, fIdx);		
 		
 		wIdx = disp3DLineAnimResIDX; fIdx= show3DLineAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_3DLineAnimResWin(pa, this, wIdx, fIdx);		
+		dispWinFrames[wIdx] = new Geom_3DLineAnimResWin(ri, this, wIdx, fIdx);		
 		
 		wIdx = dispPlaneAnimResIDX; fIdx= showPlaneAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_PlaneAnimResWin(pa, this, wIdx, fIdx);		
+		dispWinFrames[wIdx] = new Geom_PlaneAnimResWin(ri, this, wIdx, fIdx);		
 
 		wIdx = dispSphereAnimResIDX; fIdx= showSpereAnimRes;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,245,255,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(pa, this, wIdx, fIdx);		
+		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(ri, this, wIdx, fIdx);		
 		
 		//build SOM sub-windows for each anim res window
 		for(int i=1;i<dispWinFrames.length;++i) {
@@ -318,9 +332,9 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	@Override
 	protected void drawMePost_Indiv(float modAmtMillis, boolean is3DDraw) {
 		//draw SOM window in current window if active/displayed
-		pa.pushMatState();
+		ri.pushMatState();
 		((SOM_AnimWorldWin) dispWinFrames[curFocusWin]).drawSOMWinUI(modAmtMillis);
-		pa.popMatState();		
+		ri.popMatState();		
 	}
 	
 	@Override
