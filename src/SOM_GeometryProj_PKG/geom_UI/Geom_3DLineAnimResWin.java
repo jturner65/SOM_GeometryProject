@@ -21,17 +21,11 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	/**
 	 * 
 	 * @param _p
-	 * @param _n
-	 * @param _flagIdx
-	 * @param fc
-	 * @param sc
-	 * @param rd
-	 * @param rdClosed
-	 * @param _winTxt
-	 * @param _canDrawTraj
-	 */	
-	public Geom_3DLineAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx, int _flagIdx) {
-		super(_p, _AppMgr, _winIdx, _flagIdx, SOM_GeomObjTypes.line_3D);
+	 * @param _AppMgr
+	 * @param _winIdx
+	 */
+	public Geom_3DLineAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
+		super(_p, _AppMgr, _winIdx, SOM_GeomObjTypes.line_3D);
 		super.initThisWin(false);
 	}
 
@@ -201,7 +195,7 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	
 	
 	@Override
-	public final void initDrwnTrajIndiv(){}
+	public final void initDrwnTraj_Indiv(){}
 	
 
 	//overrides function in base class mseClkDisp

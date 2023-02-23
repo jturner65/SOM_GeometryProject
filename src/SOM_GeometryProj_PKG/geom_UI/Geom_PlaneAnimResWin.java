@@ -31,9 +31,14 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 		showOrthoFrameIDX 			= numBaseAnimWinPrivFlags + 0;
 	private final int numPrivFlags = numBaseAnimWinPrivFlags + 1;	
 	
-
-	public Geom_PlaneAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx, int _flagIdx) {
-		super(_p, _AppMgr, _winIdx, _flagIdx, SOM_GeomObjTypes.plane);
+	/**
+	 * 
+	 * @param _p
+	 * @param _AppMgr
+	 * @param _winIdx
+	 */
+	public Geom_PlaneAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
+		super(_p, _AppMgr, _winIdx, SOM_GeomObjTypes.plane);
 		super.initThisWin(false);
 	}
 
@@ -212,7 +217,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	
 	
 	@Override
-	public final void initDrwnTrajIndiv(){}
+	public final void initDrwnTraj_Indiv(){}
 	
 
 	//overrides function in base class mseClkDisp

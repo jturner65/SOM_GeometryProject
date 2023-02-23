@@ -23,15 +23,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	public String prjNmShrt = "SOM_VisAnim",
 			prjNmLong = "Reconstructing Meshes Via SOM Interaction", 
 			projDesc = "Reconstruct 2d lines, 3d lines, planes or spheres given surface point clouds using SOM clustering.";
-	//Flags corresponding to each window to show
-	private final int
-		showUIMenu = 0,
-		show2DLineAnimRes = 1,
-		show3DLineAnimRes = 2,
-		showPlaneAnimRes = 3,
-		showSpereAnimRes = 4
-		;
-	public final int numVisFlags = 5;
+
 	
 	//idx's in dispWinFrames for each window - 0 is always left side menu window
 	private static final int
@@ -40,6 +32,12 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		dispPlaneAnimResIDX = 3,
 		dispSphereAnimResIDX = 4
 		;
+	/**
+	 * # of visible windows including side menu (always at least 1 for side menu)
+	 */
+	private static final int numVisWins = 5;
+
+	
 	//set array of vector values (sceneFcsVals) based on application		
 	private final int[] bground = new int[]{244,244,244,255};		//bground color	
 	
@@ -96,7 +94,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	@Override
 	protected int[] getBackgroundColor(int winIdx) {return bground;}
 	@Override
-	protected int getNumDispWindows() {	return numVisFlags;	}	
+	protected int getNumDispWindows() {	return numVisWins;	}	
 	
 	@Override
 	protected void setSmoothing() {		ri.setSmoothing(4);		}
@@ -151,13 +149,10 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		String[] _winTitles = new String[]{"","2D Lines","3D Lines","3D Planes","3D Spheres"},//,"SOM Map UI"},
 				_winDescr = new String[] {"","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
 		setWinTitlesAndDescs(_winTitles, _winDescr);
-		//call for menu window
-		buildInitMenuWin();
 		//instanced window dimensions when open and closed - only showing 1 open at a time
 		float[] _dimOpen  = getDefaultWinDimOpen(), 
 				_dimClosed  = getDefaultWinDimClosed();	
 		//menu bar init
-		int wIdx = dispMenuIDX,fIdx=showUIMenu;
 		//application-wide menu button bar titles and button names
 		String[] menuBtnTitles = new String[]{"Load/Save Geometry Data","Training Data","SOM Building/Display","Functions 4"};
 		String[][] menuBtnNames = new String[][] { // each must have literals for every button defined in side bar menu, or ignored
@@ -166,7 +161,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 			{ "Show SOM Win", "LD SOM Config", "Build Map", "---" }, 			// row 3
 			{ "---", "---", "---", "---" }};
 		String[] dbgBtnNames = new String[] {"Debug 0","Debug 1","Debug 2","Debug 3","Debug 4"};
-		dispWinFrames[wIdx] = buildSideBarMenu(wIdx, fIdx,menuBtnTitles, menuBtnNames, dbgBtnNames, true, true);
+		buildSideBarMenu(menuBtnTitles, menuBtnNames, dbgBtnNames, true, true);
 
 		//setInitDispWinVals : use this to define the values of a display window
 		//int _winIDX, 
@@ -179,25 +174,25 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		
 		//specify windows that cannot be shown simultaneously here
 		initXORWins(
-				new int[]{show2DLineAnimRes,show3DLineAnimRes,showPlaneAnimRes,showSpereAnimRes},
+				new int[]{disp2DLineAnimResIDX,disp3DLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX},
 				new int[]{disp2DLineAnimResIDX,disp3DLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX});
 		
 		//Initialize all SOM anim worlds
-		wIdx = disp2DLineAnimResIDX; fIdx= show2DLineAnimRes;
+		int wIdx = disp2DLineAnimResIDX;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,false,true,false}, new int[]{0,0,0,255},new int[]{255,255,255,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(ri, this, wIdx, fIdx);		
+		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(ri, this, wIdx);		
 		
-		wIdx = disp3DLineAnimResIDX; fIdx= show3DLineAnimRes;
+		wIdx = disp3DLineAnimResIDX;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_3DLineAnimResWin(ri, this, wIdx, fIdx);		
+		dispWinFrames[wIdx] = new Geom_3DLineAnimResWin(ri, this, wIdx);		
 		
-		wIdx = dispPlaneAnimResIDX; fIdx= showPlaneAnimRes;
+		wIdx = dispPlaneAnimResIDX;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_PlaneAnimResWin(ri, this, wIdx, fIdx);		
+		dispWinFrames[wIdx] = new Geom_PlaneAnimResWin(ri, this, wIdx);		
 
-		wIdx = dispSphereAnimResIDX; fIdx= showSpereAnimRes;
+		wIdx = dispSphereAnimResIDX;
 		setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,245,255,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(ri, this, wIdx, fIdx);		
+		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(ri, this, wIdx);		
 		
 		//build SOM sub-windows for each anim res window
 		for(int i=1;i<dispWinFrames.length;++i) {
@@ -213,10 +208,8 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	@Override
 	//called from base class, once at start of program after vis init is called - set initial windows to show - always show UI Menu
 	protected void initOnce_Indiv(){
-		//which objects to initially show
-		setVisFlag(showUIMenu, true);					//show input UI menu	
 		//setVisFlag(showSpereAnimRes, true);
-		setVisFlag(show2DLineAnimRes, true);
+		setVisFlag(disp2DLineAnimResIDX, true);
 	}//	initOnce
 	
 	@Override
@@ -277,15 +270,14 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	
 	@Override
 	//get the ui rect values of the "master" ui region (another window) -> this is so ui objects of one window can be made, clicked, and shown displaced from those of the parent windwo
-	public float[] getUIRectVals(int idx){
+	public float[] getUIRectVals_Indiv(int idx, float[] menuClickDim){
 		switch(idx){
-		case dispMenuIDX 				: { return new float[0];}			//idx 0 is parent menu sidebar
-		case disp2DLineAnimResIDX		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
-		case disp3DLineAnimResIDX		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
-		case dispPlaneAnimResIDX 		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
-		case dispSphereAnimResIDX		: { return dispWinFrames[dispMenuIDX].uiClkCoords;}
+		case disp2DLineAnimResIDX		: { return menuClickDim;}
+		case disp3DLineAnimResIDX		: { return menuClickDim;}
+		case dispPlaneAnimResIDX 		: { return menuClickDim;}
+		case dispSphereAnimResIDX		: { return menuClickDim;}
 		//case dispSOMMapIDX 				: {	return getMaxUIClkCoords();}
-		default :  return dispWinFrames[dispMenuIDX].uiClkCoords;
+		default :  return menuClickDim;
 		}
 	}	
 	
@@ -310,16 +302,15 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	 * @return
 	 */
 	@Override
-	public int getNumVisFlags() {return numVisFlags;}
+	public int getNumVisFlags() {return numVisWins;}
 	@Override
 	//address all flag-setting here, so that if any special cases need to be addressed they can be
 	protected void setVisFlag_Indiv(int idx, boolean val ){
 		switch (idx){
-			case showUIMenu 	: { dispWinFrames[dispMenuIDX].dispFlags.setShowWin(val);    break;}			//whether or not to show the main ui window (sidebar)			
-			case show2DLineAnimRes	: {setWinFlagsXOR(disp2DLineAnimResIDX, val);break;}
-			case show3DLineAnimRes	: {setWinFlagsXOR(disp3DLineAnimResIDX, val);break;}
-			case showPlaneAnimRes	: {setWinFlagsXOR(dispPlaneAnimResIDX, val);break;}
-			case showSpereAnimRes	: {setWinFlagsXOR(dispSphereAnimResIDX, val);break;}
+			case disp2DLineAnimResIDX : {setWinFlagsXOR(disp2DLineAnimResIDX, val);break;}
+			case disp3DLineAnimResIDX : {setWinFlagsXOR(disp3DLineAnimResIDX, val);break;}
+			case dispPlaneAnimResIDX  : {setWinFlagsXOR(dispPlaneAnimResIDX, val);break;}
+			case dispSphereAnimResIDX : {setWinFlagsXOR(dispSphereAnimResIDX, val);break;}
 			default : {break;}
 		}
 	}//setFlags  

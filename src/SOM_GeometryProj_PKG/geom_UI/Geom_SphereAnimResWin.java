@@ -30,9 +30,14 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	public float minSphRad = 50, maxSphRad = 100;
 	
-
-	public Geom_SphereAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx, int _flagIdx) {
-		super(_p, _AppMgr, _winIdx, _flagIdx,  SOM_GeomObjTypes.sphere);
+	/**
+	 * 
+	 * @param _p
+	 * @param _AppMgr
+	 * @param _winIdx
+	 */
+	public Geom_SphereAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
+		super(_p, _AppMgr, _winIdx, SOM_GeomObjTypes.sphere);
 		super.initThisWin(false);
 	}
 
@@ -242,7 +247,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	
 	
 	@Override
-	public final void initDrwnTrajIndiv(){}
+	public final void initDrwnTraj_Indiv(){}
 	
 
 	//overrides function in base class mseClkDisp

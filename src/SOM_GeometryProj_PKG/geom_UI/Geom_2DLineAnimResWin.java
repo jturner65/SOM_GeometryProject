@@ -22,21 +22,15 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	 * mins and diffs for window display
 	 */
 	protected float[][] win2DMinsAndDiffs;
+	private final float dispBrdr = 10.0f;
 	/**
 	 * 
 	 * @param _p
-	 * @param _n
-	 * @param _flagIdx
-	 * @param fc
-	 * @param sc
-	 * @param rd
-	 * @param rdClosed
-	 * @param _winTxt
-	 * @param _canDrawTraj
-	 */	
-	private final float dispBrdr = 10.0f;
-	public Geom_2DLineAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx, int _flagIdx) {
-		super(_p, _AppMgr, _winIdx, _flagIdx, SOM_GeomObjTypes.line_2D);
+	 * @param _AppMgr
+	 * @param _winIdx
+	 */
+	public Geom_2DLineAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
+		super(_p, _AppMgr, _winIdx, SOM_GeomObjTypes.line_2D);
 		win2DMinsAndDiffs = new float[2][2];
 		win2DMinsAndDiffs[0]= new float[] {-.5f*rectDim[2] + dispBrdr, -.5f*rectDim[3] + dispBrdr};
 		win2DMinsAndDiffs[1] = new float[] {rectDim[2]-(2.0f*dispBrdr), rectDim[3]-(9.0f*dispBrdr)};
@@ -216,7 +210,7 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	
 	
 	@Override
-	public final void initDrwnTrajIndiv(){}
+	public final void initDrwnTraj_Indiv(){}
 	
 
 	//overrides function in base class mseClkDisp
