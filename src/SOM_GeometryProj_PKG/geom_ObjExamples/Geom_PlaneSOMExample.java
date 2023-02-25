@@ -169,8 +169,9 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 */
 	private void buildBasisOriginAndEq() {
 		//plane norm
-		myVectorf tmpNorm = myVectorf._cross(new myVectorf(getSrcPts()[0], getSrcPts()[1]), new myVectorf(getSrcPts()[0], getSrcPts()[2]))._normalize();
-		eq = getPlanarEqFromPointAndNorm(tmpNorm, getSrcPts()[0]);
+		SOM_GeomSamplePointf[] pts = getSrcPts();
+		myVectorf tmpNorm = myVectorf._cross(new myVectorf(pts[0], pts[1]), new myVectorf(pts[0], pts[2]))._normalize();
+		eq = getPlanarEqFromPointAndNorm(tmpNorm, pts[0]);
 		//works because plane is built with unit normal in equation
 		planeOrigin = new myPointf(-eq[0]*eq[3],-eq[1]*eq[3],-eq[2]*eq[3]);
 		myVectorf tmpOriginVec = new myVectorf(planeOrigin);
@@ -178,8 +179,8 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		
 		//build basis vectors
 		basisVecs = buildBasisVecs(tmpNorm);
-		
-		dispBoundPts = calc_plane_WBBox_IntersectPoints();
+	    float [][] worldBounds = ((SOM_GeomMapManager) mapMgr).getWorldBounds();
+		dispBoundPts = calcPlaneWBBoxIntersectPoints(worldBounds, eq, planeOrigin);
 		minMaxDiffValAra = new float[][] {{100000,100000,100000},{-100000,-100000,-100000},{0,0,0}};
 		for(int i=0;i<dispBoundPts.length;++i) {
 			float[] ptAra = dispBoundPts[i].asArray();
@@ -207,10 +208,9 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		planeObjs[SOM_GeomObjDrawType.locClr.getVal()] = buildPlaneShape(true, locClrAra);
 		planeObjs[SOM_GeomObjDrawType.noFillRndClr.getVal()] = buildPlaneShape(false, rndClrAra);
 		planeObjs[SOM_GeomObjDrawType.noFillLocClr.getVal()] = buildPlaneShape(false, locClrAra);
-		planeObjs[SOM_GeomObjDrawType.selected.getVal()] = buildSelectedPoly();
+		planeObjs[SOM_GeomObjDrawType.selected.getVal()] = buildPlaneShape(false, new int[] {120,120,120,255});
 
 	}//buildPlanePShapes
-
 	
 	private PShape buildPlaneShape(boolean hasFill, int[] clr) {
 		PShape poly = ((my_procApplet)Base_DispWindow.pa).createShape(); 
@@ -230,95 +230,81 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		poly.endShape(PConstants.CLOSE);
 		return poly;
 	}
-	
-	/**
-	 * build polygon shape for selected plane
-	 * @return
-	 */
-	private PShape buildSelectedPoly() {
-		PShape poly = ((my_procApplet)Base_DispWindow.pa).createShape(); 
-		poly.beginShape(PConstants.TRIANGLE_FAN);
-		poly.noFill();				
-		poly.stroke(120,120,120,255);
-		poly.strokeWeight(2.0f);
-		poly.normal(basisVecs[0].x, basisVecs[0].y, basisVecs[0].z); 
-		poly.vertex(planeOrigin.x,planeOrigin.y,planeOrigin.z);
-		for(int i=0;i<dispBoundPts.length;++i){poly.vertex(dispBoundPts[i].x,dispBoundPts[i].y,dispBoundPts[i].z);} 
-		poly.vertex(dispBoundPts[0].x,dispBoundPts[0].y,dispBoundPts[0].z);
-		poly.endShape(PConstants.CLOSE);
-		return poly;
-	}
+
 			
 	/**
 	 * Find intersection of plane with ray
+	 * @param eq Plane equation
 	 * @param RayOrig
 	 * @param RayDir
 	 * @return
 	 */
-	private myPointf rayIntersectPlane(myPointf RayOrig, myVectorf RayDir) {		
-		Float denomVal = eq[0]* RayDir.x +eq[1]* RayDir.y+ eq[2]* RayDir.z;
+	private myPointf rayIntersectPlane(float[] eq, myPointf rayOrig, myVectorf rayDir) {		
+		Float denomVal = eq[0]* rayDir.x +eq[1]* rayDir.y+ eq[2]* rayDir.z;
 	    if (denomVal == 0.0f) {        return null;}
-	    Float tVal = - (eq[0]* RayOrig.x +eq[1]* RayOrig.y+ eq[2]* RayOrig.z + eq[3]) / denomVal;
-	    if (tVal >= 0.f && tVal <= 1.f) {   	return (myPointf._add(RayOrig,tVal, RayDir));}
+	    Float tVal = - (eq[0]* rayOrig.x +eq[1]* rayOrig.y+ eq[2]* rayOrig.z + eq[3]) / denomVal;
+	    if (tVal >= 0.f && tVal <= 1.f) {   	return (myPointf._add(rayOrig,tVal, rayDir));}
 	    return null;	
 	}
 
 	
-	private void _checkEachDir(ArrayList<myPointf> ptsAra, myVectorf dir, myPointf[] origAra) {
+	private void _checkEachDir(ArrayList<myPointf> ptsAra, float[] eq, myVectorf dir, myPointf[] origAra) {
 		for(int i=0;i<origAra.length;++i) {
-		    myPointf p = rayIntersectPlane(origAra[i],dir);
+		    myPointf p = rayIntersectPlane(eq, origAra[i],dir);
 		    if(null!=p) {ptsAra.add(p);}
 		}
 	}
 	
-	//find intersection between this object's plane and every edge of world axis aligned bound box
-	// Maximum out_point_count == 6, so out_points must point to 6-element array.
-	// out_point_count == 0 mean no intersection.
-	// out_points are not sorted.
-	protected myPointf[] calc_plane_WBBox_IntersectPoints(){
+	/**
+	 * find intersection between this object's plane and every edge of world axis aligned bound box.
+	 * Maximum out_point_count == 6, so out_points must point to 6-element array. 
+	 * Out_point_count == 0 mean no intersection. out_points are not sorted.
+	 * @param wBnds
+	 * @return
+	 */
+	protected myPointf[] calcPlaneWBBoxIntersectPoints(float [][] wBnds, float[] eq, myPointf planeOrigin){
 	    ArrayList<myPointf> ptsAra = new ArrayList<myPointf>();
 	    // Test edges along X axis
-	    float [][] worldBounds = ((SOM_GeomMapManager) mapMgr).getWorldBounds();
-	    myVectorf dir = new myVectorf(worldBounds[1][0], 0.f, 0.f); 
+	    myVectorf dir = new myVectorf(wBnds[1][0], 0.f, 0.f); 
 	    
 	    myPointf[] origAra = new myPointf[] {
-	    		new myPointf(worldBounds[0][0], worldBounds[0][1], 						worldBounds[0][2]),										//min x, min y, min z
-	    		new myPointf(worldBounds[0][0], worldBounds[0][1] +worldBounds[1][1], 	worldBounds[0][2]),					//min x, max y, min z
-	    		new myPointf(worldBounds[0][0], worldBounds[0][1], 						worldBounds[0][2] +worldBounds[1][2]),					//min x, min y, max z
-	    		new myPointf(worldBounds[0][0], worldBounds[0][1] +worldBounds[1][1], 	worldBounds[0][2] +worldBounds[1][2])	//min x, max y, max z
+	    		new myPointf(wBnds[0][0], wBnds[0][1], 				wBnds[0][2]),				//min x, min y, min z
+	    		new myPointf(wBnds[0][0], wBnds[0][1] +wBnds[1][1], wBnds[0][2]),				//min x, max y, min z
+	    		new myPointf(wBnds[0][0], wBnds[0][1], 				wBnds[0][2] +wBnds[1][2]),	//min x, min y, max z
+	    		new myPointf(wBnds[0][0], wBnds[0][1] +wBnds[1][1], wBnds[0][2] +wBnds[1][2])	//min x, max y, max z
 	    };    
 	    
-	    _checkEachDir(ptsAra, dir, origAra);
+	    _checkEachDir(ptsAra, eq, dir, origAra);
 
 	    // Test edges along Y axis
-	    dir.set(0.0f, worldBounds[1][1], 0.0f);
+	    dir.set(0.0f, wBnds[1][1], 0.0f);
 	    origAra = new myPointf[] {
-	    		new myPointf(worldBounds[0][0], 					worldBounds[0][1], 	worldBounds[0][2]),                                     //min x, min y, min z  
-	    		new myPointf(worldBounds[0][0] +worldBounds[1][0], 	worldBounds[0][1], 	worldBounds[0][2]),                  //max x, min y, min z  
-	    		new myPointf(worldBounds[0][0], 					worldBounds[0][1], 	worldBounds[0][2] +worldBounds[1][2]),                   //min x, min y, max z  
-	    		new myPointf(worldBounds[0][0] +worldBounds[1][1], 	worldBounds[0][1], 	worldBounds[0][2] +worldBounds[1][2]) //max x, min y, max z  
+	    		new myPointf(wBnds[0][0], 				wBnds[0][1], 	wBnds[0][2]),             //min x, min y, min z  
+	    		new myPointf(wBnds[0][0] +wBnds[1][0], 	wBnds[0][1], 	wBnds[0][2]),             //max x, min y, min z  
+	    		new myPointf(wBnds[0][0], 				wBnds[0][1], 	wBnds[0][2] +wBnds[1][2]),//min x, min y, max z  
+	    		new myPointf(wBnds[0][0] +wBnds[1][1], 	wBnds[0][1], 	wBnds[0][2] +wBnds[1][2]) //max x, min y, max z  
 	    };    
 	    
-	    _checkEachDir(ptsAra, dir, origAra);
+	    _checkEachDir(ptsAra, eq, dir, origAra);
 
 	    // Test edges along Z axis
-	    dir.set(0.0f, 0.f, worldBounds[1][2]);
+	    dir.set(0.0f, 0.f, wBnds[1][2]);
 	    origAra = new myPointf[] {
-	    		new myPointf(worldBounds[0][0], 					worldBounds[0][1], 						worldBounds[0][2]),                                      //min x, min y, min z  
-	    		new myPointf(worldBounds[0][0] +worldBounds[1][0],	worldBounds[0][1], 						worldBounds[0][2]),                   //max x, min y, min z  
-	    		new myPointf(worldBounds[0][0], 					worldBounds[0][1] +worldBounds[1][1], 	worldBounds[0][2]),                   //min x, max y, min z  
-	    		new myPointf(worldBounds[0][0] +worldBounds[1][1], 	worldBounds[0][1] +worldBounds[1][1], 	worldBounds[0][2]) //max x, max y, min z  
+	    		new myPointf(wBnds[0][0], 				wBnds[0][1], 				wBnds[0][2]), //min x, min y, min z  
+	    		new myPointf(wBnds[0][0] +wBnds[1][0],	wBnds[0][1], 				wBnds[0][2]), //max x, min y, min z  
+	    		new myPointf(wBnds[0][0], 				wBnds[0][1] +wBnds[1][1], 	wBnds[0][2]), //min x, max y, min z  
+	    		new myPointf(wBnds[0][0] +wBnds[1][1], 	wBnds[0][1] +wBnds[1][1], 	wBnds[0][2])  //max x, max y, min z  
 	    };    
 	    
-	    _checkEachDir(ptsAra, dir, origAra);
+	    _checkEachDir(ptsAra, eq, dir, origAra);
 	    
 	    if(ptsAra.size() == 0) {
-	    	msgObj.dispErrorMessage("Geom_PlaneSOMExample", "calc_plane_WBBox_IntersectPoints", "ID : " + this.dispLabel + " : Plane doesn't intersect with enclosing box somehow.");
+	    	msgObj.dispErrorMessage("Geom_PlaneSOMExample", "calcPlaneWBBoxIntersectPoints", "ID : " + this.dispLabel + " : Plane doesn't intersect with enclosing box somehow.");
 	    	
 	    	return new myPointf[0];
 	    }//no intersection
 	    //sort in cw order around normal
-	    TreeMap<Float, myPointf> ptsMap = sortBoundPoints(ptsAra);
+	    TreeMap<Float, myPointf> ptsMap = sortBoundPoints(ptsAra, planeOrigin);
 	    return ptsMap.values().toArray(new myPointf[0]);
 	}	
 	
@@ -327,7 +313,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @param ptsAra
 	 * @return
 	 */
-	private TreeMap<Float, myPointf> sortBoundPoints(ArrayList<myPointf> ptsAra){
+	private TreeMap<Float, myPointf> sortBoundPoints(ArrayList<myPointf> ptsAra, myPointf planeOrigin){
 		TreeMap<Float, myPointf> resMap = new TreeMap<Float, myPointf>();
 		myVectorf baseVec = new myVectorf(planeOrigin, ptsAra.get(0));
 		for(int i=0;i<ptsAra.size();++i) {

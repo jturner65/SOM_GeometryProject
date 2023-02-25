@@ -171,15 +171,15 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	protected void getAllUIValsForPreProcSave_Indiv(TreeMap<String, String> vals) {
-		vals.put("gIDX_MinRadius", String.format("%4d", (int)guiObjs[gIDX_MinRadius].getVal()));
-		vals.put("gIDX_MaxRadius", String.format("%4d", (int)guiObjs[gIDX_MaxRadius].getVal()));
+		vals.put("gIDX_MinRadius", String.format("%4d", (int)getUIValue(gIDX_MinRadius)));
+		vals.put("gIDX_MaxRadius", String.format("%4d", (int)getUIValue(gIDX_MaxRadius)));
 		
 	}
 
 	@Override
 	protected void setAllUIValsFromPreProcLoad_Indiv(TreeMap<String, String> uiVals) {
-		guiObjs[gIDX_MinRadius].setVal(Double.parseDouble(uiVals.get("gIDX_MinRadius")));
-		guiObjs[gIDX_MaxRadius].setVal(Double.parseDouble(uiVals.get("gIDX_MaxRadius")));
+		setNewUIValue(gIDX_MinRadius, Double.parseDouble(uiVals.get("gIDX_MinRadius")));
+		setNewUIValue(gIDX_MaxRadius, Double.parseDouble(uiVals.get("gIDX_MaxRadius")));
 	}
 
 	//////////////////////////////
