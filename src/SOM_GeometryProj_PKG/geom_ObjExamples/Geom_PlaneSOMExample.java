@@ -213,7 +213,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	}//buildPlanePShapes
 	
 	private PShape buildPlaneShape(boolean hasFill, int[] clr) {
-		PShape poly = ((my_procApplet)Base_DispWindow.pa).createShape(); 
+		PShape poly = ((my_procApplet)Base_DispWindow.ri).createShape(); 
 		//all have lines to center
 		poly.beginShape(PConstants.TRIANGLE_FAN);
 		if(hasFill) {

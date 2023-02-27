@@ -81,7 +81,7 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	protected final String[] getShowWireFrameBtnTFLabels() {	return null;}
 
 	@Override
-	protected void setPrivFlags_Indiv(int idx, boolean val) {
+	protected void handleSOMAnimFlags_Indiv(int idx, boolean val) {
 		switch (idx) {//special actions for each flag
 			default						: {return;}
 		}
@@ -164,12 +164,12 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	 */
 	protected final void drawMeFirst_Indiv() {//need to translate by half the screen width to center coords
 		//msgObj.dispInfoMessage(className, "drawMeFirst_Indiv", "here");
-		pa.translate(this.rectDim[0]+(this.rectDim[2]*.5f), (this.rectDim[1]+this.rectDim[3])*.5f);
-		pa.pushMatState();
-		pa.noStroke();
-		pa.setFill(255,255,255, 255);
-		pa.drawSphere(3.0f);
-		pa.popMatState();
+		ri.translate(this.rectDim[0]+(this.rectDim[2]*.5f), (this.rectDim[1]+this.rectDim[3])*.5f);
+		ri.pushMatState();
+		ri.noStroke();
+		ri.setFill(255,255,255, 255);
+		ri.drawSphere(3.0f);
+		ri.popMatState();
 	}
 	
 	/**

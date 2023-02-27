@@ -90,7 +90,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 * @param val
 	 */
 	@Override
-	protected final void setPrivFlags_Indiv(int idx, boolean val) {
+	protected final void handleSOMAnimFlags_Indiv(int idx, boolean val) {
 		switch (idx) {//special actions for each flag
 			case showOrthoFrameIDX 	: {break;}
 			default					: {return;}
@@ -181,7 +181,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 * instance-specific drawing after objects are drawn but before info is saved
 	 */
 	protected final void drawMeLast_Indiv() {		
-		if(privFlags.getFlag(showOrthoFrameIDX)) {((Geom_PlaneMapMgr)mapMgr).drawAllPlanesOrthoFrames(pa);}
+		if(privFlags.getFlag(showOrthoFrameIDX)) {((Geom_PlaneMapMgr)mapMgr).drawAllPlanesOrthoFrames(ri);}
 	}	
 	
 	//////////////////////////////

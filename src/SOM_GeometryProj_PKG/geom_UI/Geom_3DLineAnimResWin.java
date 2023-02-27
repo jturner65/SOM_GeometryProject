@@ -73,7 +73,7 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	protected final String[] getShowWireFrameBtnTFLabels() {	return null;}
 
 	@Override
-	protected void setPrivFlags_Indiv(int idx, boolean val) {
+	protected void handleSOMAnimFlags_Indiv(int idx, boolean val) {
 		switch (idx) {//special actions for each flag
 			default						: {return;}
 		}

@@ -134,7 +134,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	 */
 	@Override
 	protected void initBaseFlags_Indiv() {
-		setBaseFlagToShow_debugMode(false);
+		setBaseFlagToShow_debugMode(true);
 		setBaseFlagToShow_saveAnim(true); 
 		setBaseFlagToShow_runSim(false);
 		setBaseFlagToShow_singleStep(false);

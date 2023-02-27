@@ -89,7 +89,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 * @param val
 	 */
 	@Override
-	protected final void setPrivFlags_Indiv(int idx, boolean val) {
+	protected final void handleSOMAnimFlags_Indiv(int idx, boolean val) {
 		switch (idx) {//special actions for each flag
 			default						: {return;}
 		}
