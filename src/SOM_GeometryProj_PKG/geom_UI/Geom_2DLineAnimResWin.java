@@ -32,8 +32,8 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	public Geom_2DLineAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
 		super(_p, _AppMgr, _winIdx, SOM_GeomObjTypes.line_2D);
 		win2DMinsAndDiffs = new float[2][2];
-		win2DMinsAndDiffs[0]= new float[] {-.5f*rectDim[2] + dispBrdr, -.5f*rectDim[3] + dispBrdr};
-		win2DMinsAndDiffs[1] = new float[] {rectDim[2]-(2.0f*dispBrdr), rectDim[3]-(9.0f*dispBrdr)};
+		win2DMinsAndDiffs[0]= new float[] {-.5f*winInitVals.rectDim[2] + dispBrdr, -.5f*winInitVals.rectDim[3] + dispBrdr};
+		win2DMinsAndDiffs[1] = new float[] {winInitVals.rectDim[2]-(2.0f*dispBrdr), winInitVals.rectDim[3]-(9.0f*dispBrdr)};
 		super.initThisWin(false);
 	}
 
@@ -164,7 +164,7 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	 */
 	protected final void drawMeFirst_Indiv() {//need to translate by half the screen width to center coords
 		//msgObj.dispInfoMessage(className, "drawMeFirst_Indiv", "here");
-		ri.translate(this.rectDim[0]+(this.rectDim[2]*.5f), (this.rectDim[1]+this.rectDim[3])*.5f);
+		ri.translate(winInitVals.rectDim[0]+(winInitVals.rectDim[2]*.5f), (winInitVals.rectDim[1]+winInitVals.rectDim[3])*.5f);
 		ri.pushMatState();
 		ri.noStroke();
 		ri.setFill(255,255,255, 255);
