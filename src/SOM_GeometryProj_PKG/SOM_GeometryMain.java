@@ -150,7 +150,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		String[] _winTitles = new String[]{"","2D Lines","3D Lines","3D Planes","3D Spheres"},//,"SOM Map UI"},
 				_winDescr = new String[] {"","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
 
-		//instanced window dimensions when open and closed - only showing 1 open at a time
+		//instanced window dims when open and closed - only showing 1 open at a time - and init cam vals
 		float[][] _floatDims  = new float[][] {getDefaultWinDimOpen(), getDefaultWinDimClosed(), getInitCameraValues()};	
 
 		//Builds sidebar menu button config - application-wide menu button bar titles and button names
@@ -196,7 +196,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		
 		//Initialize all SOM anim worlds
 		int wIdx = disp2DLineAnimResIDX;
-		setInitDispWinVals(wIdx, _winTitles[wIdx], _winDescr[wIdx], new boolean[]{false,false,false,true}, _floatDims,
+		setInitDispWinVals(wIdx, _winTitles[wIdx], _winDescr[wIdx], getDfltBoolAra(false), _floatDims,
 				new int[][] {new int[]{0,0,0,255}, new int[]{255,255,255,255},
 					new int[]{180,180,180,255}, new int[]{100,100,100,255},
 					new int[]{0,0,0,200},new int[]{255,255,255,255}});
@@ -204,7 +204,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		
 		wIdx = disp3DLineAnimResIDX;
 		//setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		setInitDispWinVals(wIdx, _winTitles[wIdx], _winDescr[wIdx], new boolean[]{true,false,true,true}, _floatDims,		
+		setInitDispWinVals(wIdx, _winTitles[wIdx], _winDescr[wIdx], getDfltBoolAra(true), _floatDims,		
 				new int[][] {new int[]{255,255,245,255},new int[]{0,0,0,255},
 					new int[]{180,180,180,255},new int[]{100,100,100,255},
 					new int[]{0,0,0,200},new int[]{255,255,255,255}});
@@ -212,7 +212,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		
 		wIdx = dispPlaneAnimResIDX;
 		//setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		setInitDispWinVals(wIdx, _winTitles[wIdx], _winDescr[wIdx], new boolean[]{true,false,true,true}, _floatDims,		
+		setInitDispWinVals(wIdx, _winTitles[wIdx], _winDescr[wIdx], getDfltBoolAra(true), _floatDims,		
 				new int[][] {new int[]{245,255,255,255},new int[]{0,0,0,255},
 					new int[]{180,180,180,255},new int[]{100,100,100,255},
 					new int[]{0,0,0,200},new int[]{255,255,255,255}});
@@ -220,7 +220,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 
 		wIdx = dispSphereAnimResIDX;
 		//setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,245,255,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
-		setInitDispWinVals(wIdx, _winTitles[wIdx], _winDescr[wIdx], new boolean[]{true,false,true,true}, _floatDims,		
+		setInitDispWinVals(wIdx, _winTitles[wIdx], _winDescr[wIdx], getDfltBoolAra(true), _floatDims,		
 				new int[][] {new int[]{255,245,255,255},new int[]{0,0,0,255},
 					new int[]{180,180,180,255},new int[]{100,100,100,255},
 					new int[]{0,0,0,200},new int[]{255,255,255,255}});
