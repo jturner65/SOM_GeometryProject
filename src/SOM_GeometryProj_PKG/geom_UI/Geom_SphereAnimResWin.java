@@ -12,7 +12,6 @@ import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_UI_Objects.GUI_AppManager;
-import base_UI_Objects.windowUI.uiObjs.base.base.GUIObj_Type;
 
 public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	//ui vars
@@ -108,8 +107,8 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	protected final void setupGUIObjsAras_Indiv(TreeMap<Integer, Object[]> tmpUIObjArray , TreeMap<Integer, String[]> tmpListObjVals) {
-		tmpUIObjArray.put(gIDX_MinRadius,new Object[] {new double[]{20,500,1}, (double)minSphRad, "Min sphere radius", GUIObj_Type.FloatVal, new boolean[]{true}});   				//gIDX_MinRadius	                                                                        
-		tmpUIObjArray.put(gIDX_MaxRadius,new Object[] {new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius", GUIObj_Type.FloatVal, new boolean[]{true}});  				//gIDX_MaxRadius	                                                                        	
+		tmpUIObjArray.put(gIDX_MinRadius, uiObjInitAra_Float(new double[]{20,500,1}, (double)minSphRad, "Min sphere radius", new boolean[]{true}));   				//gIDX_MinRadius	                                                                        
+		tmpUIObjArray.put(gIDX_MaxRadius, uiObjInitAra_Float(new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius", new boolean[]{true}));  				//gIDX_MaxRadius	                                                                        	
 	}
 	
 	@Override
