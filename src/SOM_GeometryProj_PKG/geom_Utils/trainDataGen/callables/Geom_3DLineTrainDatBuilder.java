@@ -19,7 +19,7 @@ public class Geom_3DLineTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	}
 
 	/**
-	 * for lines just need 2 points; planes need 3 non-colinear points; spheres need 4 non-coplanar points, no 3 of which are colinear
+	 * for lines just need 2 points; planes need 3 non-collinear points; spheres need 4 non-coplanar points, no 3 of which are collinear
 	 * @return
 	 */
 	@Override

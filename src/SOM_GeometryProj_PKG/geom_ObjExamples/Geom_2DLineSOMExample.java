@@ -161,56 +161,56 @@ public class Geom_2DLineSOMExample extends SOM_GeomLineObj {
 	// draw functionality
 	
 	@Override
-	protected final void _drawMe_Geom(IRenderInterface pa, SOM_GeomObjDrawType drawType) {
-		pa.pushMatState();	
+	protected final void _drawMe_Geom(IRenderInterface ri, SOM_GeomObjDrawType drawType) {
+		ri.pushMatState();	
 		if((drawType.getVal() == 2) || (drawType.getVal() == 3)) {
-			pa.setStroke(120, 120,120,150);
-			pa.setStrokeWt(1.0f);
-			pa.drawLine(dispEndPts[0],dispEndPts[1]);			
+			ri.setStroke(120, 120,120,150);
+			ri.setStrokeWt(1.0f);
+			ri.drawLine(dispEndPts[0],dispEndPts[1]);			
 		}  else {
-			pa.setStrokeWt(2.0f);
-			pa.drawLine(dispEndPts[0],dispEndPts[1]);			
+			ri.setStrokeWt(2.0f);
+			ri.drawLine(dispEndPts[0],dispEndPts[1]);			
 		}
 		
-		_drawPointAtLoc_2D(pa,dispEndPts[0], 5.0f);
-		_drawPointAtLoc_2D(pa,dispEndPts[1], 5.0f);
-		_drawPointAtLoc_2D(pa,getSrcPts()[0], 5.0f);
-		_drawPointAtLoc_2D(pa,getSrcPts()[1], 5.0f);
-		_drawPointAtLoc_2D(pa,origin, 5.0f);			
-		pa.popMatState();
+		_drawPointAtLoc_2D(ri,dispEndPts[0], 5.0f);
+		_drawPointAtLoc_2D(ri,dispEndPts[1], 5.0f);
+		_drawPointAtLoc_2D(ri,getSrcPts()[0], 5.0f);
+		_drawPointAtLoc_2D(ri,getSrcPts()[1], 5.0f);
+		_drawPointAtLoc_2D(ri,origin, 5.0f);			
+		ri.popMatState();
 	}
 
 	@Override
-	public final void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin _notUsedIn2D) {
-		pa.pushMatState();		
-		pa.setFill(labelClrAra,255);
-		pa.setStroke(labelClrAra,255);
-		pa.setStrokeWt(2.0f);
+	public final void drawMyLabel(IRenderInterface ri, SOM_AnimWorldWin _notUsedIn2D) {
+		ri.pushMatState();		
+		ri.setFill(labelClrAra,255);
+		ri.setStroke(labelClrAra,255);
+		ri.setStrokeWt(2.0f);
 		//(myPointf P, float r, String s, myVectorf D, int clr, boolean flat)
-		_drawLabelAtLoc_2D(pa,dispEndPts[0], 5.0f, dispLabel+dispAra[0], 0.0f);
-		_drawLabelAtLoc_2D(pa,dispEndPts[1], 5.0f, dispLabel+dispAra[1], 0.0f);
-		_drawLabelAtLoc_2D(pa,getSrcPts()[0], 5.0f, "pt a :"+getSrcPts()[0].toStrBrf(), 0.0f);
-		_drawLabelAtLoc_2D(pa,getSrcPts()[1], 5.0f, "pt b :"+getSrcPts()[1].toStrBrf(), 0.0f);
-		_drawLabelAtLoc_2D(pa,origin, 5.0f, dispLabel+"| Origin " + origin.toStrBrf() + " | Dir : " + dir.toStrBrf() +" | " +dispAra[0]+"->"+dispAra[1], 0.0f);
-		pa.popMatState();	
+		_drawLabelAtLoc_2D(ri,dispEndPts[0], 5.0f, dispLabel+dispAra[0], 0.0f);
+		_drawLabelAtLoc_2D(ri,dispEndPts[1], 5.0f, dispLabel+dispAra[1], 0.0f);
+		_drawLabelAtLoc_2D(ri,getSrcPts()[0], 5.0f, "pt a :"+getSrcPts()[0].toStrBrf(), 0.0f);
+		_drawLabelAtLoc_2D(ri,getSrcPts()[1], 5.0f, "pt b :"+getSrcPts()[1].toStrBrf(), 0.0f);
+		_drawLabelAtLoc_2D(ri,origin, 5.0f, dispLabel+"| Origin " + origin.toStrBrf() + " | Dir : " + dir.toStrBrf() +" | " +dispAra[0]+"->"+dispAra[1], 0.0f);
+		ri.popMatState();	
 	}
 	
 	protected float modCnt = 0;//counter that will determine when the color should switch
 	
 	private final float blinkDist = 20.0f;
 	@Override
-	protected final void _drawMeSelected(IRenderInterface pa, float animTmMod) {
+	protected final void _drawMeSelected(IRenderInterface ri, float animTmMod) {
 		modCnt += animTmMod*2.0f;
 		if(modCnt > 1.0){	modCnt = 0.0f;	}//blink every ~second
-		pa.drawLine( myPointf._add(dispEndPts[0], blinkDist*modCnt, norm),  myPointf._add(dispEndPts[1], blinkDist*modCnt, norm));
-		pa.drawLine( myPointf._add(dispEndPts[0], -blinkDist*modCnt, norm),  myPointf._add(dispEndPts[1], -blinkDist*modCnt, norm));
+		ri.drawLine( myPointf._add(dispEndPts[0], blinkDist*modCnt, norm),  myPointf._add(dispEndPts[1], blinkDist*modCnt, norm));
+		ri.drawLine( myPointf._add(dispEndPts[0], -blinkDist*modCnt, norm),  myPointf._add(dispEndPts[1], -blinkDist*modCnt, norm));
 		
 	}//_drawMeSelected
-
 
 	/**
 	 * initialize object's ID
 	 */
+	@Override
 	protected final int incrID() {return IDGen++;}
 
 

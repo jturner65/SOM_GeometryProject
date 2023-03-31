@@ -169,77 +169,75 @@ public class Geom_3DLineSOMExample extends SOM_GeomLineObj {
 	// draw functionality
 	
 	@Override
-	protected final void _drawMe_Geom(IRenderInterface pa, SOM_GeomObjDrawType drawType) {
-		pa.pushMatState();	
+	protected final void _drawMe_Geom(IRenderInterface ri, SOM_GeomObjDrawType drawType) {
+		ri.pushMatState();	
 		if((drawType.getVal() == 2) || (drawType.getVal() == 3)) {
-			pa.setStroke(120, 120,120,150);
-			pa.setStrokeWt(1.0f);
-			pa.drawLine(dispEndPts[0],dispEndPts[1]);			
+			ri.setStroke(120, 120,120,150);
+			ri.setStrokeWt(1.0f);
+			ri.drawLine(dispEndPts[0],dispEndPts[1]);			
 		}  else {
-			pa.setStrokeWt(2.0f);
-			pa.drawLine(dispEndPts[0],dispEndPts[1]);			
+			ri.setStrokeWt(2.0f);
+			ri.drawLine(dispEndPts[0],dispEndPts[1]);			
 		}
 		
-		_drawPointAtLoc_3D(pa,dispEndPts[0], 2.0f);
-		_drawPointAtLoc_3D(pa,dispEndPts[1], 2.0f);
-		_drawPointAtLoc_3D(pa,getSrcPts()[0], 2.0f);
-		_drawPointAtLoc_3D(pa,getSrcPts()[1], 2.0f);
-		_drawPointAtLoc_3D(pa,origin, 2.0f);			
-		pa.popMatState();
+		_drawPointAtLoc_3D(ri,dispEndPts[0], 2.0f);
+		_drawPointAtLoc_3D(ri,dispEndPts[1], 2.0f);
+		_drawPointAtLoc_3D(ri,getSrcPts()[0], 2.0f);
+		_drawPointAtLoc_3D(ri,getSrcPts()[1], 2.0f);
+		_drawPointAtLoc_3D(ri,origin, 2.0f);			
+		ri.popMatState();
 	}
 
 	@Override
-	public final void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin animWin) {
-		pa.pushMatState();		
-		pa.setFill(labelClrAra,255);
-		pa.setStroke(labelClrAra,255);
-		pa.setStrokeWt(2.0f);
+	public final void drawMyLabel(IRenderInterface ri, SOM_AnimWorldWin animWin) {
+		ri.pushMatState();		
+		ri.setFill(labelClrAra,255);
+		ri.setStroke(labelClrAra,255);
+		ri.setStrokeWt(2.0f);
 		//(myPointf P, float r, String s, myVectorf D, int clr, boolean flat)
-		_drawLabelAtLoc_3D(pa,dispEndPts[0], animWin, dispLabel+dispAra[0], 1.5f, 2.5f);
-		_drawLabelAtLoc_3D(pa,dispEndPts[1], animWin, dispLabel+dispAra[1], 1.5f, 2.5f);
-		_drawLabelAtLoc_3D(pa,getSrcPts()[0], animWin, "pt a :"+getSrcPts()[0].toStrBrf(), 1.5f, 2.5f);
-		_drawLabelAtLoc_3D(pa,getSrcPts()[1], animWin, "pt b :"+getSrcPts()[1].toStrBrf(), 1.5f, 2.5f);
-		_drawLabelAtLoc_3D(pa, origin, animWin, dispLabel+"| Origin " + origin.toStrBrf() + " | Dir : " + dir.toStrBrf() +" | " +dispAra[0]+"->"+dispAra[1], 1.5f, 2.5f);
-		pa.popMatState();	
+		_drawLabelAtLoc_3D(ri,dispEndPts[0], animWin, dispLabel+dispAra[0], 1.5f, 2.5f);
+		_drawLabelAtLoc_3D(ri,dispEndPts[1], animWin, dispLabel+dispAra[1], 1.5f, 2.5f);
+		_drawLabelAtLoc_3D(ri,getSrcPts()[0], animWin, "pt a :"+getSrcPts()[0].toStrBrf(), 1.5f, 2.5f);
+		_drawLabelAtLoc_3D(ri,getSrcPts()[1], animWin, "pt b :"+getSrcPts()[1].toStrBrf(), 1.5f, 2.5f);
+		_drawLabelAtLoc_3D(ri, origin, animWin, dispLabel+"| Origin " + origin.toStrBrf() + " | Dir : " + dir.toStrBrf() +" | " +dispAra[0]+"->"+dispAra[1], 1.5f, 2.5f);
+		ri.popMatState();	
 	}
 	
 	protected float modCnt = 0;//counter that will determine when the color should switch
 	
 	private final float blinkDist = 20.0f;
 	
-	protected final void cylinder(IRenderInterface pa, myPointf A, myPointf B, float r, int[] c1, int[] c2) {
+	protected final void cylinder(IRenderInterface ri, myPointf A, myPointf B, float r, int[] c1, int[] c2) {
 		myVectorf V = new myVectorf(A,B);
 
 		float da = MyMathUtils.TWO_PI_F/36;
-		pa.pushMatState();	
-		((my_procApplet)pa).beginShape(PConstants.QUAD_STRIP);
+		ri.pushMatState();	
+		((my_procApplet)ri).beginShape(PConstants.QUAD_STRIP);
 			for(float a=0; a<=MyMathUtils.TWO_PI_F+da; a+=da) {
 				float rCosA = (float) (r*Math.cos(a));
 				float rSinA = (float) (r*Math.sin(a));
-				pa.setStroke(c1, 255); 
+				ri.setStroke(c1, 255); 
 				//gl_vertex(myPoint._add(P,r*cos(a),I,r*sin(a),J,0,V)); 
-				pa.gl_vertex(myPointf._add(A,rCosA,norm,rSinA,biNorm)); 
-				pa.setStroke(c2, 255);
-				pa.gl_vertex(myPointf._add(A,rCosA,norm,rSinA,biNorm, 1.0f, V));}
-		((my_procApplet)pa).endShape();
-		pa.popMatState();	
+				ri.gl_vertex(myPointf._add(A,rCosA,norm,rSinA,biNorm)); 
+				ri.setStroke(c2, 255);
+				ri.gl_vertex(myPointf._add(A,rCosA,norm,rSinA,biNorm, 1.0f, V));}
+		((my_procApplet)ri).endShape();
+		ri.popMatState();	
 	}
 	
 	@Override
-	protected final void _drawMeSelected(IRenderInterface pa, float animTmMod) {
+	protected final void _drawMeSelected(IRenderInterface ri, float animTmMod) {
 		modCnt += animTmMod*2.0f;
 		if(modCnt > 1.0){	modCnt = 0.0f;	}//blink every ~second
 		
-		cylinder(pa, dispEndPts[0], dispEndPts[1], blinkDist*modCnt, locClrAra, rndClrAra);
+		cylinder(ri, dispEndPts[0], dispEndPts[1], blinkDist*modCnt, locClrAra, rndClrAra);
 		
 	}//_drawMeSelected
-
 
 	/**
 	 * initialize object's ID
 	 */
+	@Override
 	protected final int incrID() {return IDGen++;}
-
-
 
 }//class SOM_Line

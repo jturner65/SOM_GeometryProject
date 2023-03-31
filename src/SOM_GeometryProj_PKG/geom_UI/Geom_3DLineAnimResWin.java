@@ -46,8 +46,7 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	protected final void initDispFlags_Indiv() {}
 	
 	@Override
-	protected void initMe_Indiv() {	
-	}
+	protected void initMe_Indiv() {}
 		
 	/**
 	 * Instancing class-specific (application driven) UI buttons to display are built 
@@ -60,10 +59,8 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	 * @return total number of privBtnFlags in instancing class (including those not displayed)
 	 */
 	@Override
-	protected int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
-		// TODO Auto-generated method stub
-		return numPrivFlags;
-	}
+	protected int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {return numPrivFlags;}
+	
 	/**
 	 * Instance class determines the true and false labels for button to control showing full object, or just wire frame
 	 * If empty no button is displayed
@@ -85,6 +82,7 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	/**
 	 * send all instance-specific values from UI to map manager
 	 */
+	@Override
 	protected final void setMapMgrGeomObjVals_Indiv() {};
 
 	@Override
@@ -110,16 +108,10 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	}
 	
 	@Override
-	protected boolean setUI_IntValsCustom_Indiv(int UIidx, int ival, int oldVal) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	protected boolean setUI_IntValsCustom_Indiv(int UIidx, int ival, int oldVal) {return false;}
 
 	@Override
-	protected boolean setUI_FloatValsCustom_Indiv(int UIidx, float ival, float oldVal) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	protected boolean setUI_FloatValsCustom_Indiv(int UIidx, float ival, float oldVal) {return false;}
 
 	@Override
 	protected void getAllUIValsForPreProcSave_Indiv(TreeMap<String, String> vals) {
@@ -139,8 +131,7 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	 * @param modAmtMillis
 	 */
 	@Override
-	protected final float drawRightSideInfoBar_Indiv(float modAmtMillis, float yOff) {
-		
+	protected final float drawRightSideInfoBar_Indiv(float modAmtMillis, float yOff) {		
 		return yOff;
 	}
 
@@ -153,11 +144,13 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	/**
 	 * instance-specific drawing setup before objects are actually drawn 
 	 */
+	@Override
 	protected final void drawMeFirst_Indiv() {	}
 	
 	/**
 	 * instance-specific drawing after objects are drawn but before info is saved
 	 */
+	@Override
 	protected final void drawMeLast_Indiv() {		
 		
 	}	
@@ -190,21 +183,12 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	}
 
 	@Override
-	protected final void hndlMseRelease_Priv() {		
-	}
-	
-	
+	protected final void hndlMseRelease_Priv() {}	
 	@Override
 	public final void initDrwnTraj_Indiv(){}
-	
-
 	//overrides function in base class mseClkDisp
 	@Override
-	public void drawTraj3D(float animTimeMod,myPoint trans){
-		
-	}//drawTraj3D
-
-	
+	public void drawTraj3D(float animTimeMod,myPoint trans){}//drawTraj3D	
 	@Override
 	protected final void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {}	
 	@Override
@@ -213,9 +197,6 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
 	protected final void endAltKeyI() {}
 	@Override
 	protected final void endCntlKeyI() {}
-
 	@Override
 	protected myPoint getMsePtAs3DPt(myPoint mseLoc) {		return new myPoint(mseLoc);	}
-
-
 }//class Geom_LineSOMAnimResWin

@@ -58,7 +58,9 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	}//main	
 	
 	public SOM_GeometryMain() {super();}
-	
+
+	@Override
+	protected boolean showMachineData() {return true;}	
 	/**
 	 * Set various relevant runtime arguments in argsMap
 	 * @param _passedArgs command-line arguments

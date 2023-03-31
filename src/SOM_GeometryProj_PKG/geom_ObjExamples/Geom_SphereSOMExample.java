@@ -302,34 +302,33 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	///////////////////////////
 	// draw functionality
 	@Override
-	protected void _drawMe_Geom(IRenderInterface pa, SOM_GeomObjDrawType drawType) {
-		pa.pushMatState();	
-		pa.drawSphere(ctrLoc, radius, sphrDet);
-		pa.popMatState();	
+	protected void _drawMe_Geom(IRenderInterface ri, SOM_GeomObjDrawType drawType) {
+		ri.pushMatState();	
+		ri.drawSphere(ctrLoc, radius, sphrDet);
+		ri.popMatState();	
 	}
 
-	protected float modCnt = 0;//counter that will determine when the color should switch
-	
+	protected float modCnt = 0;//counter that will determine when the color should switch	
 	@Override
-	protected final void _drawMeSelected(IRenderInterface pa,float animTmMod){//animTmMod is time since last frame
+	protected final void _drawMeSelected(IRenderInterface ri,float animTmMod){//animTmMod is time since last frame
 		modCnt += animTmMod;
 		if(modCnt > 1.0){	modCnt = 0;	}//blink every ~second
-		pa.pushMatState();	
-		pa.noFill();//fill(255*modCnt,255);
+		ri.pushMatState();	
+		ri.noFill();//fill(255*modCnt,255);
 		int _v = (int) (255*modCnt);		
-		pa.setStroke(_v,_v,_v, 255);		
-		pa.translate(ctrLoc); 
-		pa.drawSphere(radius*(modCnt + 1.0f)); 
-		pa.popMatState();
+		ri.setStroke(_v,_v,_v, 255);		
+		ri.translate(ctrLoc); 
+		ri.drawSphere(radius*(modCnt + 1.0f)); 
+		ri.popMatState();
 	}
 	
 	@Override
-	public void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin animWin){
-		pa.pushMatState();		
-		pa.setFill(this.labelClrAra, 255);
-		pa.setStroke(this.labelClrAra, 255);		
-		_drawLabelAtLoc_3D(pa, ctrLoc, animWin, dispLabel + " Origin : " + ctrLoc.toStrBrf() +" | Radius " + String.format("%.4f", radius), 1.0f, .71f*radius);
-		pa.popMatState();
+	public void drawMyLabel(IRenderInterface ri, SOM_AnimWorldWin animWin){
+		ri.pushMatState();		
+		ri.setFill(this.labelClrAra, 255);
+		ri.setStroke(this.labelClrAra, 255);		
+		_drawLabelAtLoc_3D(ri, ctrLoc, animWin, dispLabel + " Origin : " + ctrLoc.toStrBrf() +" | Radius " + String.format("%.4f", radius), 1.0f, .71f*radius);
+		ri.popMatState();
 	}
 	
 	
@@ -338,6 +337,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	/**
 	 * initialize object's ID
 	 */
+	@Override
 	protected final int incrID() {return IDGen++;}
 
 

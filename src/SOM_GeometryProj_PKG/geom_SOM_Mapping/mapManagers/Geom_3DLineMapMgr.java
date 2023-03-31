@@ -39,7 +39,7 @@ public class Geom_3DLineMapMgr extends SOM_GeomMapManager {
 	}
 
 	@Override
-	protected SOM_GeomObj[] buildEmptyObjArray() {		return new Geom_3DLineSOMExample[numObjsToBuild];}
+	protected final SOM_GeomObj[] buildEmptyObjArray() {		return new Geom_3DLineSOMExample[numObjsToBuild];}
 	
 	/**
 	 * build the example data mapper specific to instancing class for saving -training- data - this is called before geomObjDataType is set, so need to manually set descriptor string
@@ -58,6 +58,7 @@ public class Geom_3DLineMapMgr extends SOM_GeomMapManager {
 			default : {break;}
 		}
 	}
+	@Override
 	public final int getNumSamplesToBuildObject() {return Geom_3DLineSOMExample._numSrcPts;}
 		
 	/**
@@ -66,15 +67,15 @@ public class Geom_3DLineMapMgr extends SOM_GeomMapManager {
 	@Override
 	protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
 	@Override
-	protected void buildValidationDataAra() {}
+	protected final void buildValidationDataAra() {}
 	@Override
-	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {
+	public final SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {
 		return new Geom_3DLineSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);
 	}	
 	@Override
-	public String getClassSegmentTitleString(int classID) {		return null;}
+	public final String getClassSegmentTitleString(int classID) {		return null;}
 	@Override
-	public String getCategorySegmentTitleString(int catID) {	return null;}
+	public final String getCategorySegmentTitleString(int catID) {	return null;}
 	/**
 	 * The maximum number of training examples to draw to prevent lag/crashing/overflow. 
 	 * The purpose of showing these is to illustrate the random distribution of examples.
@@ -90,4 +91,4 @@ public class Geom_3DLineMapMgr extends SOM_GeomMapManager {
 		}
 	}
 
-}//classGeom_LineMapMgr
+}//class Geom_3DLineMapMgr

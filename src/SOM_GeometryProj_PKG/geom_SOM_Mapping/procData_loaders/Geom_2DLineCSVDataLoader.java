@@ -18,7 +18,6 @@ public class Geom_2DLineCSVDataLoader extends SOM_ExCSVDataLoader {
 	}
 
 	@Override
-	//Geom_LineSOMExample(SOM_GeomMapManager _mapMgr, SOM_ExDataType _exType, String _oid, String _csvDat)
 	protected SOM_Example buildExample(String oid, String str) {		return new Geom_2DLineSOMExample((Geom_2DLineMapMgr)mapMgr,exType, oid, str);}
 
 }

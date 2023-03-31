@@ -97,11 +97,11 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
 	// draw functions
 	/**
 	 * draw the ortho frame for all objects
-	 * @param pa
+	 * @param ri
 	 */
-	public final void drawAllPlanesOrthoFrames(IRenderInterface pa) {
+	public final void drawAllPlanesOrthoFrames(IRenderInterface ri) {
 		if(getFlag(srcGeomObjsAllBuiltIDX)){
-			{for(SOM_GeomObj s : sourceGeomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(pa);}}
+			{for(SOM_GeomObj s : sourceGeomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(ri);}}
 		}
 	}
 	

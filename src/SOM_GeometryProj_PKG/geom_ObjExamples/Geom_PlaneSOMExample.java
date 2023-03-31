@@ -420,9 +420,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * @return
 	 */
 	@Override
-	protected final String getPreProcDescrForCSV_Indiv() {
-		return "";
-	}
+	protected final String getPreProcDescrForCSV_Indiv() {return "";}
 	
 	/**
 	 * Instance-class specific column names of rawDescrForCSV data
@@ -444,67 +442,68 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	 * get an appropriate sample location to build sample sets, based on what kind of object is being built
 	 */
 	@Override
-	public void drawMyLabel(IRenderInterface pa, SOM_AnimWorldWin animWin) {
-		pa.pushMatState();	
-		pa.setFill(labelClrAra, 255);
-		pa.setStroke(labelClrAra, 255);
-		pa.setStrokeWt(2.0f);
-		_drawLabelAtLoc_3D(pa, planeOrigin, animWin, dispLabel + " Origin : " + planeOrigin.toStrBrf() +" | Normal " + basisVecs[0].toStrBrf(), 1.5f, 2.5f);
+	public void drawMyLabel(IRenderInterface ri, SOM_AnimWorldWin animWin) {
+		ri.pushMatState();	
+		ri.setFill(labelClrAra, 255);
+		ri.setStroke(labelClrAra, 255);
+		ri.setStrokeWt(2.0f);
+		_drawLabelAtLoc_3D(ri, planeOrigin, animWin, dispLabel + " Origin : " + planeOrigin.toStrBrf() +" | Normal " + basisVecs[0].toStrBrf(), 1.5f, 2.5f);
 		for(int i=0;i<dispBoundPts.length;++i){
-			pa.drawLine(planeOrigin, dispBoundPts[i]);
-			_drawLabelAtLoc_3D(pa, dispBoundPts[i], animWin, dispLabel + " Bound " + i+" : " + dispBoundPts[i].toStrBrf(), 1.25f,  2.0f);
+			ri.drawLine(planeOrigin, dispBoundPts[i]);
+			_drawLabelAtLoc_3D(ri, dispBoundPts[i], animWin, dispLabel + " Bound " + i+" : " + dispBoundPts[i].toStrBrf(), 1.25f,  2.0f);
 		}
 		
-		pa.popMatState();
+		ri.popMatState();
 	}//drawMyLabel
 
 	@Override
-	protected void _drawMe_Geom(IRenderInterface pa, SOM_GeomObjDrawType drawType) {
+	protected void _drawMe_Geom(IRenderInterface ri, SOM_GeomObjDrawType drawType) {
 		if(planeObjs.length==0) {	return;}
-		pa.pushMatState();			
-		pa.setStrokeWt(2.0f);
-		((my_procApplet)pa).shape(planeObjs[drawType.getVal()]);		
-		pa.popMatState();
+		ri.pushMatState();			
+		ri.setStrokeWt(2.0f);
+		((my_procApplet)ri).shape(planeObjs[drawType.getVal()]);		
+		ri.popMatState();
 	}
 
-	public void drawOrthoFrame(IRenderInterface pa) {
-		pa.pushMatState();	
-		pa.setStrokeWt(3.0f);
-		pa.setColorValStroke(IRenderInterface.gui_Red, 255);//(new int[] {255,0,0},255);
-		pa.drawLine(planeOrigin, orthoFrame[0]);
-		pa.setColorValStroke(IRenderInterface.gui_Green,255);
-		pa.setStrokeWt(3.0f);
-		pa.drawLine(planeOrigin, orthoFrame[1]);
-		pa.setColorValStroke(IRenderInterface.gui_Blue,255);
-		pa.setStrokeWt(3.0f);
-		pa.drawLine(planeOrigin, orthoFrame[2]);
-		pa.showPtAsSphere(planeOrigin, 5.0f, 5, -1, -1);
-		for(int i=0;i<orthoFrame.length;++i) {	pa.showPtAsSphere(orthoFrame[i], 5.0f, 5, -1, -1);}
-		pa.popMatState();				
+	public void drawOrthoFrame(IRenderInterface ri) {
+		ri.pushMatState();	
+		ri.setStrokeWt(3.0f);
+		ri.setColorValStroke(IRenderInterface.gui_Red, 255);//(new int[] {255,0,0},255);
+		ri.drawLine(planeOrigin, orthoFrame[0]);
+		ri.setColorValStroke(IRenderInterface.gui_Green,255);
+		ri.setStrokeWt(3.0f);
+		ri.drawLine(planeOrigin, orthoFrame[1]);
+		ri.setColorValStroke(IRenderInterface.gui_Blue,255);
+		ri.setStrokeWt(3.0f);
+		ri.drawLine(planeOrigin, orthoFrame[2]);
+		ri.showPtAsSphere(planeOrigin, 5.0f, 5, -1, -1);
+		for(int i=0;i<orthoFrame.length;++i) {	ri.showPtAsSphere(orthoFrame[i], 5.0f, 5, -1, -1);}
+		ri.popMatState();				
 	}//_drawOrthoFrame
 	
 	protected float modCnt = 0;//counter that will determine when the color should switch
 
 	private static final int selIDX = SOM_GeomObjDrawType.selected.getVal();
 	@Override
-	protected final void _drawMeSelected(IRenderInterface pa, float animTmMod) {
+	protected final void _drawMeSelected(IRenderInterface ri, float animTmMod) {
 		if(planeObjs.length==0) {return;}
 		modCnt += animTmMod;
 		if(modCnt > .5){	modCnt = 0;	}//blink every ~second
-		pa.pushMatState();			
-		pa.setStrokeWt(2.0f);
-		pa.translate(planeOrigin);
-		pa.scale(1.0f + modCnt*.5f);
-		pa.translate(-planeOrigin.x,-planeOrigin.y,-planeOrigin.z);
+		ri.pushMatState();			
+		ri.setStrokeWt(2.0f);
+		ri.translate(planeOrigin);
+		ri.scale(1.0f + modCnt*.5f);
+		ri.translate(-planeOrigin.x,-planeOrigin.y,-planeOrigin.z);
 		
-		((my_procApplet)pa).shape(planeObjs[selIDX]);
+		((my_procApplet)ri).shape(planeObjs[selIDX]);
 		
-		pa.popMatState();
+		ri.popMatState();
 	}
 
 	/**
 	 * initialize object's ID
 	 */
+	@Override
 	protected final int incrID() {return IDGen++;}
 
 
