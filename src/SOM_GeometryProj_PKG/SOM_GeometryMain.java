@@ -3,10 +3,7 @@ package SOM_GeometryProj_PKG;
 import java.io.File;
 import java.util.HashMap;
 
-import SOM_GeometryProj_PKG.geom_UI.Geom_2DLineAnimResWin;
-import SOM_GeometryProj_PKG.geom_UI.Geom_3DLineAnimResWin;
-import SOM_GeometryProj_PKG.geom_UI.Geom_PlaneAnimResWin;
-import SOM_GeometryProj_PKG.geom_UI.Geom_SphereAnimResWin;
+import SOM_GeometryProj_PKG.geom_UI.*;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_UI_Objects.GUI_AppManager;
 import base_UI_Objects.windowUI.sidebar.SidebarMenu;
@@ -20,22 +17,23 @@ import base_Utils_Objects.io.messaging.MsgCodes;
  */
 public class SOM_GeometryMain extends GUI_AppManager {
 	//project-specific variables
-	public String prjNmShrt = "SOM_VisAnim",
+	public final String prjNmShrt = "SOM_VisAnim",
 			prjNmLong = "Reconstructing Meshes Via SOM Interaction", 
 			projDesc = "Reconstruct 2d lines, 3d lines, planes or spheres given surface point clouds using SOM clustering.";
 
 	
 	//idx's in dispWinFrames for each window - 0 is always left side menu window
 	private static final int
-		disp2DLineAnimResIDX = 1,
-		disp3DLineAnimResIDX = 2,
-		dispPlaneAnimResIDX = 3,
-		dispSphereAnimResIDX = 4
+		disp3DPointAnimResIDX = 1,
+		disp2DLineAnimResIDX = 2,
+		disp3DLineAnimResIDX = 3,
+		dispPlaneAnimResIDX = 4,
+		dispSphereAnimResIDX = 5
 		;
 	/**
 	 * # of visible windows including side menu (always at least 1 for side menu)
 	 */
-	private static final int numVisWins = 5;
+	private static final int numVisWins = 6;
 
 	
 	//set array of vector values (sceneFcsVals) based on application		
@@ -149,8 +147,8 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	protected void initAllDispWindows() {
 		showInfo = true;	
 		//titles and descs, need to be set before sidebar menu is defined
-		String[] _winTitles = new String[]{"","2D Lines","3D Lines","3D Planes","3D Spheres"},//,"SOM Map UI"},
-				_winDescr = new String[] {"","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
+		String[] _winTitles = new String[]{"","3D Point Cloud","2D Lines","3D Lines","3D Planes","3D Spheres"},//,"SOM Map UI"},
+				_winDescr = new String[] {"","Display 3D Point Cloud","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
 
 		//instanced window dims when open and closed - only showing 1 open at a time - and init cam vals
 		float[][] _floatDims  = new float[][] {getDefaultWinDimOpen(), getDefaultWinDimClosed(), getInitCameraValues()};	
@@ -167,8 +165,8 @@ public class SOM_GeometryMain extends GUI_AppManager {
 
 		//specify windows that cannot be shown simultaneously here
 		initXORWins(
-				new int[]{disp2DLineAnimResIDX,disp3DLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX},
-				new int[]{disp2DLineAnimResIDX,disp3DLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX});
+				new int[]{disp3DPointAnimResIDX,disp2DLineAnimResIDX,disp3DLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX},
+				new int[]{disp3DPointAnimResIDX,disp2DLineAnimResIDX,disp3DLineAnimResIDX, dispPlaneAnimResIDX,dispSphereAnimResIDX});
 		
 		
 		//define windows
@@ -197,7 +195,15 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		 */
 		
 		//Initialize all SOM anim worlds
-		int wIdx = disp2DLineAnimResIDX;
+		int wIdx = disp3DPointAnimResIDX;
+		setInitDispWinVals(wIdx, _winTitles[wIdx], _winDescr[wIdx], getDfltBoolAra(true), _floatDims,		
+				new int[][] {new int[]{255,255,245,255},new int[]{0,0,0,255},
+					new int[]{180,180,180,255},new int[]{100,100,100,255},
+					new int[]{0,0,0,200},new int[]{255,255,255,255}});
+		dispWinFrames[wIdx] = new Geom_3DPointAnimResWin(ri, this, wIdx);		
+		
+		
+		wIdx = disp2DLineAnimResIDX;
 		setInitDispWinVals(wIdx, _winTitles[wIdx], _winDescr[wIdx], getDfltBoolAra(false), _floatDims,
 				new int[][] {new int[]{0,0,0,255}, new int[]{255,255,255,255},
 					new int[]{180,180,180,255}, new int[]{100,100,100,255},
@@ -236,6 +242,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	}//	initAllDispWindows
 	
 	public SOM_AnimWorldWin getLinesWindow() {return (SOM_AnimWorldWin) dispWinFrames[disp2DLineAnimResIDX];}
+	public SOM_AnimWorldWin get3DLinesWindow() {return (SOM_AnimWorldWin) dispWinFrames[disp3DLineAnimResIDX];}
 	public SOM_AnimWorldWin getPlanesWindow() {return (SOM_AnimWorldWin) dispWinFrames[dispPlaneAnimResIDX];}
 	public SOM_AnimWorldWin getSpheresWindow() {return (SOM_AnimWorldWin) dispWinFrames[dispSphereAnimResIDX];}
 	
@@ -306,6 +313,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	//get the ui rect values of the "master" ui region (another window) -> this is so ui objects of one window can be made, clicked, and shown displaced from those of the parent windwo
 	public float[] getUIRectVals_Indiv(int idx, float[] menuClickDim){
 		switch(idx){
+		case disp3DPointAnimResIDX 		: { return menuClickDim;}
 		case disp2DLineAnimResIDX		: { return menuClickDim;}
 		case disp3DLineAnimResIDX		: { return menuClickDim;}
 		case dispPlaneAnimResIDX 		: { return menuClickDim;}
@@ -341,6 +349,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	//address all flag-setting here, so that if any special cases need to be addressed they can be
 	protected void setVisFlag_Indiv(int idx, boolean val ){
 		switch (idx){
+			case disp3DPointAnimResIDX : {setWinFlagsXOR(disp3DPointAnimResIDX, val);break;}
 			case disp2DLineAnimResIDX : {setWinFlagsXOR(disp2DLineAnimResIDX, val);break;}
 			case disp3DLineAnimResIDX : {setWinFlagsXOR(disp3DLineAnimResIDX, val);break;}
 			case dispPlaneAnimResIDX  : {setWinFlagsXOR(dispPlaneAnimResIDX, val);break;}
