@@ -162,9 +162,10 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	/**
 	 * instance-specific drawing setup before objects are actually drawn 
 	 */
+	@Override
 	protected final void drawMeFirst_Indiv() {//need to translate by half the screen width to center coords
 		//msgObj.dispInfoMessage(className, "drawMeFirst_Indiv", "here");
-		ri.translate(winInitVals.rectDim[0]+(winInitVals.rectDim[2]*.5f), (winInitVals.rectDim[1]+winInitVals.rectDim[3])*.5f);
+		moveTo2DRectCenter();
 		ri.pushMatState();
 		ri.noStroke();
 		ri.setFill(255,255,255, 255);
@@ -175,6 +176,7 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	/**
 	 * instance-specific drawing after objects are drawn but before info is saved
 	 */
+	@Override
 	protected final void drawMeLast_Indiv() {		
 		
 	}	
