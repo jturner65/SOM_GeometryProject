@@ -230,11 +230,11 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected final void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {}	
 	@Override
-	protected final void endShiftKeyI() {}
+	protected final void endShiftKey_Indiv() {}
 	@Override
-	protected final void endAltKeyI() {}
+	protected final void endAltKey_Indiv() {}
 	@Override
-	protected final void endCntlKeyI() {}
+	protected final void endCntlKey_Indiv() {}
 	@Override
 	protected myPoint getMsePtAs3DPt(myPoint mseLoc) {		return new myPoint(mseLoc);	}
 

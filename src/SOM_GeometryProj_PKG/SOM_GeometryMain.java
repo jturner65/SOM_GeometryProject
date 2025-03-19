@@ -151,7 +151,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 				_winDescr = new String[] {"","Display 3D Point Cloud","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
 
 		//instanced window dims when open and closed - only showing 1 open at a time - and init cam vals
-		float[][] _floatDims  = new float[][] {getDefaultWinDimOpen(), getDefaultWinDimClosed(), getInitCameraValues()};	
+		float[][] _floatDims  = getDefaultWinAndCameraDims();	
 
 		//Builds sidebar menu button config - application-wide menu button bar titles and button names
 		String[] menuBtnTitles = new String[]{"Load/Save Geometry Data","Training Data","SOM Building/Display","Functions 4"};
@@ -249,8 +249,8 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	@Override
 	//called from base class, once at start of program after vis init is called - set initial windows to show - always show UI Menu
 	protected void initOnce_Indiv(){
-		//setVisFlag(showSpereAnimRes, true);
-		setVisFlag(disp2DLineAnimResIDX, true);
+		//setWinVisFlag(showSpereAnimRes, true);
+		setWinVisFlag(disp2DLineAnimResIDX, true);
 	}//	initOnce
 	
 	@Override
@@ -305,7 +305,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 			//val is btn state before transition 
 			boolean bVal = (val == 1?  false : true);
 			//each entry in this array should correspond to a clickable window, not counting menu
-			setVisFlag(btn+1, bVal);
+			setWinVisFlag(btn+1, bVal);
 		}
 	}//handleShowWin
 	
