@@ -107,8 +107,8 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	protected final void setupGUIObjsAras_Indiv(TreeMap<Integer, Object[]> tmpUIObjArray , TreeMap<Integer, String[]> tmpListObjVals) {
-		tmpUIObjArray.put(gIDX_MinRadius, uiObjInitAra_Float(new double[]{20,500,1}, (double)minSphRad, "Min sphere radius", new boolean[]{true}));   				//gIDX_MinRadius	                                                                        
-		tmpUIObjArray.put(gIDX_MaxRadius, uiObjInitAra_Float(new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius", new boolean[]{true}));  				//gIDX_MaxRadius	                                                                        	
+		tmpUIObjArray.put(gIDX_MinRadius, uiObjInitAra_Float(new double[]{20,500,1}, (double)minSphRad, "Min sphere radius"));   				//gIDX_MinRadius	                                                                        
+		tmpUIObjArray.put(gIDX_MaxRadius, uiObjInitAra_Float(new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius"));  				//gIDX_MaxRadius	                                                                        	
 	}
 	
 	@Override
