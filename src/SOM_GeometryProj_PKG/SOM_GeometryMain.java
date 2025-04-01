@@ -310,7 +310,8 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	}//handleShowWin
 	
 	@Override
-	//get the ui rect values of the "master" ui region (another window) -> this is so ui objects of one window can be made, clicked, and shown displaced from those of the parent windwo
+	//get the ui rect values of the "master" ui region (another window) -> this is so ui objects of one window can be
+	//made, clicked, and shown displaced from those of the parent window
 	public float[] getUIRectVals_Indiv(int idx, float[] menuClickDim){
 		switch(idx){
 		case disp3DPointAnimResIDX 		: { return menuClickDim;}
@@ -322,18 +323,6 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		default :  return menuClickDim;
 		}
 	}	
-	
-	@SuppressWarnings("unused")
-	private float[] getMaxUIClkCoords() {
-		float[] res = new float[] {0.0f,0.0f,0.0f,0.0f}, tmpCoords;
-		for (int winIDX : winDispIdxXOR) {
-			tmpCoords = dispWinFrames[winIDX].uiClkCoords;
-			for(int i=0;i<tmpCoords.length;++i) {
-				if(res[i]<tmpCoords[i]) {res[i]=tmpCoords[i];}
-			}
-		}
-		return res;
-	}
 	
 	//////////////////////////////////////////
 	/// graphics and base functionality utilities and variables

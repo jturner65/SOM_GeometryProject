@@ -71,7 +71,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	protected final int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
-		tmpBtnNamesArray.add(new Object[]{"Showing Plane Ortho Frame","Hiding Plane Ortho Frame",showOrthoFrameIDX});
+		tmpBtnNamesArray.add(uiObjInitAra_Btn(new String[] {"Showing Plane Ortho Frame","Hiding Plane Ortho Frame"},showOrthoFrameIDX));
 		return numPrivFlags;
 	}
 	

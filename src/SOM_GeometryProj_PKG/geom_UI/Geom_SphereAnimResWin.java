@@ -71,7 +71,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	protected final int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
-		//tmpBtnNamesArray.add(new Object[]{"Debugging","Debug",debugAnimIDX});
+		//tmpBtnNamesArray.add(uiObjInitAra_Btn(new String[] {"Debugging","Debug",debugAnimIDX});
 		return numPrivFlags;
 	}
 	/**
