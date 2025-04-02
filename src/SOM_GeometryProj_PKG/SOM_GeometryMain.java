@@ -285,9 +285,6 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		}//switch	
 	}
 
-	@Override
-	//gives multiplier based on whether shift, alt or cntl (or any combo) is pressed
-	public double clickValModMult(){return ((altIsPressed() ? .1 : 1.0) * (shiftIsPressed() ? 10.0 : 1.0));}	
 	//keys/criteria are present that means UI objects are modified by set values based on clicks (as opposed to dragging for variable values)
 	//to facilitate UI interaction non-mouse computers, set these to be single keys
 	@Override
