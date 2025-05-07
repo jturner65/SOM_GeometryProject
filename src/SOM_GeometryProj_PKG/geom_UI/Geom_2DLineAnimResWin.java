@@ -215,12 +215,6 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	public final void initDrwnTraj_Indiv(){}
 	
 
-	//overrides function in base class mseClkDisp
-	@Override
-	public void drawTraj3D(float animTimeMod,myPoint trans){
-		
-	}//drawTraj3D
-
 	
 	@Override
 	protected final void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {}	

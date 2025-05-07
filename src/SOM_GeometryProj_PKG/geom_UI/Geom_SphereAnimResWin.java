@@ -45,7 +45,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	public final SOM_GeomMapManager buildGeom_SOMMapManager() {
-		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(somUIWin, this, AppMgr.cubeBnds,  AppMgr.getArgsMap());
+		Geom_SphereMapMgr _mgr = new Geom_SphereMapMgr(somUIWin, this, AppMgr.get3dCubeBnds(),  AppMgr.getArgsMap());
 		return _mgr;
 	}
 	
@@ -246,16 +246,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	
 	
 	@Override
-	public final void initDrwnTraj_Indiv(){}
-	
-
-	//overrides function in base class mseClkDisp
-	@Override
-	public final void drawTraj3D(float animTimeMod,myPoint trans){
-		
-	}//drawTraj3D
-
-	
+	public final void initDrwnTraj_Indiv(){}	
 	@Override
 	protected final void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {}	
 	@Override

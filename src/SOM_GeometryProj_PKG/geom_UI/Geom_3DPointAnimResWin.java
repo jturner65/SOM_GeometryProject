@@ -26,7 +26,7 @@ public class Geom_3DPointAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	protected SOM_GeomMapManager buildGeom_SOMMapManager() {
-		Geom_3DPointMapMgr _mgr = new Geom_3DPointMapMgr(somUIWin, this, AppMgr.cubeBnds, AppMgr.getArgsMap());
+		Geom_3DPointMapMgr _mgr = new Geom_3DPointMapMgr(somUIWin, this, AppMgr.get3dCubeBnds(), AppMgr.getArgsMap());
 		return _mgr;
 	}
 	/**
@@ -178,9 +178,6 @@ public class Geom_3DPointAnimResWin extends SOM_AnimWorldWin {
 	protected final void hndlMseRelease_Priv() {}	
 	@Override
 	public final void initDrwnTraj_Indiv(){}
-	//overrides function in base class mseClkDisp
-	@Override
-	public void drawTraj3D(float animTimeMod,myPoint trans){}//drawTraj3D	
 	@Override
 	protected final void snapMouseLocs(int oldMouseX, int oldMouseY, int[] newMouseLoc) {}	
 	@Override
