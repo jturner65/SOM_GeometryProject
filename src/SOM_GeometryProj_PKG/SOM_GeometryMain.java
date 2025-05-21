@@ -201,7 +201,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 				new int[][] {new int[]{255,255,245,255},new int[]{0,0,0,255},
 					new int[]{180,180,180,255},new int[]{100,100,100,255},
 					new int[]{0,0,0,200},new int[]{255,255,255,255}});
-		dispWinFrames[wIdx] = new Geom_3DPointAnimResWin(ri, this, wIdx);		
+		setDispWindow(wIdx, new Geom_3DPointAnimResWin(ri, this, wIdx));		
 		
 		
 		wIdx = disp2DLineAnimResIDX;
@@ -209,7 +209,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 				new int[][] {new int[]{0,0,0,255}, new int[]{255,255,255,255},
 					new int[]{180,180,180,255}, new int[]{100,100,100,255},
 					new int[]{0,0,0,200},new int[]{255,255,255,255}});
-		dispWinFrames[wIdx] = new Geom_2DLineAnimResWin(ri, this, wIdx);		
+		setDispWindow(wIdx, new Geom_2DLineAnimResWin(ri, this, wIdx));		
 		
 		wIdx = disp3DLineAnimResIDX;
 		//setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
@@ -217,7 +217,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 				new int[][] {new int[]{255,255,245,255},new int[]{0,0,0,255},
 					new int[]{180,180,180,255},new int[]{100,100,100,255},
 					new int[]{0,0,0,200},new int[]{255,255,255,255}});
-		dispWinFrames[wIdx] = new Geom_3DLineAnimResWin(ri, this, wIdx);		
+		setDispWindow(wIdx, new Geom_3DLineAnimResWin(ri, this, wIdx));		
 		
 		wIdx = dispPlaneAnimResIDX;
 		//setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,255,245,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
@@ -225,7 +225,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 				new int[][] {new int[]{245,255,255,255},new int[]{0,0,0,255},
 					new int[]{180,180,180,255},new int[]{100,100,100,255},
 					new int[]{0,0,0,200},new int[]{255,255,255,255}});
-		dispWinFrames[wIdx] = new Geom_PlaneAnimResWin(ri, this, wIdx);		
+		setDispWindow(wIdx, new Geom_PlaneAnimResWin(ri, this, wIdx));		
 
 		wIdx = dispSphereAnimResIDX;
 		//setInitDispWinVals(wIdx, _dimOpen, _dimClosed,new boolean[]{false,true,true,true}, new int[]{255,245,255,255},new int[]{0,0,0,255},new int[]{180,180,180,255},new int[]{100,100,100,255}); 
@@ -233,19 +233,19 @@ public class SOM_GeometryMain extends GUI_AppManager {
 				new int[][] {new int[]{255,245,255,255},new int[]{0,0,0,255},
 					new int[]{180,180,180,255},new int[]{100,100,100,255},
 					new int[]{0,0,0,200},new int[]{255,255,255,255}});
-		dispWinFrames[wIdx] = new Geom_SphereAnimResWin(ri, this, wIdx);		
+		setDispWindow(wIdx, new Geom_SphereAnimResWin(ri, this, wIdx));		
 		
 		//build SOM sub-windows for each anim res window
-		for(int i=1;i<dispWinFrames.length;++i) {
-			curFocusWin = i;
-			((SOM_AnimWorldWin)dispWinFrames[i]).buildAndSetSOM_MapDispUIWin( -1);
+		for(int i=1;i<numDispWins;++i) {
+			setCurFocusWin(i);
+			((SOM_AnimWorldWin)getDispWindow(i)).buildAndSetSOM_MapDispUIWin( -1);
 		}
 	}//	initAllDispWindows
 	
-	public SOM_AnimWorldWin getLinesWindow() {return (SOM_AnimWorldWin) dispWinFrames[disp2DLineAnimResIDX];}
-	public SOM_AnimWorldWin get3DLinesWindow() {return (SOM_AnimWorldWin) dispWinFrames[disp3DLineAnimResIDX];}
-	public SOM_AnimWorldWin getPlanesWindow() {return (SOM_AnimWorldWin) dispWinFrames[dispPlaneAnimResIDX];}
-	public SOM_AnimWorldWin getSpheresWindow() {return (SOM_AnimWorldWin) dispWinFrames[dispSphereAnimResIDX];}
+	public SOM_AnimWorldWin getLinesWindow() {return (SOM_AnimWorldWin) getDispWindow(disp2DLineAnimResIDX);}
+	public SOM_AnimWorldWin get3DLinesWindow() {return (SOM_AnimWorldWin) getDispWindow(disp3DLineAnimResIDX);}
+	public SOM_AnimWorldWin getPlanesWindow() {return (SOM_AnimWorldWin) getDispWindow(dispPlaneAnimResIDX);}
+	public SOM_AnimWorldWin getSpheresWindow() {return (SOM_AnimWorldWin) getDispWindow(dispSphereAnimResIDX);}
 	
 	@Override
 	//called from base class, once at start of program after vis init is called - set initial windows to show - always show UI Menu
@@ -277,7 +277,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	protected void handleKeyPress(char key, int keyCode) {
 		switch (key){
 			case ' ' : {toggleSimIsRunning(); break;}							//run sim
-			case 'f' : {dispWinFrames[curFocusWin].setInitCamView();break;}					//reset camera
+			case 'f' : {getCurFocusDispWindow().setInitCamView();break;}					//reset camera
 			case 'a' :
 			case 'A' : {toggleSaveAnim();break;}						//start/stop saving every frame for making into animation
 			case 's' :
@@ -354,7 +354,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	protected void drawMePost_Indiv(float modAmtMillis, boolean is3DDraw) {
 		//draw SOM window in current window if active/displayed
 		ri.pushMatState();
-		((SOM_AnimWorldWin) dispWinFrames[curFocusWin]).drawSOMWinUI(modAmtMillis);
+		((SOM_AnimWorldWin)getCurFocusDispWindow()).drawSOMWinUI(modAmtMillis);
 		ri.popMatState();		
 	}
 	
