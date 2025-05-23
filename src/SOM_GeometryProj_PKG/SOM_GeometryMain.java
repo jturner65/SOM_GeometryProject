@@ -6,7 +6,6 @@ import java.util.HashMap;
 import SOM_GeometryProj_PKG.geom_UI.*;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_UI_Objects.GUI_AppManager;
-import base_UI_Objects.windowUI.sidebar.SidebarMenu;
 import base_Utils_Objects.io.messaging.MsgCodes;
 
 /**
@@ -293,19 +292,6 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		//TODO change this to manage other key settings for situations where multiple simultaneous key presses are not optimal or conventient
 		return altIsPressed() || shiftIsPressed();		
 	}
-	
-	@Override
-	//these tie using the UI buttons to modify the window in with using the boolean tags - PITA but currently necessary
-	public void handleShowWin(int btn, int val, boolean callFlags){//display specific windows - multi-select/ always on if sel
-		if(!callFlags){//called from setflags - only sets button state in UI to avoid infinite loop
-			setMenuBtnState(SidebarMenu.btnShowWinIdx,btn, val);
-		} else {//called from clicking on buttons in UI
-			//val is btn state before transition 
-			boolean bVal = (val == 1?  false : true);
-			//each entry in this array should correspond to a clickable window, not counting menu
-			setWinVisFlag(btn+1, bVal);
-		}
-	}//handleShowWin
 	
 	@Override
 	//get the ui rect values of the "master" ui region (another window) -> this is so ui objects of one window can be
