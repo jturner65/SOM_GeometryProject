@@ -4,6 +4,7 @@ import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_3DLineMapMgr;
 import base_Render_Interface.IRenderInterface;
+import base_Render_Interface.IRenderInterface.GL_PrimStyle;
 import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
@@ -15,8 +16,6 @@ import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import base_UI_Objects.my_procApplet;
-import processing.core.PConstants;
 
 public class Geom_3DLineSOMExample extends SOM_GeomLineObj {
 	private static int IDGen = 0;	
@@ -212,7 +211,7 @@ public class Geom_3DLineSOMExample extends SOM_GeomLineObj {
 
 		float da = MyMathUtils.TWO_PI_F/36;
 		ri.pushMatState();	
-		((my_procApplet)ri).beginShape(PConstants.QUAD_STRIP);
+		ri.gl_beginShape(GL_PrimStyle.GL_QUAD_STRIP);
 			for(float a=0; a<=MyMathUtils.TWO_PI_F+da; a+=da) {
 				float rCosA = (float) (r*Math.cos(a));
 				float rSinA = (float) (r*Math.sin(a));
@@ -221,7 +220,7 @@ public class Geom_3DLineSOMExample extends SOM_GeomLineObj {
 				ri.gl_vertex(myPointf._add(A,rCosA,norm,rSinA,biNorm)); 
 				ri.setStroke(c2, 255);
 				ri.gl_vertex(myPointf._add(A,rCosA,norm,rSinA,biNorm, 1.0f, V));}
-		((my_procApplet)ri).endShape();
+		ri.gl_endShape();
 		ri.popMatState();	
 	}
 	

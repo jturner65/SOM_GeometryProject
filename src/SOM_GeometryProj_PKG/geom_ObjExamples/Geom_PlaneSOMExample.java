@@ -16,7 +16,7 @@ import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjDrawType;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomSamplePointf;
-import base_UI_Objects.my_procApplet;
+import base_UI_Objects.renderer.ProcessingRenderer;
 import base_UI_Objects.windowUI.base.Base_DispWindow;
 import processing.core.PConstants;
 import processing.core.PShape;
@@ -213,7 +213,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 	}//buildPlanePShapes
 	
 	private PShape buildPlaneShape(boolean hasFill, int[] clr) {
-		PShape poly = ((my_procApplet)Base_DispWindow.ri).createShape(); 
+		PShape poly = ((ProcessingRenderer)Base_DispWindow.ri).createShape(); 
 		//all have lines to center
 		poly.beginShape(PConstants.TRIANGLE_FAN);
 		if(hasFill) {
@@ -461,7 +461,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		if(planeObjs.length==0) {	return;}
 		ri.pushMatState();			
 		ri.setStrokeWt(2.0f);
-		((my_procApplet)ri).shape(planeObjs[drawType.getVal()]);		
+		((ProcessingRenderer)ri).shape(planeObjs[drawType.getVal()]);		
 		ri.popMatState();
 	}
 
@@ -495,7 +495,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		ri.scale(1.0f + modCnt*.5f);
 		ri.translate(-planeOrigin.x,-planeOrigin.y,-planeOrigin.z);
 		
-		((my_procApplet)ri).shape(planeObjs[selIDX]);
+		((ProcessingRenderer)ri).shape(planeObjs[selIDX]);
 		
 		ri.popMatState();
 	}
