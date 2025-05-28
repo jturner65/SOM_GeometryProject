@@ -56,7 +56,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	protected final void initMe_Indiv() {	
-		privFlags.setFlag(showOrthoFrameIDX, true);
+		uiMgr.setPrivFlag(showOrthoFrameIDX, true);
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	protected final int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
-		tmpBtnNamesArray.add(uiObjInitAra_Btn(new String[] {"Showing Plane Ortho Frame","Hiding Plane Ortho Frame"},showOrthoFrameIDX));
+		tmpBtnNamesArray.add(uiMgr.uiObjInitAra_Btn(new String[] {"Showing Plane Ortho Frame","Hiding Plane Ortho Frame"},showOrthoFrameIDX));
 		return numPrivFlags;
 	}
 	
@@ -181,7 +181,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 * instance-specific drawing after objects are drawn but before info is saved
 	 */
 	protected final void drawMeLast_Indiv() {		
-		if(privFlags.getFlag(showOrthoFrameIDX)) {((Geom_PlaneMapMgr)mapMgr).drawAllPlanesOrthoFrames(ri);}
+		if(uiMgr.getPrivFlag(showOrthoFrameIDX)) {((Geom_PlaneMapMgr)mapMgr).drawAllPlanesOrthoFrames(ri);}
 	}	
 	
 	//////////////////////////////

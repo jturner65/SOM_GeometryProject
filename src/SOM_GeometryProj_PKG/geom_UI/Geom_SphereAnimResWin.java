@@ -71,7 +71,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	protected final int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
-		//tmpBtnNamesArray.add(uiObjInitAra_Btn(new String[] {"Debugging","Debug",debugAnimIDX});
+		//tmpBtnNamesArray.add(uiMgr.uiObjInitAra_Btn(new String[] {"Debugging","Debug",debugAnimIDX});
 		return numPrivFlags;
 	}
 	/**
@@ -107,8 +107,8 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 */
 	@Override
 	protected final void setupGUIObjsAras_Indiv(TreeMap<Integer, Object[]> tmpUIObjArray , TreeMap<Integer, String[]> tmpListObjVals) {
-		tmpUIObjArray.put(gIDX_MinRadius, uiObjInitAra_Float(new double[]{20,500,1}, (double)minSphRad, "Min sphere radius"));   				//gIDX_MinRadius	                                                                        
-		tmpUIObjArray.put(gIDX_MaxRadius, uiObjInitAra_Float(new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius"));  				//gIDX_MaxRadius	                                                                        	
+		tmpUIObjArray.put(gIDX_MinRadius, uiMgr.uiObjInitAra_Float(new double[]{20,500,1}, (double)minSphRad, "Min sphere radius"));   				//gIDX_MinRadius	                                                                        
+		tmpUIObjArray.put(gIDX_MaxRadius, uiMgr.uiObjInitAra_Float(new double[]{100,1000,1},(double)maxSphRad, "Max sphere radius"));  				//gIDX_MaxRadius	                                                                        	
 	}
 	
 	@Override
@@ -153,13 +153,13 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 			case gIDX_MinRadius : {
 				if(val != minSphRad){
 					minSphRad = val;
-					if(minSphRad >= maxSphRad) { maxSphRad = minSphRad + 1;setWinToUIVals(gIDX_MaxRadius, maxSphRad);   }
+					if(minSphRad >= maxSphRad) { maxSphRad = minSphRad + 1;uiMgr.setWinToUIVals(gIDX_MaxRadius, maxSphRad);   }
 					rebuildSourceGeomObjs();}
 					return true;}
 			case gIDX_MaxRadius	: {
 				if(val != maxSphRad){
 					maxSphRad = val;
-					if(minSphRad >= maxSphRad)  { minSphRad = maxSphRad - 1;setWinToUIVals(gIDX_MinRadius, minSphRad);   }				
+					if(minSphRad >= maxSphRad)  { minSphRad = maxSphRad - 1;uiMgr.setWinToUIVals(gIDX_MinRadius, minSphRad);   }				
 					rebuildSourceGeomObjs();}
 					return true;}
 			default : {break;}
@@ -170,15 +170,15 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 
 	@Override
 	protected void getAllUIValsForPreProcSave_Indiv(TreeMap<String, String> vals) {
-		vals.put("gIDX_MinRadius", String.format("%4d", (int)getUIValue(gIDX_MinRadius)));
-		vals.put("gIDX_MaxRadius", String.format("%4d", (int)getUIValue(gIDX_MaxRadius)));
+		vals.put("gIDX_MinRadius", String.format("%4d", (int)uiMgr.getUIValue(gIDX_MinRadius)));
+		vals.put("gIDX_MaxRadius", String.format("%4d", (int)uiMgr.getUIValue(gIDX_MaxRadius)));
 		
 	}
 
 	@Override
 	protected void setAllUIValsFromPreProcLoad_Indiv(TreeMap<String, String> uiVals) {
-		setNewUIValue(gIDX_MinRadius, Double.parseDouble(uiVals.get("gIDX_MinRadius")));
-		setNewUIValue(gIDX_MaxRadius, Double.parseDouble(uiVals.get("gIDX_MaxRadius")));
+		uiMgr.setNewUIValue(gIDX_MinRadius, Double.parseDouble(uiVals.get("gIDX_MinRadius")));
+		uiMgr.setNewUIValue(gIDX_MaxRadius, Double.parseDouble(uiVals.get("gIDX_MaxRadius")));
 	}
 
 	//////////////////////////////
