@@ -3,12 +3,12 @@ package SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_3DPointSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_3DPointMapMgr;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.procData_loaders.Geom_3DPointCSVDataLoader;
 import SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables.Geom_3DPointTrainDatBuilder;
+import base_Math_Objects.MyMathUtils;
 import base_SOM_Objects.som_examples.base.SOM_Example;
 import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_fileIO.SOM_ExCSVDataLoader;
@@ -42,9 +42,9 @@ public class Geom_3DPointExManager extends SOM_GeomExampleManager {
 	 * @return sorted list of idxs - can only be samples
 	 */
 	@Override
-	protected Integer[] genUniqueObjIDXs(SOM_GeomSamplePointf[] allSamples, ThreadLocalRandom rnd) {
+	protected Integer[] genUniqueObjIDXs(SOM_GeomSamplePointf[] allSamples) {
 		//samples are objects, so just get a random sample
-		return new Integer[] {rnd.nextInt(0,allSamples.length)};
+		return new Integer[] {MyMathUtils.randomInt(allSamples.length)};
 	}
 
 	@Override

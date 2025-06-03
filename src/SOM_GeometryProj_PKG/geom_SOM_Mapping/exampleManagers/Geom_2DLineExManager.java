@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_2DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_2DLineMapMgr;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.procData_loaders.Geom_2DLineCSVDataLoader;
 import SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables.Geom_2DLineTrainDatBuilder;
+import base_Math_Objects.MyMathUtils;
 import base_SOM_Objects.som_examples.base.SOM_Example;
 import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_fileIO.SOM_ExCSVDataLoader;
@@ -62,10 +62,10 @@ public class Geom_2DLineExManager extends SOM_GeomExampleManager {
 	 * @return sorted list of idxs
 	 */
 	@Override
-	protected Integer[] genUniqueObjIDXs(SOM_GeomSamplePointf[] allSamples, ThreadLocalRandom rnd){
+	protected Integer[] genUniqueObjIDXs(SOM_GeomSamplePointf[] allSamples){
 		TreeSet<Integer> idxs = new TreeSet<Integer>();
 		//any pair of samples create a line, so just need a unique pair
-		while(idxs.size() < 2) {	idxs.add(rnd.nextInt(0,allSamples.length));}		
+		while(idxs.size() < 2) {	idxs.add(MyMathUtils.randomInt(allSamples.length));}		
 		return idxs.toArray(new Integer[0]);
 	}//genUniqueObjIDXs
 	

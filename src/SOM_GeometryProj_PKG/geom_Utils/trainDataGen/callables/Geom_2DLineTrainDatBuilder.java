@@ -1,7 +1,5 @@
 package SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_2DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_2DLineExManager;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_2DLineMapMgr;
@@ -23,9 +21,9 @@ public class Geom_2DLineTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	 * @return
 	 */
 	@Override
-	protected final SOM_GeomSamplePointf[] genPtsForObj(ThreadLocalRandom rnd) {
+	protected final SOM_GeomSamplePointf[] genPtsForObj() {
 		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[numExPerObj];
-		Integer[] idxs = genUniqueIDXs(numExPerObj, rnd);
+		Integer[] idxs = genUniqueIDXs(numExPerObj);
 		for(int i=0;i<res.length;++i) {	res[i]=allExamples[idxs[i]];}
 		return res;
 	};

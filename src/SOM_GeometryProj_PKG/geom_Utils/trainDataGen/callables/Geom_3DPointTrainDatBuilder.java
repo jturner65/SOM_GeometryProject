@@ -1,6 +1,5 @@
 package SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables;
 
-import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_3DPointSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_3DPointExManager;
@@ -19,9 +18,9 @@ public class Geom_3DPointTrainDatBuilder extends SOM_GeomTrainExBuilder {
 	}
 
 	@Override
-	protected SOM_GeomSamplePointf[] genPtsForObj(ThreadLocalRandom rnd) {
+	protected SOM_GeomSamplePointf[] genPtsForObj() {
 		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[numExPerObj];
-		Integer[] idxs = genUniqueIDXs(numExPerObj, rnd);
+		Integer[] idxs = genUniqueIDXs(numExPerObj);
 		for(int i=0;i<res.length;++i) {	res[i]=allExamples[idxs[i]];}		
 		return res;
 	}

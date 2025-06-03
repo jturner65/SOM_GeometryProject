@@ -4,6 +4,7 @@ import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import base_Render_Interface.IRenderInterface;
+import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
@@ -243,7 +244,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 	 * return a random point on this object
 	 */
 	@Override
-	public final myPointf getRandPointOnObj() {return getRandPosOnSphere(radius,ctrLoc);}
+	public final myPointf getRandPointOnObj() {return MyMathUtils.getRandPosOnSphere(radius,ctrLoc);}
 
 	////////////////////////////
 	// feature functionality (inherited from SOM_Example

@@ -1,9 +1,8 @@
 package SOM_GeometryProj_PKG.geom_Utils.geomGen.callables;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_SphereSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
+import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomObj;
@@ -27,7 +26,7 @@ public class Geom_SphereObjBuilder extends SOM_GeomObjBuilder {
 		//SOM_Sphere(SOM_GeomMapManager _mapMgr, myPointf _loc, float _rad, int _numSmplPts, float[][] _worldBounds)
 		
 		//pick characteristics of target sphere
-		float rad = (ThreadLocalRandom.current().nextFloat()*diffRad) + minRad;
+		float rad = (MyMathUtils.randomFloat()*diffRad) + minRad;
 		myPointf ctr = this.getRandPointInBounds_3D(rad);
 			
 		//now get 4 points to determine this sphere - make sure they are ortho		

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.procData_loaders.Geom_PlaneCSVDataLoader;
 import SOM_GeometryProj_PKG.geom_Utils.trainDataGen.callables.Geom_PlaneTrainDatBuilder;
+import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
 import base_SOM_Objects.som_examples.base.SOM_Example;
@@ -63,10 +63,10 @@ public class Geom_PlaneExManager extends SOM_GeomExampleManager {
 	 * @return sorted list of idxs
 	 */
 	@Override
-	protected Integer[] genUniqueObjIDXs(SOM_GeomSamplePointf[] allSamples, ThreadLocalRandom rnd){
+	protected Integer[] genUniqueObjIDXs(SOM_GeomSamplePointf[] allSamples){
 		TreeSet<Integer> idxs = new TreeSet<Integer>();
 		//1st 2 points are always ok
-		while(idxs.size() < 2) {	idxs.add(rnd.nextInt(0,allSamples.length));}
+		while(idxs.size() < 2) {	idxs.add(MyMathUtils.randomInt(allSamples.length));}
 		int firstIDX = idxs.first();
 		int scndIDX = idxs.last();
 		//find 3rd point
@@ -78,7 +78,7 @@ public class Geom_PlaneExManager extends SOM_GeomExampleManager {
 		int cIDX;
 		do {
 			cIDX = firstIDX;
-			while((cIDX==firstIDX) || (cIDX==scndIDX)){	cIDX = rnd.nextInt(0,allSamples.length);}		
+			while((cIDX==firstIDX) || (cIDX==scndIDX)){	cIDX = MyMathUtils.randomInt(allSamples.length);}		
 
 			c = allSamples[cIDX];
 			ac = new myVectorf(a,c);

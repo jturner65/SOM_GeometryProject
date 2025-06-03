@@ -2,10 +2,10 @@ package SOM_GeometryProj_PKG.geom_ObjExamples;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import base_Render_Interface.IRenderInterface;
+import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
 import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
@@ -359,9 +359,9 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 		//minMaxDiffValAra : idx 0 : 0 is min, idx 1 is max, idx 2 is diff; idx 1 : 0,1,2 is x,y,z
 		do {
 			ptTmp = new myPointf(
-				(ThreadLocalRandom.current().nextFloat() * minMaxDiffValAra[2][0]) + minMaxDiffValAra[0][0],
-				(ThreadLocalRandom.current().nextFloat() * minMaxDiffValAra[2][1]) + minMaxDiffValAra[0][1],
-				(ThreadLocalRandom.current().nextFloat() * minMaxDiffValAra[2][2]) + minMaxDiffValAra[0][2]);
+				(MyMathUtils.randomFloat() * minMaxDiffValAra[2][0]) + minMaxDiffValAra[0][0],
+				(MyMathUtils.randomFloat() * minMaxDiffValAra[2][1]) + minMaxDiffValAra[0][1],
+				(MyMathUtils.randomFloat() * minMaxDiffValAra[2][2]) + minMaxDiffValAra[0][2]);
 			//point in space bounded by limits - now project to plane using origin point
 			
 			myVectorf OP = new myVectorf(planeOrigin, ptTmp);

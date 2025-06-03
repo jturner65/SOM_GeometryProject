@@ -343,8 +343,5 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		((SOM_AnimWorldWin)getCurFocusDispWindow()).drawSOMWinUI(modAmtMillis);
 		ri.popMatState();		
 	}
-	
-	@Override
-	public int[] getClr_Custom(int colorVal, int alpha) {	return new int[] {255,255,255,alpha};}
 
 }//class SOM_GeometryMain
