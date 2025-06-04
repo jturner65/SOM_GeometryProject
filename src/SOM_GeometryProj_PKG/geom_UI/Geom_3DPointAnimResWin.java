@@ -1,6 +1,5 @@
 package SOM_GeometryProj_PKG.geom_UI;
 
-import java.util.ArrayList;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_3DPointSOMExample;
@@ -50,7 +49,7 @@ public class Geom_3DPointAnimResWin extends SOM_AnimWorldWin {
 	 * @return total number of privBtnFlags in instancing class (including those not displayed)
 	 */
 	@Override
-	protected int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
+	protected int initAllAnimWorldPrivBtns_Indiv(TreeMap<Integer, Object[]> tmpBtnNamesArray) {
 		// TODO Auto-generated method stub
 		return numPrivFlags;
 	}

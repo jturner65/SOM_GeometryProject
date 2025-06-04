@@ -3,14 +3,13 @@
  */
 package SOM_GeometryProj_PKG.geom_UI;
 
-import java.util.ArrayList;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
-import base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.doubles.myPoint;
 import base_Math_Objects.vectorObjs.doubles.myVector;
+import base_Render_Interface.IRenderInterface;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
@@ -70,8 +69,9 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 * @return total number of privBtnFlags in instancing class (including those not displayed)
 	 */
 	@Override
-	protected final int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
-		tmpBtnNamesArray.add(uiMgr.uiObjInitAra_Btn(new String[] {"Showing Plane Ortho Frame","Hiding Plane Ortho Frame"},showOrthoFrameIDX));
+	protected final int initAllAnimWorldPrivBtns_Indiv(TreeMap<Integer, Object[]> tmpBtnNamesArray) {
+		int idx=0;
+		tmpBtnNamesArray.put(idx++, uiMgr.uiObjInitAra_Btn(new String[] {"Showing Plane Ortho Frame","Hiding Plane Ortho Frame"},showOrthoFrameIDX));
 		return numPrivFlags;
 	}
 	

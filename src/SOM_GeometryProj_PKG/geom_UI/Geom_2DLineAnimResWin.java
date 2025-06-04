@@ -1,13 +1,12 @@
 package SOM_GeometryProj_PKG.geom_UI;
 
-import java.util.ArrayList;
 import java.util.TreeMap;
 
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_2DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_2DLineMapMgr;
-import base_Render_Interface.IRenderInterface;
 import base_Math_Objects.vectorObjs.doubles.myPoint;
 import base_Math_Objects.vectorObjs.doubles.myVector;
+import base_Render_Interface.IRenderInterface;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
@@ -68,7 +67,7 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
 	 * @return total number of privBtnFlags in instancing class (including those not displayed)
 	 */
 	@Override
-	protected int initAllAnimWorldPrivBtns_Indiv(ArrayList<Object[]> tmpBtnNamesArray) {
+	protected int initAllAnimWorldPrivBtns_Indiv(TreeMap<Integer, Object[]> tmpBtnNamesArray) {
 		// TODO Auto-generated method stub
 		return numPrivFlags;
 	}

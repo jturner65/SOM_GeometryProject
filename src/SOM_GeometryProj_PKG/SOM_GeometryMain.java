@@ -3,7 +3,11 @@ package SOM_GeometryProj_PKG;
 import java.io.File;
 import java.util.HashMap;
 
-import SOM_GeometryProj_PKG.geom_UI.*;
+import SOM_GeometryProj_PKG.geom_UI.Geom_2DLineAnimResWin;
+import SOM_GeometryProj_PKG.geom_UI.Geom_3DLineAnimResWin;
+import SOM_GeometryProj_PKG.geom_UI.Geom_3DPointAnimResWin;
+import SOM_GeometryProj_PKG.geom_UI.Geom_PlaneAnimResWin;
+import SOM_GeometryProj_PKG.geom_UI.Geom_SphereAnimResWin;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_UI_Objects.GUI_AppManager;
 import base_Utils_Objects.io.messaging.MsgCodes;
