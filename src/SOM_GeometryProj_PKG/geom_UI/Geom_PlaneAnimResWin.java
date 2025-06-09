@@ -70,7 +70,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	 * @return array holding true(idx0) and false(idx1) labels for button
 	 */
 	@Override
-	protected final String[] getShowWireFrameBtnTFLabels() {	return new String[] {"Showing Plane Wireframe","Showing Full Plane"};}
+	protected final String[] getShowWireFrameBtnTFLabels() {	return new String[]{"Showing Plane Wireframe","Showing Full Plane"};}
 
 
 	/**
@@ -112,7 +112,7 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
 	@Override
 	protected void setupGUIObjsAras_Indiv(TreeMap<Integer, Object[]> tmpUIObjArray, TreeMap<Integer, String[]> tmpListObjVals, int firstBtnIDX, TreeMap<Integer, Object[]> tmpBtnNamesArray) {
 		int idx=firstBtnIDX;
-		tmpBtnNamesArray.put(idx++, uiMgr.uiObjInitAra_Btn(new String[] {"Showing Plane Ortho Frame","Hiding Plane Ortho Frame"},showOrthoFrameIDX));
+		tmpBtnNamesArray.put(idx++, uiMgr.uiObjInitAra_Btn(new String[]{"Showing Plane Ortho Frame","Hiding Plane Ortho Frame"},showOrthoFrameIDX));
 	}
 	/**
 	 * send all instance-specific values from UI to map manager

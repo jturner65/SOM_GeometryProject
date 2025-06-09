@@ -45,7 +45,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 	/**
 	 * Labels for buttons that describe what mouse-over on the SOM displays
 	 */
-	public static final String[] MseOvrLblsAra = new String[] { "Loc", "Dist", "Pop", "Ftr", "Class", "Cat", "None" };
+	public static final String[] MseOvrLblsAra = new String[]{"Loc", "Dist", "Pop", "Ftr", "Class", "Cat", "None" };
 	
 ///////////////
 //CODE STARTS
@@ -152,7 +152,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 		showInfo = true;	
 		//titles and descs, need to be set before sidebar menu is defined
 		String[] _winTitles = new String[]{"","3D Point Cloud","2D Lines","3D Lines","3D Planes","3D Spheres"},//,"SOM Map UI"},
-				_winDescr = new String[] {"","Display 3D Point Cloud","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
+				_winDescr = new String[]{"","Display 3D Point Cloud","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
 
 		//instanced window dims when open and closed - only showing 1 open at a time - and init cam vals
 		float[][] _floatDims  = getDefaultWinAndCameraDims();	
@@ -164,7 +164,7 @@ public class SOM_GeometryMain extends GUI_AppManager {
 			{ "Calc Opt # Ex.", "Build Training Data", "Save Train Data" },		// row 2
 			{ "Show SOM Win", "LD SOM Config", "Build Map", "---" }, 			// row 3
 			{ "---", "---", "---", "---" }};
-		String[] dbgBtnNames = new String[] {"Debug 0","Debug 1","Debug 2","Debug 3","Debug 4"};
+		String[] dbgBtnNames = new String[]{"Debug 0","Debug 1","Debug 2","Debug 3","Debug 4"};
 		buildSideBarMenu(_winTitles, menuBtnTitles, menuBtnNames, dbgBtnNames, true, true);
 
 		//specify windows that cannot be shown simultaneously here

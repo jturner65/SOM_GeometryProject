@@ -70,7 +70,7 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
 	 * @return array holding true(idx0) and false(idx1) labels for button
 	 */
 	@Override
-	protected final String[] getShowWireFrameBtnTFLabels() {	return new String[] {"Showing Sphere Wireframe","Showing Full Sphere"};}
+	protected final String[] getShowWireFrameBtnTFLabels() {	return new String[]{"Showing Sphere Wireframe","Showing Full Sphere"};}
 
 	/**
 	 * set values for instancing class-specific boolean flags
