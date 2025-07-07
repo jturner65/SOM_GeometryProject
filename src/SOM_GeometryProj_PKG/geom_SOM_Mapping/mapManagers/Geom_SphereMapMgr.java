@@ -22,85 +22,85 @@ import base_SOM_Objects.som_ui.SOM_MseOvrDisplay;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 
 public class Geom_SphereMapMgr extends SOM_GeomMapManager {
-	
-	public static final int numFlags = numGeomBaseFlags;	
+    
+    public static final int numFlags = numGeomBaseFlags;    
 
-	/**
-	 * min and max radius set from UI
-	 */
-	protected float minRad, maxRad;
+    /**
+     * min and max radius set from UI
+     */
+    protected float minRad, maxRad;
 
-	public Geom_SphereMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[][] _worldBounds, Map<String, Object> _argsMap) {
-		super(_win, _dispWin, _worldBounds, _argsMap, SOM_GeomObjTypes.sphere, Geom_SphereSOMExample._numFtrs);
-	}
+    public Geom_SphereMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[][] _worldBounds, Map<String, Object> _argsMap) {
+        super(_win, _dispWin, _worldBounds, _argsMap, SOM_GeomObjTypes.sphere, Geom_SphereSOMExample._numFtrs);
+    }
 
-	/**
-	 * build the thread runner for this map manager that will manage the various tasks related to the geometric objects
-	 * assign default task
-	 * @return
-	 */
-	@Override
-	protected final SOM_GeomObjBldrRunner buildObjRunner() {
-		return new Geom_SphereObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, SOM_GeomObjBldrTasks.buildBaseObj);		
-	}
+    /**
+     * build the thread runner for this map manager that will manage the various tasks related to the geometric objects
+     * assign default task
+     * @return
+     */
+    @Override
+    protected final SOM_GeomObjBldrRunner buildObjRunner() {
+        return new Geom_SphereObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, SOM_GeomObjBldrTasks.buildBaseObj);        
+    }
 
-	@Override
-	protected final SOM_GeomObj[] buildEmptyObjArray() {		return new Geom_SphereSOMExample[numObjsToBuild];}
-	
+    @Override
+    protected final SOM_GeomObj[] buildEmptyObjArray() {        return new Geom_SphereSOMExample[numObjsToBuild];}
+    
 
-	/**
-	 * build the example data mapper specific to instancing class
-	 * @return
-	 */
-	@Override
-	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv(String _exMgrName) {return new Geom_SphereExManager(this, SOM_GeomObjTypes.sphere.toString(), "Sphere Geometric Objects",  SOM_ExDataType.Training, false, _exMgrName);}
-	/**
-	 * send any instance-specific control/ui values to objRunners, based on task
-	 */
-	@Override
-	protected final void execObjRunner_Pre_Indiv(SOM_GeomObjBldrTasks _task) {	
-		switch(_task) {
-			case buildBaseObj 			: { break;}
-			case regenSamplesBaseObj	: { break;}
-			default : {break;}
-		}
-		((Geom_SphereObjBldrRunner)objRunner).setRadSpan(minRad, maxRad);
-	}
-	public final int getNumSamplesToBuildObject() {return Geom_SphereSOMExample._numSrcPts;}
+    /**
+     * build the example data mapper specific to instancing class
+     * @return
+     */
+    @Override
+    protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv(String _exMgrName) {return new Geom_SphereExManager(this, SOM_GeomObjTypes.sphere.toString(), "Sphere Geometric Objects",  SOM_ExDataType.Training, false, _exMgrName);}
+    /**
+     * send any instance-specific control/ui values to objRunners, based on task
+     */
+    @Override
+    protected final void execObjRunner_Pre_Indiv(SOM_GeomObjBldrTasks _task) {    
+        switch(_task) {
+            case buildBaseObj             : { break;}
+            case regenSamplesBaseObj    : { break;}
+            default : {break;}
+        }
+        ((Geom_SphereObjBldrRunner)objRunner).setRadSpan(minRad, maxRad);
+    }
+    public final int getNumSamplesToBuildObject() {return Geom_SphereSOMExample._numSrcPts;}
 
-	/**
-	 * build the example that represents the SOM data where the mouse is
-	 */
-	@Override
-	protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
-	
-	/**
-	 * call from UI to set min and max radius
-	 */
-	public final void setMinMaxRad(float min, float max) {minRad = min; maxRad=max;}
-	@Override
-	protected void buildValidationDataAra() {}	
-	@Override
-	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {
-		return new Geom_SphereSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);
-	}	
-	@Override
-	public String getClassSegmentTitleString(int classID) {		return null;	}
-	@Override
-	public String getCategorySegmentTitleString(int catID) {	return null;	}
-	/**
-	 * The maximum number of training examples to draw to prevent lag/crashing/overflow. 
-	 * The purpose of showing these is to illustrate the random distribution of examples.
-	 */
-	@Override
-	public int getMaxNumExsToShow() {return 1000;}
-	@Override
-	protected final int getNumGeomFlags_Indiv() {	return numFlags;}
-	@Override
-	protected void setGeomFlag_Indiv(int idx, boolean val) {
-		switch (idx) {//special actions for each flag
-			default : {break;}
-		}
-	}
+    /**
+     * build the example that represents the SOM data where the mouse is
+     */
+    @Override
+    protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
+    
+    /**
+     * call from UI to set min and max radius
+     */
+    public final void setMinMaxRad(float min, float max) {minRad = min; maxRad=max;}
+    @Override
+    protected void buildValidationDataAra() {}    
+    @Override
+    public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {
+        return new Geom_SphereSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);
+    }    
+    @Override
+    public String getClassSegmentTitleString(int classID) {        return null;    }
+    @Override
+    public String getCategorySegmentTitleString(int catID) {    return null;    }
+    /**
+     * The maximum number of training examples to draw to prevent lag/crashing/overflow. 
+     * The purpose of showing these is to illustrate the random distribution of examples.
+     */
+    @Override
+    public int getMaxNumExsToShow() {return 1000;}
+    @Override
+    protected final int getNumGeomFlags_Indiv() {    return numFlags;}
+    @Override
+    protected void setGeomFlag_Indiv(int idx, boolean val) {
+        switch (idx) {//special actions for each flag
+            default : {break;}
+        }
+    }
 
 }//class Geom_SphereMapMgr

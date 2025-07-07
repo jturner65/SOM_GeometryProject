@@ -12,35 +12,35 @@ import base_SOM_Objects.som_geom.geom_utils.geom_threading.geomGen.SOM_GeomObjBl
 
 public class Geom_3DLineObjBldrRunner extends SOM_GeomObjBldrRunner {
 
-	public Geom_3DLineObjBldrRunner(Geom_3DLineMapMgr _mapMgr, ExecutorService _th_exec, SOM_GeomObj[] _objArray, boolean _forceST, int[] _numVals, SOM_GeomObjBldrTasks _taskType) {
-		super(_mapMgr, _th_exec, _objArray, _forceST, _numVals, _taskType);
-	}
-	
-	/**
-	 * build callable object that will be invoked
-	 * @param dataSt start idx in data
-	 * @param dataEnd end idx in data
-	 * @param pIdx thread/partition idx
-	 * @return callable to be invoked 
-	 */	
-	@Override
-	protected void execPerPartition(List<Callable<Boolean>> ExMappers, int dataSt, int dataEnd, int pIdx,int ttlParts) {
-		ExMappers.add(new Geom_3DLineObjBuilder((Geom_3DLineMapMgr) mapMgr, objArray, new int[] {dataSt, dataEnd, pIdx, numSmplsPerObj}, taskType));
-	}
-	
-	/**
-	 * exec entire dataset in one thread
-	 */
-	@Override
-	protected void runMe_Indiv_ST() {
-		Geom_3DLineObjBuilder rnr = new Geom_3DLineObjBuilder((Geom_3DLineMapMgr) mapMgr, objArray, new int[] {0, objArray.length, 0,  numSmplsPerObj},taskType);
-		try {			rnr.call();		} 
-		catch (Exception e) {			e.printStackTrace();		}
-	}
-	/**
-	 * after either MT or ST execution, final execution to perform
-	 */
-	@Override
-	protected void runMe_Indiv_End() {}
+    public Geom_3DLineObjBldrRunner(Geom_3DLineMapMgr _mapMgr, ExecutorService _th_exec, SOM_GeomObj[] _objArray, boolean _forceST, int[] _numVals, SOM_GeomObjBldrTasks _taskType) {
+        super(_mapMgr, _th_exec, _objArray, _forceST, _numVals, _taskType);
+    }
+    
+    /**
+     * build callable object that will be invoked
+     * @param dataSt start idx in data
+     * @param dataEnd end idx in data
+     * @param pIdx thread/partition idx
+     * @return callable to be invoked 
+     */    
+    @Override
+    protected void execPerPartition(List<Callable<Boolean>> ExMappers, int dataSt, int dataEnd, int pIdx,int ttlParts) {
+        ExMappers.add(new Geom_3DLineObjBuilder((Geom_3DLineMapMgr) mapMgr, objArray, new int[] {dataSt, dataEnd, pIdx, numSmplsPerObj}, taskType));
+    }
+    
+    /**
+     * exec entire dataset in one thread
+     */
+    @Override
+    protected void runMe_Indiv_ST() {
+        Geom_3DLineObjBuilder rnr = new Geom_3DLineObjBuilder((Geom_3DLineMapMgr) mapMgr, objArray, new int[] {0, objArray.length, 0,  numSmplsPerObj},taskType);
+        try {            rnr.call();        } 
+        catch (Exception e) {            e.printStackTrace();        }
+    }
+    /**
+     * after either MT or ST execution, final execution to perform
+     */
+    @Override
+    protected void runMe_Indiv_End() {}
 
 }//class SOM_GeomLineObjBldrRunner

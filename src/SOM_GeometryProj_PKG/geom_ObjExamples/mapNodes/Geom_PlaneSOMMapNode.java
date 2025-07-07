@@ -10,11 +10,11 @@ import base_SOM_Objects.som_managers.SOM_MapManager;
 
 public class Geom_PlaneSOMMapNode extends SOM_GeomMapNode {
 
-	public Geom_PlaneSOMMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, float[] _ftrs) {		super(_map, _mapNodeLoc, _ftrTypeUsedToTrain, _ftrs);}
-	public Geom_PlaneSOMMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] _strftrs) {	super(_map, _mapNodeLoc, _ftrTypeUsedToTrain, _strftrs);}
-	/**
-	 * build the visualization object for this map node
-	 * @return
-	 */
-	protected final SOM_GeomObj buildVisObj() {	return new Geom_PlaneSOMExample((Geom_PlaneMapMgr) mapMgr,this);}
+    public Geom_PlaneSOMMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, float[] _ftrs) {        super(_map, _mapNodeLoc, _ftrTypeUsedToTrain, _ftrs);}
+    public Geom_PlaneSOMMapNode(SOM_MapManager _map, Tuple<Integer, Integer> _mapNodeLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] _strftrs) {    super(_map, _mapNodeLoc, _ftrTypeUsedToTrain, _strftrs);}
+    /**
+     * build the visualization object for this map node
+     * @return
+     */
+    protected final SOM_GeomObj buildVisObj() {    return new Geom_PlaneSOMExample((Geom_PlaneMapMgr) mapMgr,this);}
 }//class Geom_PlaneSOMMapNode

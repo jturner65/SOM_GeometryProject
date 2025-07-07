@@ -12,26 +12,26 @@ import base_SOM_Objects.som_geom.geom_utils.geom_threading.trainDataGen.SOM_Geom
 
 public class Geom_2DLineTrainDatBuilder extends SOM_GeomTrainExBuilder {
 
-	public Geom_2DLineTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_2DLineExManager _exMgr,SOM_GeomSamplePointf[] _allExs, int[] _intVals, SOM_GeomTrainingExUniqueID[] _idxsToUse) {
-		super(_mapMgr, _exMgr, _allExs, _intVals, _idxsToUse);
-	}
+    public Geom_2DLineTrainDatBuilder(SOM_GeomMapManager _mapMgr, Geom_2DLineExManager _exMgr,SOM_GeomSamplePointf[] _allExs, int[] _intVals, SOM_GeomTrainingExUniqueID[] _idxsToUse) {
+        super(_mapMgr, _exMgr, _allExs, _intVals, _idxsToUse);
+    }
 
-	/**
-	 * for lines just need 2 points; planes need 3 non-colinear points; spheres need 4 non-coplanar points, no 3 of which are colinear
-	 * @return
-	 */
-	@Override
-	protected final SOM_GeomSamplePointf[] genPtsForObj() {
-		SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[numExPerObj];
-		Integer[] idxs = genUniqueIDXs(numExPerObj);
-		for(int i=0;i<res.length;++i) {	res[i]=allExamples[idxs[i]];}
-		return res;
-	};
+    /**
+     * for lines just need 2 points; planes need 3 non-colinear points; spheres need 4 non-coplanar points, no 3 of which are colinear
+     * @return
+     */
+    @Override
+    protected final SOM_GeomSamplePointf[] genPtsForObj() {
+        SOM_GeomSamplePointf[] res = new SOM_GeomSamplePointf[numExPerObj];
+        Integer[] idxs = genUniqueIDXs(numExPerObj);
+        for(int i=0;i<res.length;++i) {    res[i]=allExamples[idxs[i]];}
+        return res;
+    };
 
-	@Override
-	protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSamplePointf[] exAra, int idx) {
-		String ID = "2D_Line_Train_"+getObjID(idx);
-		return new Geom_2DLineSOMExample(((Geom_2DLineMapMgr)mapMgr),_exDataType, ID, exAra, numExPerObj, false, idx < mapMgr.getMaxNumExsToShow());		
-	}
+    @Override
+    protected SOM_GeomObj _buildSingleObjectFromSamples(SOM_ExDataType _exDataType, SOM_GeomSamplePointf[] exAra, int idx) {
+        String ID = "2D_Line_Train_"+getObjID(idx);
+        return new Geom_2DLineSOMExample(((Geom_2DLineMapMgr)mapMgr),_exDataType, ID, exAra, numExPerObj, false, idx < mapMgr.getMaxNumExsToShow());        
+    }
 
 }

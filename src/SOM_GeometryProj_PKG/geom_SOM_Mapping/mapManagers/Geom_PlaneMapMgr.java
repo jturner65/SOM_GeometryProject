@@ -23,88 +23,88 @@ import base_SOM_Objects.som_ui.SOM_MseOvrDisplay;
 import base_SOM_Objects.som_ui.win_disp_ui.SOM_MapUIWin;
 
 public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
-	
-	public static final int numFlags = numGeomBaseFlags;	
-	
-	//(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
-	public Geom_PlaneMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[][] _worldBounds, Map<String, Object> _argsMap) {
-		super(_win, _dispWin, _worldBounds, _argsMap,SOM_GeomObjTypes.plane, Geom_PlaneSOMExample._numFtrs);
-	}
+    
+    public static final int numFlags = numGeomBaseFlags;    
+    
+    //(SOM_MapUIWin _win, SOM_AnimWorldWin _dispWin, float[] _dims, float[][] _worldBounds, TreeMap<String, Object> _argsMap)
+    public Geom_PlaneMapMgr(SOM_MapUIWin _win,  SOM_AnimWorldWin _dispWin, float[][] _worldBounds, Map<String, Object> _argsMap) {
+        super(_win, _dispWin, _worldBounds, _argsMap,SOM_GeomObjTypes.plane, Geom_PlaneSOMExample._numFtrs);
+    }
 
-	/**
-	 * build the thread runner for this map manager that will manage the various tasks related to the geometric objects
-	 * @return
-	 */
-	@Override
-	protected final SOM_GeomObjBldrRunner buildObjRunner() {
-		return new Geom_PlaneObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, SOM_GeomObjBldrTasks.buildBaseObj);		
-	}
+    /**
+     * build the thread runner for this map manager that will manage the various tasks related to the geometric objects
+     * @return
+     */
+    @Override
+    protected final SOM_GeomObjBldrRunner buildObjRunner() {
+        return new Geom_PlaneObjBldrRunner(this, th_exec, buildEmptyObjArray(), false, new int[] {numObjsToBuild, numSamplesPerObj}, SOM_GeomObjBldrTasks.buildBaseObj);        
+    }
 
-	@Override
-	protected final SOM_GeomObj[] buildEmptyObjArray() {		return new Geom_PlaneSOMExample[numObjsToBuild];}
-	
-	/**
-	 * build the example data mapper specific to instancing class
-	 * @return
-	 */
-	@Override
-	protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv(String _exMgrName) {return new Geom_PlaneExManager(this, SOM_GeomObjTypes.plane.toString(), "Planar Geometric Objects",  SOM_ExDataType.Training, false, _exMgrName);}
+    @Override
+    protected final SOM_GeomObj[] buildEmptyObjArray() {        return new Geom_PlaneSOMExample[numObjsToBuild];}
+    
+    /**
+     * build the example data mapper specific to instancing class
+     * @return
+     */
+    @Override
+    protected final SOM_GeomExampleManager buildExampleDataMappers_Indiv(String _exMgrName) {return new Geom_PlaneExManager(this, SOM_GeomObjTypes.plane.toString(), "Planar Geometric Objects",  SOM_ExDataType.Training, false, _exMgrName);}
 
-	/**
-	 * send any instance-specific control/ui values to objRunners, based on task
-	 */
-	@Override
-	protected final void execObjRunner_Pre_Indiv(SOM_GeomObjBldrTasks _task) {
-		switch(_task) {
-			case buildBaseObj 			: { break;}
-			case regenSamplesBaseObj	: { break;}
-			default : {break;}
-		}
-	}
-	public final int getNumSamplesToBuildObject() {return Geom_PlaneSOMExample._numSrcPts;}
+    /**
+     * send any instance-specific control/ui values to objRunners, based on task
+     */
+    @Override
+    protected final void execObjRunner_Pre_Indiv(SOM_GeomObjBldrTasks _task) {
+        switch(_task) {
+            case buildBaseObj             : { break;}
+            case regenSamplesBaseObj    : { break;}
+            default : {break;}
+        }
+    }
+    public final int getNumSamplesToBuildObject() {return Geom_PlaneSOMExample._numSrcPts;}
 
-	/**
-	 * build the example that represents the SOM data where the mouse is
-	 */
-	@Override
-	protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
-	@Override
-	protected void buildValidationDataAra() {	}
-	@Override
-	public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {
-		return new Geom_PlaneSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);
-	}	
-	@Override
-	public String getClassSegmentTitleString(int classID) {		return null;}
-	@Override
-	public String getCategorySegmentTitleString(int catID) {	return null;}	
-	
-	/**
-	 * The maximum number of training examples to draw to prevent lag/crashing/overflow. 
-	 * The purpose of showing these is to illustrate the random distribution of examples.
-	 */
-	@Override
-	public int getMaxNumExsToShow() {return 1000;}
-	@Override
-	protected final int getNumGeomFlags_Indiv() {	return numFlags;}
-	@Override
-	protected void setGeomFlag_Indiv(int idx, boolean val) {
-		switch (idx) {//special actions for each flag
-			default : {break;}
-		}
-	}
-	////////////////////////
-	// draw functions
-	/**
-	 * draw the ortho frame for all objects
-	 * @param ri
-	 */
-	public final void drawAllPlanesOrthoFrames(IRenderInterface ri) {
-		if(getFlag(srcGeomObjsAllBuiltIDX)){
-			{for(SOM_GeomObj s : sourceGeomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(ri);}}
-		}
-	}
-	
+    /**
+     * build the example that represents the SOM data where the mouse is
+     */
+    @Override
+    protected final SOM_MseOvrDisplay buildMseOverExample() {return new Geom_SOMMseOvrDisp(this,0.0f);}
+    @Override
+    protected void buildValidationDataAra() {    }
+    @Override
+    public SOM_MapNode buildMapNode(Tuple<Integer, Integer> mapLoc,  SOM_FtrDataType _ftrTypeUsedToTrain, String[] tkns) {
+        return new Geom_PlaneSOMMapNode(this,mapLoc, _ftrTypeUsedToTrain, tkns);
+    }    
+    @Override
+    public String getClassSegmentTitleString(int classID) {        return null;}
+    @Override
+    public String getCategorySegmentTitleString(int catID) {    return null;}    
+    
+    /**
+     * The maximum number of training examples to draw to prevent lag/crashing/overflow. 
+     * The purpose of showing these is to illustrate the random distribution of examples.
+     */
+    @Override
+    public int getMaxNumExsToShow() {return 1000;}
+    @Override
+    protected final int getNumGeomFlags_Indiv() {    return numFlags;}
+    @Override
+    protected void setGeomFlag_Indiv(int idx, boolean val) {
+        switch (idx) {//special actions for each flag
+            default : {break;}
+        }
+    }
+    ////////////////////////
+    // draw functions
+    /**
+     * draw the ortho frame for all objects
+     * @param ri
+     */
+    public final void drawAllPlanesOrthoFrames(IRenderInterface ri) {
+        if(getFlag(srcGeomObjsAllBuiltIDX)){
+            {for(SOM_GeomObj s : sourceGeomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(ri);}}
+        }
+    }
+    
 
-	
+    
 }//class Geom_PlaneMapMgr
