@@ -238,12 +238,26 @@ public class SOM_GeometryMain extends GUI_AppManager {
                     new int[]{0,0,0,200},new int[]{255,255,255,255}});
         setDispWindow(wIdx, new Geom_SphereAnimResWin(ri, this, wIdx));        
         
-        //build SOM sub-windows for each anim res window
-        for(int i=1;i<numDispWins;++i) {
-            setCurFocusWin(i);
-            ((SOM_AnimWorldWin)getDispWindow(i)).buildAndSetSOM_MapDispUIWin( -1);
-        }
+//        //build SOM sub-windows for each anim res window
+//        for(int i=1;i<numDispWins;++i) {
+//            setCurFocusWin(i);
+//            ((SOM_AnimWorldWin)getDispWindow(i)).buildAndSetSOM_MapDispUIWin( -1);
+//        }
     }//    initAllDispWindows
+    /**
+     * Map indexed by window ID, holding an array of the titles (idx 0) and descriptions (idx 1) for every sub window
+     * return null if none exist, and only put an entry in the map if one exists for that window
+     * @return
+     */
+    @Override
+    protected final HashMap<Integer, String[]> getSubWindowTitles(){
+        //build SOM sub-windows for each anim res window
+        HashMap<Integer, String[]> res = new HashMap<Integer, String[]>();
+        for(int i=1;i<numDispWins;++i) {
+            res.put(i, new String[]{"Map UI for", "Visualize SOM Node location for"});          
+        }
+        return res;        
+    }//getSubWindowTitles
     
     public SOM_AnimWorldWin getLinesWindow() {return (SOM_AnimWorldWin) getDispWindow(disp2DLineAnimResIDX);}
     public SOM_AnimWorldWin get3DLinesWindow() {return (SOM_AnimWorldWin) getDispWindow(disp3DLineAnimResIDX);}
