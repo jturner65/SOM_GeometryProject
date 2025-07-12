@@ -6,7 +6,7 @@ import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_2DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_2DLineMapMgr;
 import base_Math_Objects.vectorObjs.doubles.myPoint;
 import base_Math_Objects.vectorObjs.doubles.myVector;
-import base_Render_Interface.IRenderInterface;
+import base_Render_Interface.IGraphicsAppInterface;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
@@ -29,12 +29,12 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
      * @param _AppMgr
      * @param _winIdx
      */
-    public Geom_2DLineAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
+    public Geom_2DLineAnimResWin(IGraphicsAppInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
         super(_p, _AppMgr, _winIdx, SOM_GeomObjTypes.line_2D);
         win2DMinsAndDiffs = new float[2][2];
         win2DMinsAndDiffs[0]= new float[] {-.5f*winInitVals.rectDim[2] + dispBrdr, -.5f*winInitVals.rectDim[3] + dispBrdr};
         win2DMinsAndDiffs[1] = new float[] {winInitVals.rectDim[2]-(2.0f*dispBrdr), winInitVals.rectDim[3]-(9.0f*dispBrdr)};
-        super.initThisWin(false);
+        
     }
 
     /**
@@ -190,7 +190,7 @@ public class Geom_2DLineAnimResWin extends SOM_AnimWorldWin {
         //msgObj.dispInfoMessage(className, "drawMeFirst_Indiv", "here");
         moveTo2DRectCenter();
         ri.pushMatState();
-        ri.noStroke();
+        ri.setNoStroke();
         ri.setFill(255,255,255, 255);
         ri.drawSphere(3.0f);
         ri.popMatState();

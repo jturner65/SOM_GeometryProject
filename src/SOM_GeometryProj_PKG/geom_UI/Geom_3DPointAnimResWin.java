@@ -6,7 +6,7 @@ import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_3DPointSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_3DPointMapMgr;
 import base_Math_Objects.vectorObjs.doubles.myPoint;
 import base_Math_Objects.vectorObjs.doubles.myVector;
-import base_Render_Interface.IRenderInterface;
+import base_Render_Interface.IGraphicsAppInterface;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
@@ -19,9 +19,9 @@ public class Geom_3DPointAnimResWin extends SOM_AnimWorldWin {
      */
     private final int numPrivFlags = numBaseAnimWinPrivFlags;
     
-    public Geom_3DPointAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
+    public Geom_3DPointAnimResWin(IGraphicsAppInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
         super(_p, _AppMgr, _winIdx, SOM_GeomObjTypes.point);
-        super.initThisWin(false);
+        
     }
 
     @Override

@@ -7,7 +7,7 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
-import base_Render_Interface.IRenderInterface;
+import base_Render_Interface.IGraphicsAppInterface;
 import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
@@ -442,7 +442,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
      * get an appropriate sample location to build sample sets, based on what kind of object is being built
      */
     @Override
-    public void drawMyLabel(IRenderInterface ri, SOM_AnimWorldWin animWin) {
+    public void drawMyLabel(IGraphicsAppInterface ri, SOM_AnimWorldWin animWin) {
         ri.pushMatState();    
         ri.setFill(labelClrAra, 255);
         ri.setStroke(labelClrAra, 255);
@@ -457,7 +457,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
     }//drawMyLabel
 
     @Override
-    protected void _drawMe_Geom(IRenderInterface ri, SOM_GeomObjDrawType drawType) {
+    protected void _drawMe_Geom(IGraphicsAppInterface ri, SOM_GeomObjDrawType drawType) {
         if(planeObjs.length==0) {    return;}
         ri.pushMatState();            
         ri.setStrokeWt(2.0f);
@@ -465,15 +465,15 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
         ri.popMatState();
     }
 
-    public void drawOrthoFrame(IRenderInterface ri) {
+    public void drawOrthoFrame(IGraphicsAppInterface ri) {
         ri.pushMatState();    
         ri.setStrokeWt(3.0f);
-        ri.setColorValStroke(IRenderInterface.gui_Red, 255);//(new int[] {255,0,0},255);
+        ri.setColorValStroke(IGraphicsAppInterface.gui_Red, 255);//(new int[] {255,0,0},255);
         ri.drawLine(planeOrigin, orthoFrame[0]);
-        ri.setColorValStroke(IRenderInterface.gui_Green,255);
+        ri.setColorValStroke(IGraphicsAppInterface.gui_Green,255);
         ri.setStrokeWt(3.0f);
         ri.drawLine(planeOrigin, orthoFrame[1]);
-        ri.setColorValStroke(IRenderInterface.gui_Blue,255);
+        ri.setColorValStroke(IGraphicsAppInterface.gui_Blue,255);
         ri.setStrokeWt(3.0f);
         ri.drawLine(planeOrigin, orthoFrame[2]);
         ri.showPtAsSphere(planeOrigin, 5.0f, 5, -1, -1);
@@ -485,7 +485,7 @@ public class Geom_PlaneSOMExample extends SOM_GeomObj{
 
     private static final int selIDX = SOM_GeomObjDrawType.selected.getVal();
     @Override
-    protected final void _drawMeSelected(IRenderInterface ri, float animTmMod) {
+    protected final void _drawMeSelected(IGraphicsAppInterface ri, float animTmMod) {
         if(planeObjs.length==0) {return;}
         modCnt += animTmMod;
         if(modCnt > .5){    modCnt = 0;    }//blink every ~second

@@ -7,7 +7,7 @@ import SOM_GeometryProj_PKG.geom_ObjExamples.mapNodes.Geom_PlaneSOMMapNode;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.exampleManagers.Geom_PlaneExManager;
 import SOM_GeometryProj_PKG.geom_Utils.geomGen.runners.Geom_PlaneObjBldrRunner;
 import base_Math_Objects.vectorObjs.tuples.Tuple;
-import base_Render_Interface.IRenderInterface;
+import base_Render_Interface.IGraphicsAppInterface;
 import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_examples.enums.SOM_FtrDataType;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
@@ -99,7 +99,7 @@ public class Geom_PlaneMapMgr extends SOM_GeomMapManager {
      * draw the ortho frame for all objects
      * @param ri
      */
-    public final void drawAllPlanesOrthoFrames(IRenderInterface ri) {
+    public final void drawAllPlanesOrthoFrames(IGraphicsAppInterface ri) {
         if(getFlag(srcGeomObjsAllBuiltIDX)){
             {for(SOM_GeomObj s : sourceGeomObjects){((Geom_PlaneSOMExample)s).drawOrthoFrame(ri);}}
         }

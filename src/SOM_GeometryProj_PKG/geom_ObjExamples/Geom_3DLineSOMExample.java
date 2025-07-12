@@ -6,8 +6,8 @@ import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_3DLineMapMgr;
 import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
-import base_Render_Interface.IRenderInterface;
-import base_Render_Interface.IRenderInterface.GL_PrimStyle;
+import base_Render_Interface.IGraphicsAppInterface;
+import base_Render_Interface.GL_PrimStyle;
 import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
@@ -168,7 +168,7 @@ public class Geom_3DLineSOMExample extends SOM_GeomLineObj {
     // draw functionality
     
     @Override
-    protected final void _drawMe_Geom(IRenderInterface ri, SOM_GeomObjDrawType drawType) {
+    protected final void _drawMe_Geom(IGraphicsAppInterface ri, SOM_GeomObjDrawType drawType) {
         ri.pushMatState();    
         if((drawType.getVal() == 2) || (drawType.getVal() == 3)) {
             ri.setStroke(120, 120,120,150);
@@ -188,7 +188,7 @@ public class Geom_3DLineSOMExample extends SOM_GeomLineObj {
     }
 
     @Override
-    public final void drawMyLabel(IRenderInterface ri, SOM_AnimWorldWin animWin) {
+    public final void drawMyLabel(IGraphicsAppInterface ri, SOM_AnimWorldWin animWin) {
         ri.pushMatState();        
         ri.setFill(labelClrAra,255);
         ri.setStroke(labelClrAra,255);
@@ -206,7 +206,7 @@ public class Geom_3DLineSOMExample extends SOM_GeomLineObj {
     
     private final float blinkDist = 20.0f;
     
-    protected final void cylinder(IRenderInterface ri, myPointf A, myPointf B, float r, int[] c1, int[] c2) {
+    protected final void cylinder(IGraphicsAppInterface ri, myPointf A, myPointf B, float r, int[] c1, int[] c2) {
         myVectorf V = new myVectorf(A,B);
 
         float da = MyMathUtils.TWO_PI_F/36;
@@ -225,7 +225,7 @@ public class Geom_3DLineSOMExample extends SOM_GeomLineObj {
     }
     
     @Override
-    protected final void _drawMeSelected(IRenderInterface ri, float animTmMod) {
+    protected final void _drawMeSelected(IGraphicsAppInterface ri, float animTmMod) {
         modCnt += animTmMod*2.0f;
         if(modCnt > 1.0){    modCnt = 0.0f;    }//blink every ~second
         

@@ -9,7 +9,7 @@ import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_PlaneSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_PlaneMapMgr;
 import base_Math_Objects.vectorObjs.doubles.myPoint;
 import base_Math_Objects.vectorObjs.doubles.myVector;
-import base_Render_Interface.IRenderInterface;
+import base_Render_Interface.IGraphicsAppInterface;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
@@ -37,9 +37,9 @@ public class Geom_PlaneAnimResWin extends SOM_AnimWorldWin {
      * @param _AppMgr
      * @param _winIdx
      */
-    public Geom_PlaneAnimResWin(IRenderInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
+    public Geom_PlaneAnimResWin(IGraphicsAppInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
         super(_p, _AppMgr, _winIdx, SOM_GeomObjTypes.plane);
-        super.initThisWin(false);
+        
     }
 
     @Override

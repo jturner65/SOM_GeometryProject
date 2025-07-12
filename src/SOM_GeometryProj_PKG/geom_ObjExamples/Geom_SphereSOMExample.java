@@ -5,7 +5,7 @@ import java.util.TreeMap;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_SphereMapMgr;
 import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
-import base_Render_Interface.IRenderInterface;
+import base_Render_Interface.IGraphicsAppInterface;
 import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_examples.SOM_GeomMapNode;
@@ -303,7 +303,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
     ///////////////////////////
     // draw functionality
     @Override
-    protected void _drawMe_Geom(IRenderInterface ri, SOM_GeomObjDrawType drawType) {
+    protected void _drawMe_Geom(IGraphicsAppInterface ri, SOM_GeomObjDrawType drawType) {
         ri.pushMatState();    
         ri.drawSphere(ctrLoc, radius, sphrDet);
         ri.popMatState();    
@@ -311,11 +311,11 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
 
     protected float modCnt = 0;//counter that will determine when the color should switch    
     @Override
-    protected final void _drawMeSelected(IRenderInterface ri,float animTmMod){//animTmMod is time since last frame
+    protected final void _drawMeSelected(IGraphicsAppInterface ri,float animTmMod){//animTmMod is time since last frame
         modCnt += animTmMod;
         if(modCnt > 1.0){    modCnt = 0;    }//blink every ~second
         ri.pushMatState();    
-        ri.noFill();//fill(255*modCnt,255);
+        ri.setNoFill();//fill(255*modCnt,255);
         int _v = (int) (255*modCnt);        
         ri.setStroke(_v,_v,_v, 255);        
         ri.translate(ctrLoc); 
@@ -324,7 +324,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
     }
     
     @Override
-    public void drawMyLabel(IRenderInterface ri, SOM_AnimWorldWin animWin){
+    public void drawMyLabel(IGraphicsAppInterface ri, SOM_AnimWorldWin animWin){
         ri.pushMatState();        
         ri.setFill(this.labelClrAra, 255);
         ri.setStroke(this.labelClrAra, 255);        
