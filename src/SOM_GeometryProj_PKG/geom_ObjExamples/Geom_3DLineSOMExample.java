@@ -7,7 +7,6 @@ import base_Math_Objects.MyMathUtils;
 import base_Math_Objects.vectorObjs.floats.myPointf;
 import base_Math_Objects.vectorObjs.floats.myVectorf;
 import base_Render_Interface.IGraphicsAppInterface;
-import base_Render_Interface.GL_PrimStyle;
 import base_SOM_Objects.som_examples.enums.SOM_ExDataType;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
@@ -206,30 +205,12 @@ public class Geom_3DLineSOMExample extends SOM_GeomLineObj {
     
     private final float blinkDist = 20.0f;
     
-    protected final void cylinder(IGraphicsAppInterface ri, myPointf A, myPointf B, float r, int[] c1, int[] c2) {
-        myVectorf V = new myVectorf(A,B);
-
-        float da = MyMathUtils.TWO_PI_F/36;
-        ri.pushMatState();    
-        ri.gl_beginShape(GL_PrimStyle.GL_QUAD_STRIP);
-            for(float a=0; a<=MyMathUtils.TWO_PI_F+da; a+=da) {
-                float rCosA = (float) (r*Math.cos(a));
-                float rSinA = (float) (r*Math.sin(a));
-                ri.setStroke(c1, 255); 
-                //gl_vertex(myPoint._add(P,r*cos(a),I,r*sin(a),J,0,V)); 
-                ri.gl_vertex(myPointf._add(A,rCosA,norm,rSinA,biNorm)); 
-                ri.setStroke(c2, 255);
-                ri.gl_vertex(myPointf._add(A,rCosA,norm,rSinA,biNorm, 1.0f, V));}
-        ri.gl_endShape();
-        ri.popMatState();    
-    }
-    
     @Override
     protected final void _drawMeSelected(IGraphicsAppInterface ri, float animTmMod) {
         modCnt += animTmMod*2.0f;
         if(modCnt > 1.0){    modCnt = 0.0f;    }//blink every ~second
         
-        cylinder(ri, dispEndPts[0], dispEndPts[1], blinkDist*modCnt, locClrAra, rndClrAra);
+        ri.drawCylinder_NoFill(dispEndPts[0], dispEndPts[1], blinkDist*modCnt, locClrAra, rndClrAra);
         
     }//_drawMeSelected
 
