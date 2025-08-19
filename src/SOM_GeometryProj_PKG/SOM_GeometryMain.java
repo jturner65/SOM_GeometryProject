@@ -132,24 +132,23 @@ public class SOM_GeometryMain extends GUI_AppManager {
     @Override
     protected final MsgCodes getMinLogMsgCodes() {return null;}
 
-    /**
-     * determine which main flags to show at upper left of menu 
-     */
     @Override
-    protected void initBaseFlags_Indiv() {
-        setBaseFlagToShow_debugMode(true);
-        setBaseFlagToShow_saveAnim(true); 
-        setBaseFlagToShow_runSim(false);
-        setBaseFlagToShow_singleStep(false);
-        setBaseFlagToShow_showRtSideMenu(true);    
-        setBaseFlagToShow_showStatusBar(true);
-        setBaseFlagToShow_showDrawableCanvas(false);
-    }
-    
+    protected boolean hideAppFlag_DebugMode() {             return false;}
+    @Override
+    protected boolean hideAppFlag_SaveAnim() {              return false;}
+    @Override
+    protected boolean hideAppFlag_RunSim() {                return true;}
+    @Override
+    protected boolean hideAppFlag_SingleStep() {            return true;}
+    @Override
+    protected boolean hideAppFlag_showRtSideInfoDisp() {    return false;}
+    @Override
+    protected boolean hideAppFlag_showStatusBar() {         return false;}
+    @Override
+    protected boolean hideAppFlag_showCanvas() {            return true;}
     @Override
     //build windows here
     protected void initAllDispWindows() {
-        showInfo = true;    
         //titles and descs, need to be set before sidebar menu is defined
         String[] _winTitles = new String[]{"","3D Point Cloud","2D Lines","3D Lines","3D Planes","3D Spheres"},//,"SOM Map UI"},
                 _winDescr = new String[]{"","Display 3D Point Cloud","Display 2D Lines and Line sample points","Display 3D Lines and Line sample points","Display Planes and Plane surface samples","Display Spheres and Sphere surface samples"};//,"Visualize Sphere SOM Node location and color mapping"};
@@ -268,7 +267,6 @@ public class SOM_GeometryMain extends GUI_AppManager {
     //called from base class, once at start of program after vis init is called - set initial windows to show - always show UI Menu
     protected void initOnce_Indiv(){
         setWinVisFlag(disp2DLineAnimResIDX, true);
-        setShowStatusBar(true);
     }//    initOnce
     
     @Override
@@ -355,10 +353,10 @@ public class SOM_GeometryMain extends GUI_AppManager {
      * @param is3DDraw
      */
     @Override
-    protected void drawMePost_Indiv(float modAmtMillis, boolean is3DDraw) {
+    protected void drawMePost_Indiv(float modAmtMillis, boolean is3DDraw, boolean isGlblAppDebug) {
         //draw SOM window in current window if active/displayed
         ri.pushMatState();
-        ((SOM_AnimWorldWin)getCurFocusDispWindow()).drawSOMWinUI(modAmtMillis);
+        ((SOM_AnimWorldWin)getCurFocusDispWindow()).drawSOMWinUI(modAmtMillis, isGlblAppDebug);
         ri.popMatState();        
     }
 

@@ -11,6 +11,7 @@ import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_UI_Objects.GUI_AppManager;
+import base_UI_Objects.baseApp.GUI_AppUIFlags;
 import base_UI_Objects.windowUI.uiObjs.base.GUIObj_Params;
 
 public class Geom_3DPointAnimResWin extends SOM_AnimWorldWin {
@@ -30,15 +31,25 @@ public class Geom_3DPointAnimResWin extends SOM_AnimWorldWin {
         return _mgr;
     }
     /**
-     * Initialize any UI control flags appropriate for specific instanced SOM Animation window
+     * Initialize any UI control flags appropriate for window application
+     * @param appUIFlags Snapshot of the initial flags structure for the application. 
+     * Will not reflect future changes, so should not be retained
      */
     @Override
-    protected final void initDispFlags_Indiv() {}
+    protected final void initDispFlags_Indiv(GUI_AppUIFlags appUIFlags) {}
     
     @Override
     protected void initMe_Indiv() {    
     }
-    
+    /**
+     * Implementation-specific flags to initialize to true
+     * @param flagIDXs
+     * @return
+     */
+    @Override
+    protected final int[] getFlagIDXsToInitToTrue_Indiv(int[] flagIDXs) {
+        return flagIDXs;
+    }//getFlagIDXsToInitToTrue_Indiv
     /**
      * Retrieve the total number of defined privFlags booleans (application-specific state bools and interactive buttons)
      */
@@ -135,7 +146,7 @@ public class Geom_3DPointAnimResWin extends SOM_AnimWorldWin {
     protected void getAllUIValsForPreProcSave_Indiv(LinkedHashMap<String, String> vals) {}
 
     @Override
-    protected void setAllUIValsFromPreProcLoad_Indiv(LinkedHashMap<String, String> uiVals) {}
+    protected void forceNewUIAllValsFromPreProcLoad_Indiv(LinkedHashMap<String, String> uiVals) {}
     //////////////////////////////
     // instance-based draw handling
     /**
@@ -143,27 +154,28 @@ public class Geom_3DPointAnimResWin extends SOM_AnimWorldWin {
      * @param modAmtMillis
      */
     @Override
-    protected final float drawRightSideInfoBar_Indiv(float modAmtMillis, float yOff) {        
+    protected final float drawRightSideInfoBar_Indiv(float modAmtMillis, float yOff, boolean isGlblAppDebug) {
+        
         return yOff;
     }
-
+    
     @Override
-    protected final void drawOnScreenStuffPriv(float modAmtMillis) {
-        // TODO Auto-generated method stub
-        
-    }
+    protected final void drawOnScreenStuffPriv(float modAmtMillis, boolean isGlblAppDebug) {}
+
     
     /**
      * instance-specific drawing setup before objects are actually drawn 
      */
     @Override
-    protected final void drawMeFirst_Indiv() {    }
+    protected final void drawMeFirst_Indiv(boolean isGlblAppDebug) {//need to translate by half the screen width to center coords
+                
+    }
     
     /**
      * instance-specific drawing after objects are drawn but before info is saved
      */
     @Override
-    protected final void drawMeLast_Indiv() {        
+    protected final void drawMeLast_Indiv(boolean isGlblAppDebug)  {        
         
     }
     //////////////////////////////

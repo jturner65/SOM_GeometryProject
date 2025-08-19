@@ -133,7 +133,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
      * @param _rad radius of sphere used to derive source points
      */
     public final boolean testSphereConstruction(myPointf _ctr, float _rad, float tol) {
-          float sqDistFromGiven = ctrLoc._SqrDist(_ctr);
+          float sqDistFromGiven = ctrLoc.sqrDist(_ctr);
         if(!(sqDistFromGiven < tol)) {
             msgObj.dispWarningMessage("SOM_Sphere", "testSphereConstruction", "Warning : calculated center : " + ctrLoc.toStrBrf() +" != original center : " + _ctr.toStrBrf() + " | calced rad : " + radius + " | Given radius : " + _rad + " Sq Dist : " + sqDistFromGiven);
             return false;
@@ -201,7 +201,7 @@ public class Geom_SphereSOMExample extends SOM_GeomObj{
         //x0 = .5M12/M11; y0 = -.5M13/M11; z0 = .5M14/M11; r2 = x02 + y02 + z02 - M15/M11
         _ctr.set(.5f*(dets[1]/dets[0]), -.5f *(dets[2]/dets[0]), .5f*(dets[3]/dets[0]));
         
-        double rad = Math.sqrt(_ctr._SqrDist(myPointf.ZEROPT) -(dets[4]/dets[0]));
+        double rad = Math.sqrt(_ctr.sqrDist(myPointf.ZEROPT) -(dets[4]/dets[0]));
         return rad;
     }//findCenterAndRadFromPtsUsingDet
 

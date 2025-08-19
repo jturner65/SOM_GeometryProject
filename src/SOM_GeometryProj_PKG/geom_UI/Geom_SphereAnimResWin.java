@@ -11,6 +11,7 @@ import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
 import base_SOM_Objects.som_geom.geom_utils.geom_objs.SOM_GeomObjTypes;
 import base_UI_Objects.GUI_AppManager;
+import base_UI_Objects.baseApp.GUI_AppUIFlags;
 import base_UI_Objects.windowUI.uiObjs.base.GUIObj_Params;
 
 public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
@@ -37,7 +38,6 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
      */
     public Geom_SphereAnimResWin(IGraphicsAppInterface _p, GUI_AppManager _AppMgr, int _winIdx) {
         super(_p, _AppMgr, _winIdx, SOM_GeomObjTypes.sphere);
-        
     }
 
     /**
@@ -50,15 +50,25 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
     }
     
     /**
-     * Initialize any UI control flags appropriate for specific instanced SOM Animation window
+     * Initialize any UI control flags appropriate for window application
+     * @param appUIFlags Snapshot of the initial flags structure for the application. 
+     * Will not reflect future changes, so should not be retained
      */
     @Override
-    protected final void initDispFlags_Indiv() {}
+    protected final void initDispFlags_Indiv(GUI_AppUIFlags appUIFlags) {}
 
     @Override
     protected final void initMe_Indiv() {    
     }
-    
+    /**
+     * Implementation-specific flags to initialize to true
+     * @param flagIDXs
+     * @return
+     */
+    @Override
+    protected final int[] getFlagIDXsToInitToTrue_Indiv(int[] flagIDXs) {
+        return flagIDXs;
+    }//getFlagIDXsToInitToTrue_Indiv
     /**
      * Retrieve the total number of defined privFlags booleans (application-specific state bools and interactive buttons)
      */
@@ -188,9 +198,9 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
     }
 
     @Override
-    protected void setAllUIValsFromPreProcLoad_Indiv(LinkedHashMap<String, String> uiVals) {
-        uiMgr.setNewUIValue(gIDX_MinRadius, Double.parseDouble(uiVals.get("gIDX_MinRadius")));
-        uiMgr.setNewUIValue(gIDX_MaxRadius, Double.parseDouble(uiVals.get("gIDX_MaxRadius")));
+    protected void forceNewUIAllValsFromPreProcLoad_Indiv(LinkedHashMap<String, String> uiVals) {
+        uiMgr.forceNewUIValue(gIDX_MinRadius, Double.parseDouble(uiVals.get("gIDX_MinRadius")));
+        uiMgr.forceNewUIValue(gIDX_MaxRadius, Double.parseDouble(uiVals.get("gIDX_MaxRadius")));
     }
 
     //////////////////////////////
@@ -200,26 +210,28 @@ public class Geom_SphereAnimResWin extends SOM_AnimWorldWin {
      * @param modAmtMillis
      */
     @Override
-    protected final float drawRightSideInfoBar_Indiv(float modAmtMillis, float yOff) {
+    protected final float drawRightSideInfoBar_Indiv(float modAmtMillis, float yOff, boolean isGlblAppDebug) {
         
         return yOff;
     }
     
     @Override
-    protected final void drawOnScreenStuffPriv(float modAmtMillis) {}
+    protected final void drawOnScreenStuffPriv(float modAmtMillis, boolean isGlblAppDebug) {}
 
     
     /**
      * instance-specific drawing setup before objects are actually drawn 
      */
-    protected final void drawMeFirst_Indiv() {//need to translate by half the screen width to center coords
+    @Override
+    protected final void drawMeFirst_Indiv(boolean isGlblAppDebug) {//need to translate by half the screen width to center coords
                 
     }
     
     /**
      * instance-specific drawing after objects are drawn but before info is saved
      */
-    protected final void drawMeLast_Indiv() {        
+    @Override
+    protected final void drawMeLast_Indiv(boolean isGlblAppDebug) {        
         
     }    
     

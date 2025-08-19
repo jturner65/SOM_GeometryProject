@@ -73,7 +73,7 @@ public class Geom_SphereTrainDatBuilder extends SOM_GeomTrainExBuilder {
         
         _ctr.set(.5f*(dets[1]/dets[0]), -.5f *(dets[2]/dets[0]), .5f*(dets[3]/dets[0]));
         
-        double rad = Math.sqrt(_ctr._SqrDist(myPointf.ZEROPT) -(dets[4]/dets[0]));
+        double rad = Math.sqrt(_ctr.sqrDist(myPointf.ZEROPT) -(dets[4]/dets[0]));
         return rad;
     }//findCenterAndRadFromPtsUsingDet
 
