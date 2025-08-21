@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import SOM_GeometryProj_PKG.geom_ObjExamples.Geom_3DLineSOMExample;
 import SOM_GeometryProj_PKG.geom_SOM_Mapping.mapManagers.Geom_3DLineMapMgr;
 import base_Math_Objects.vectorObjs.doubles.myPoint;
-import base_Math_Objects.vectorObjs.doubles.myVector;
 import base_Render_Interface.IGraphicsAppInterface;
 import base_SOM_Objects.som_geom.SOM_GeomMapManager;
 import base_SOM_Objects.som_geom.geom_UI.SOM_AnimWorldWin;
@@ -206,11 +205,11 @@ public class Geom_3DLineAnimResWin extends SOM_AnimWorldWin {
     // instance-based mouse handling
 
     @Override
-    protected final boolean hndlMseMove_Priv(int mouseX, int mouseY, myPoint mseClckInWorld) {  return false;}
+    protected final boolean hndlMseMove_Priv(int mouseX, int mouseY) {  return false;}
     @Override
-    protected final boolean hndlMseClick_Priv(int mouseX, int mouseY, myPoint mseClckInWorld, int mseBtn) { return false;}
+    protected final boolean hndlMseClick_Priv(int mouseX, int mouseY, int mseBtn) { return false;}
     @Override
-    protected final boolean hndlMseDrag_Priv(int mouseX, int mouseY, int pmouseX, int pmouseY, myPoint mouseClickIn3D,myVector mseDragInWorld, int mseBtn) {return false;}
+    protected final boolean hndlMseDrag_Priv(int mouseX, int mouseY, int pmouseX, int pmouseY, int mseBtn) {return false;}
     @Override
     protected final void hndlMseRelease_Priv() {    }
     @Override
